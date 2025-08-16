@@ -14,12 +14,25 @@
 #define TEXT_TO_ELE_GAP_X 25
 #define TEXT_TO_ELE_GAP_Y 25
 
+bool selectElementStatus(Rectangle shape) {
+    if ((GetMousePosition().x >= shape.x &&
+        GetMousePosition().x <= (shape.x + shape.width)) &&
+        (GetMousePosition().y >= shape.y) &&
+        (GetMousePosition().y <= (shape.y + shape.height))) {
+            return true;
+    }
+    else {
+        return false;
+    }
+}
 
 void drawLinkedList() {
     __NODE * iterateNode = getHead();
     int i = 0;
     int y = 1;
+    Color color;
     while (iterateNode != NULL) {
+        color = WHITE;
         Rectangle shape = {
             .x = (GAP_X + ((GAP_X + WIDTH_ELE)* i)),
             .y = (GAP_Y + ((GAP_Y + HEIGHT_ELE) * y)),
@@ -47,8 +60,10 @@ void drawLinkedList() {
             DrawLineEx((Vector2){(pos), (endpos.y + 50)}, (Vector2){(pos), (endpos.y + 100)}, 3, BLACK);
             DrawLineEx((Vector2){(pos), (endpos.y + 100)}, (Vector2){(shape.x), (endpos.y + 100)}, 3, BLACK);
         }
-
-        DrawRectangleRec(shape, WHITE);
+        if (selectElementStatus(shape)) {
+            color = GREEN;
+        }
+        DrawRectangleRec(shape, color);
         DrawRectangleLinesEx(shape, 3, BLACK);
         DrawText(int_to_chars(iterateNode->data),(shape.x + TEXT_TO_ELE_GAP_X), (shape.y + TEXT_TO_ELE_GAP_Y), 18, RED);
         DrawLineEx(startpos, endpos, 3, BLACK);
@@ -70,6 +85,7 @@ int getInput(char * input) {
         }
     }
     addNode(value_to_input);
+    return 1;
 }
 
 void addElementHandler(bool * button_status, char * inputText) {
