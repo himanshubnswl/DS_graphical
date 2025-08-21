@@ -64,24 +64,61 @@ bool checkIndex(int index) {
     else return false;
 }
 
-void removeNodeLast() {
+void removeNode(int i) {
+    // __NODE * bufferNode;
+    // __NODE * iterateNode = getHead();
+    // if (size == 0) return;
+    // if (size == 1) {
+    //     head =  NULL;
+    //     free(iterateNode);
+    //     size--;
+    //     return;
+    // }
+    //
+    // while (iterateNode->nextptr != NULL) {
+    //     bufferNode = iterateNode;
+    //     iterateNode = iterateNode->nextptr;
+    // }
+    // bufferNode->nextptr = NULL;
+    // free(iterateNode);
+    // size--;
     __NODE * bufferNode;
     __NODE * iterateNode = getHead();
+
     if (size == 0) return;
-    if (size == 1) {
-        head =  NULL;
-        free(iterateNode);
-        size--;
-        return;
+
+    printf("\n size is %d", size);
+    printf("\n i is %d", i);
+
+    switch (i) {
+        case 1:
+            head = iterateNode->nextptr;
+            free(iterateNode);
+            size--;
+            break;
+
+        default:
+            if (i == size) {
+                for (int count = 1; count <i; count++) {
+                    bufferNode = iterateNode;
+                    iterateNode = iterateNode->nextptr;
+                }
+                bufferNode->nextptr = NULL;
+                free(iterateNode);
+                size--;
+                break;
+            }
+            printf("\nhere");
+            for (int count = 1; count <=i; count++) {
+                bufferNode = iterateNode;
+                iterateNode = iterateNode->nextptr;
+            }
+            bufferNode->nextptr = iterateNode->nextptr;
+            free(iterateNode);
+            size--;
+            break;
     }
 
-    while (iterateNode->nextptr != NULL) {
-        bufferNode = iterateNode;
-        iterateNode = iterateNode->nextptr;
-    }
-    bufferNode->nextptr = NULL;
-    free(iterateNode);
-    size--;
 }
 
 

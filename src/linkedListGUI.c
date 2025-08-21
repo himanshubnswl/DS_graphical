@@ -1,38 +1,52 @@
-#define RAYGUI_IMPLEMENTATION
+#include "linkedListGUI.h"
 
-#include <raylib.h>
-#include <raygui.h>
-#include <helper.h>
-#include <linkedListInternals.h>
+void errorHandler() {
+    Rectangle errorBoxBounds = {
+        .x = (GetScreenWidth() - 600),
+        .y = (GetScreenHeight() - 500),
+        .width = 100,
+        .height = 75
+    };
+    switch (error_message) {
+        case REMOVE_ERROR:
+            GuiDrawText("no element selected!", errorBoxBounds, TEXT_ALIGN_CENTER, RED);
+            break;
+        case ADD_ERROR:
+            GuiDrawText("only numbers are allowed!", errorBoxBounds, TEXT_ALIGN_CENTER, RED);
+        default:
+            break;
 
+    }
+}
 
-
-#define GAP_X 50
-#define WIDTH_ELE 100
-#define HEIGHT_ELE 75
-#define GAP_Y 25
-#define TEXT_TO_ELE_GAP_X 25
-#define TEXT_TO_ELE_GAP_Y 25
-
-bool selectElementStatus(Rectangle shape) {
+int selectElementStatus(Rectangle shape) {
     if ((GetMousePosition().x >= shape.x &&
         GetMousePosition().x <= (shape.x + shape.width)) &&
         (GetMousePosition().y >= shape.y) &&
         (GetMousePosition().y <= (shape.y + shape.height))) {
-            return true;
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                // printf("\n event for random detected");
+                return 1;
+            }
     }
     else {
-        return false;
+        if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+            // printf("\n event for 0 detected");
+            error_message = NOTHING;
+            return -1;
+        }
+        return 0;
     }
 }
 
-void drawLinkedList() {
+void drawLinkedList(int * remove_ele_index) {
     __NODE * iterateNode = getHead();
     int i = 0;
     int y = 1;
     Color color;
     while (iterateNode != NULL) {
         color = WHITE;
+
         Rectangle shape = {
             .x = (GAP_X + ((GAP_X + WIDTH_ELE)* i)),
             .y = (GAP_Y + ((GAP_Y + HEIGHT_ELE) * y)),
@@ -60,15 +74,24 @@ void drawLinkedList() {
             DrawLineEx((Vector2){(pos), (endpos.y + 50)}, (Vector2){(pos), (endpos.y + 100)}, 3, BLACK);
             DrawLineEx((Vector2){(pos), (endpos.y + 100)}, (Vector2){(shape.x), (endpos.y + 100)}, 3, BLACK);
         }
-        if (selectElementStatus(shape)) {
-            color = GREEN;
+
+        if (selectElementStatus(shape) == 1) {
+            (*remove_ele_index) = (i + 1);
         }
+        else if (selectElementStatus(shape) == -1) {
+            (*remove_ele_index) = 0;
+        }
+        if ((*remove_ele_index) == (i+1)) color = GREEN;
+
         DrawRectangleRec(shape, color);
         DrawRectangleLinesEx(shape, 3, BLACK);
         DrawText(int_to_chars(iterateNode->data),(shape.x + TEXT_TO_ELE_GAP_X), (shape.y + TEXT_TO_ELE_GAP_Y), 18, RED);
         DrawLineEx(startpos, endpos, 3, BLACK);
         i++;
         iterateNode = iterateNode->nextptr;
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            printf("\n vlaue of rem: %d", *(remove_ele_index));
+        }
     }
 }
 
@@ -85,6 +108,7 @@ int getInput(char * input) {
         }
     }
     addNode(value_to_input);
+    error_message = NOTHING;
     return 1;
 }
 
@@ -101,16 +125,17 @@ void addElementHandler(bool * button_status, char * inputText) {
             case 0: *button_status = false;
                     break;
 
-            case 1: getInput(inputText);
+            case 1: if (getInput(inputText) == -1) {
+                    error_message = ADD_ERROR;
+                }
                     break;
-
             default:
                 break;
         }
     }
 }
 
-void removeElementHandler() {
+void removeElementHandler(int * remove_ele_index) {
     Rectangle removeButton = {
         .x = (GetScreenWidth() - 300),
         .y = (GetScreenHeight() - 75),
@@ -119,7 +144,12 @@ void removeElementHandler() {
     };
 
     if (GuiButton(removeButton, "Remove Element")) {
-        removeNodeLast();
+        if ((*remove_ele_index) == 0) {
+            error_message = REMOVE_ERROR;
+            return;
+        }
+        removeNode(*remove_ele_index);
+        (*remove_ele_index) = 0;
     }
 }
 
@@ -134,13 +164,15 @@ int main() {
         bool button_status = false;
         char * inputText = (char *)malloc(6 * sizeof(char));
         *inputText = 0;
+        int remove_ele_index = 0;
         while (!WindowShouldClose()) {
             BeginDrawing();
 
             ClearBackground(DARKGRAY);
             addElementHandler(&button_status, inputText);
-            removeElementHandler();
-            drawLinkedList();
+            removeElementHandler(&remove_ele_index);
+            errorHandler();
+            drawLinkedList(&remove_ele_index);
             EndDrawing();
         }
     }
