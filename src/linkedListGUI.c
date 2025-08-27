@@ -1,18 +1,12 @@
 #include "linkedListGUI.h"
 
 void errorHandler() {
-    Rectangle errorBoxBounds = {
-        .x = (GetScreenWidth() - 600),
-        .y = (GetScreenHeight() - 500),
-        .width = 100,
-        .height = 75
-    };
     switch (error_message) {
         case REMOVE_ERROR:
-            GuiDrawText("no element selected!", errorBoxBounds, TEXT_ALIGN_CENTER, RED);
+            DrawText("no element selected", (GetScreenWidth() - (GetScreenWidth()/2)), (GetScreenHeight() - 100), 20, RED);
             break;
         case ADD_ERROR:
-            GuiDrawText("only numbers are allowed!", errorBoxBounds, TEXT_ALIGN_CENTER, RED);
+            DrawText("only numbers are allowed", (GetScreenWidth() - (GetScreenWidth()/2)), (GetScreenHeight() - 100), 20, RED);
         default:
             break;
 
@@ -37,10 +31,12 @@ int selectElementStatus(Rectangle shape) {
         }
         return 0;
     }
+    return 0;
 }
 
 void drawLinkedList(int * remove_ele_index) {
     __NODE * iterateNode = getHead();
+    int max_elements_row = 0;
     int i = 0;
     int y = 1;
     Color color;
@@ -75,13 +71,17 @@ void drawLinkedList(int * remove_ele_index) {
             DrawLineEx((Vector2){(pos), (endpos.y + 100)}, (Vector2){(shape.x), (endpos.y + 100)}, 3, BLACK);
         }
 
+        if (max_elements_row < i) {
+            max_elements_row = i;
+        }
+
         if (selectElementStatus(shape) == 1) {
-            (*remove_ele_index) = (i + 1);
+            (*remove_ele_index) = (i + 1) + (max_elements_row * (y-1));
         }
         else if (selectElementStatus(shape) == -1) {
             (*remove_ele_index) = 0;
         }
-        if ((*remove_ele_index) == (i+1)) color = GREEN;
+        if ((*remove_ele_index) == (i + 1) + (max_elements_row * (y - 1))) color = GREEN;
 
         DrawRectangleRec(shape, color);
         DrawRectangleLinesEx(shape, 3, BLACK);
