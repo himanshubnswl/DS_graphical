@@ -14,12 +14,13 @@ void errorHandler() {
 }
 
 int selectElementStatus(Rectangle shape) {
-    if ((GetMousePosition().x >= shape.x &&
-        GetMousePosition().x <= (shape.x + shape.width)) &&
-        (GetMousePosition().y >= shape.y) &&
-        (GetMousePosition().y <= (shape.y + shape.height))) {
+    Vector2 mousePosition = GetMousePosition();
+    if ((mousePosition.x >= shape.x &&
+        mousePosition.x <= (shape.x + shape.width)) &&
+        (mousePosition.y >= shape.y) &&
+        (mousePosition.y <= (shape.y + shape.height))) {
             if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                // printf("\n event for random detected");
+                // printf("\n event for selection of an element detected");
                 return 1;
             }
     }
@@ -36,32 +37,35 @@ int selectElementStatus(Rectangle shape) {
 
 void drawLinkedList(int * remove_ele_index) {
     __NODE * iterateNode = getHead();
+
     int max_elements_row = 0;
-    int i = 0;
-    int y = 1;
+    int i = 0; // number of elements, in a row
+    int y = 1; // can be thought as the number of rows
     Color color;
+
     while (iterateNode != NULL) {
         color = WHITE;
 
-        Rectangle shape = {
+        Rectangle shape = { //initializing initial shape of an element
             .x = (GAP_X + ((GAP_X + WIDTH_ELE)* i)),
             .y = (GAP_Y + ((GAP_Y + HEIGHT_ELE) * y)),
             .width = WIDTH_ELE,
-            .height = HEIGHT_ELE
-        };
+            .height = HEIGHT_ELE};
 
-        Vector2 startpos = {
+        Vector2 startpos = {    //for line drawing, point 1
         .x = shape.x - GAP_X,
         .y = shape.y + (HEIGHT_ELE/2)};
 
         Vector2 endpos = {
-        .x = shape.x,
+        .x = shape.x, //for line drawing, point 2
         .y = shape.y + (HEIGHT_ELE/2)};
 
-        if ((shape.x + shape.width) > GetScreenWidth()) {
+        if ((shape.x + shape.width) >= GetScreenWidth()) {
+            //for when the element crosses the window width
+            //increase number of rows and the number of elements in that row to 0
             i  = 0;
             y++;
-            shape.x = (GAP_X + ((GAP_X + WIDTH_ELE)* i));
+            shape.x = (GAP_X + ((GAP_X + WIDTH_ELE) * i));
             shape.y = (GAP_Y + ((GAP_Y + HEIGHT_ELE) * y));
             //gibberish to draw lines when element is at the end, draws from point to point
             DrawLineEx(endpos, (Vector2){(endpos.x) , (endpos.y + 50)}, 3, BLACK);
@@ -71,27 +75,29 @@ void drawLinkedList(int * remove_ele_index) {
             DrawLineEx((Vector2){(pos), (endpos.y + 100)}, (Vector2){(shape.x), (endpos.y + 100)}, 3, BLACK);
         }
 
-        if (max_elements_row < i) {
-            max_elements_row = i;
+        if (max_elements_row < (i+1)) {
+            max_elements_row = i+1;
         }
-
-        if (selectElementStatus(shape) == 1) {
+        int SEStatus = selectElementStatus(shape);
+        if (SEStatus == 1) {
             (*remove_ele_index) = (i + 1) + (max_elements_row * (y-1));
         }
-        else if (selectElementStatus(shape) == -1) {
+        else if (SEStatus == -1) {
             (*remove_ele_index) = 0;
         }
-        if ((*remove_ele_index) == (i + 1) + (max_elements_row * (y - 1))) color = GREEN;
-
+        if ((*remove_ele_index) == ((i + 1) + (max_elements_row * (y - 1)))) {
+            color = GREEN;
+        }
+        //above code is for selecting a element and paiting it green, done by calculation max elsements
+        //and then adding them with the next row elements to get the actual index of the element
+        //can prolly be done in a better way
         DrawRectangleRec(shape, color);
         DrawRectangleLinesEx(shape, 3, BLACK);
         DrawText(int_to_chars(iterateNode->data),(shape.x + TEXT_TO_ELE_GAP_X), (shape.y + TEXT_TO_ELE_GAP_Y), 18, RED);
         DrawLineEx(startpos, endpos, 3, BLACK);
+        //drawing the final rectangles and lines
         i++;
         iterateNode = iterateNode->nextptr;
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            printf("\n vlaue of rem: %d", *(remove_ele_index));
-        }
     }
 }
 
@@ -165,6 +171,7 @@ int main() {
         char * inputText = (char *)malloc(6 * sizeof(char));
         *inputText = 0;
         int remove_ele_index = 0;
+        SetTargetFPS(60);
         while (!WindowShouldClose()) {
             BeginDrawing();
 
