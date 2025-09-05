@@ -2,9 +2,7 @@
 // Created by lhbdawn on 30-08-2025.
 //
 
-#include "TreeInternals.h"
-
-#include <stddef.h>
+#include <TreeInternals.h>
 
 Node * root = nullptr;
 

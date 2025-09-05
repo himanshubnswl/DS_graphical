@@ -13,4 +13,9 @@ typedef struct Node {
     struct Node * rightptr;
 }Node;
 
+void initialize(int data);
+void addNode(int data);
+int removeNode(int valueToRemove);
+
+
 #endif //TREEINTERNALS_H

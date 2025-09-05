@@ -82,22 +82,22 @@ int getElement(int i) //return actual last + 1
     else return 0;
 }
 
-char * int_to_chars(int number)
-{
-    char * result = (char *)malloc(sizeof(char) * 6); //6 to accomodate the EOL char
-    for (size_t i = 5; i > 0 ; i--)
-    {
-        if ((number/(int)pow(10,i)))
-        {
-            int k = i;
-            for (size_t j = 0; j <= i; j++) {
-                const int inter_num = (number/(int)pow(10, k)) % 10;
-                result[j] = inter_num + '0';
-                result[j + 1] = '\0'; //adding a EOL char manually
-                k--;
-            }
-            return result;
-        }
-    }
-    return nullptr;
-}
+// char * int_to_chars(int number)
+// {
+//     char * result = (char *)malloc(sizeof(char) * 6); //6 to accomodate the EOL char
+//     for (size_t i = 5; i > 0 ; i--)
+//     {
+//         if ((number/(int)pow(10,i)))
+//         {
+//             int k = i;
+//             for (size_t j = 0; j <= i; j++) {
+//                 const int inter_num = (number/(int)pow(10, k)) % 10;
+//                 result[j] = inter_num + '0';
+//                 result[j + 1] = '\0'; //adding a EOL char manually
+//                 k--;
+//             }
+//             return result;
+//         }
+//     }
+//     return nullptr;
+// }

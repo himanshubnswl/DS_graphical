@@ -1,6 +1,10 @@
 
 #include "helper.h"
 
+#include "raygui.h"
+
+enum ERRORS  {ADD_ERROR = 1, REMOVE_ERROR = 2, NOTHING = 0};
+
 char * int_to_chars(int number)
 {
     char * result = (char *)malloc(sizeof(char) * 6); //6 to accomodate the EOL char
@@ -34,4 +38,37 @@ int chars_to_int(char * text) {
             return 0;
     }
     return value;
+}
+
+int inputElementHandler(bool * dialogue_box_status, char * input_text, getInput getvalue) {
+    Rectangle addButton = {
+        .x = GetScreenWidth() - 129,
+        .y = GetScreenHeight() - 106,
+        .width = 100,
+        .height = 75};
+    Rectangle dialogueBox = {
+        .x = GetScreenWidth() - 230,
+        .y = GetScreenHeight() - 250,
+        .width = 200,
+        .height = 127};
+    int result = -2;
+    if (GuiButton(addButton, "add element")) {
+        (*dialogue_box_status) = true;
+    }
+    if (*dialogue_box_status) {
+        result = GuiTextInputBox(dialogueBox,nullptr, "enter element", "add", input_text, 10, nullptr);
+    }
+
+    switch (result) {
+        case 0: (*dialogue_box_status) = false;
+            return NOTHING;
+            break;
+        case 1: if (getvalue(input_text) == 1) {
+            return ADD_ERROR;
+        }
+            break;
+        default:
+            return NOTHING;
+            break;
+    }
 }

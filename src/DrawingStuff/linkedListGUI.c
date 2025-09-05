@@ -27,7 +27,7 @@ int selectElementStatus(Rectangle shape) {
     else {
         if (IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
             // printf("\n event for 0 detected");
-            error_message = NOTHING;
+            error_message = NO_ERROR;
             return -1;
         }
         return 0;
@@ -101,7 +101,7 @@ void drawLinkedList(int * remove_ele_index) {
     }
 }
 
-int getInput(char * input) {
+int getInputEle(char * input) {
     int i = 0;
     int value_to_input = 0;
     while (input[i] != '\0') {
@@ -114,39 +114,41 @@ int getInput(char * input) {
         }
     }
     addNode(value_to_input);
-    error_message = NOTHING;
+    error_message = NO_ERROR;
     return 1;
 }
 
-void addElementHandler(bool * button_status, char * inputText) {
-    Rectangle addBox = {(GetScreenWidth() - 150), (GetScreenHeight() - 75), 125, 50};
-    Rectangle addInputBox = {(GetScreenWidth() - 300), (GetScreenHeight() - 220), 250, 125};
+// void addElementHandler(bool * button_status, char * inputText) {
+//     Rectangle addBox = {(GetScreenWidth() - 150), (GetScreenHeight() - 75), 125, 50};
+//     Rectangle addInputBox = {(GetScreenWidth() - 300), (GetScreenHeight() - 220), 250, 125};
+//
+//     if (GuiButton(addBox, "Add Element")) {
+//         *button_status = true;
+//     }
+//     if (*button_status) {
+//         int inputState = GuiTextInputBox(addInputBox, nullptr, nullptr, "add", inputText, 6, nullptr);
+//         switch (inputState) {
+//             case 0: *button_status = false;
+//                     break;
+//
+//             case 1: if (getInput(inputText) == -1) {
+//                     error_message = ADD_ERROR;
+//                 }
+//                     break;
+//             default:
+//                 break;
+//         }
+//     }
+// }
 
-    if (GuiButton(addBox, "Add Element")) {
-        *button_status = true;
-    }
-    if (*button_status) {
-        int inputState = GuiTextInputBox(addInputBox, nullptr, nullptr, "add", inputText, 6, nullptr);
-        switch (inputState) {
-            case 0: *button_status = false;
-                    break;
 
-            case 1: if (getInput(inputText) == -1) {
-                    error_message = ADD_ERROR;
-                }
-                    break;
-            default:
-                break;
-        }
-    }
-}
 
 void removeElementHandler(int * remove_ele_index) {
     Rectangle removeButton = {
-        .x = (GetScreenWidth() - 300),
-        .y = (GetScreenHeight() - 75),
-        .width = 125,
-        .height = 50
+        .x = (GetScreenWidth() - 243),
+        .y = (GetScreenHeight() - 106),
+        .width = 100,
+        .height = 75
     };
 
     if (GuiButton(removeButton, "Remove Element")) {
@@ -176,7 +178,8 @@ int main() {
             BeginDrawing();
 
             ClearBackground(DARKGRAY);
-            addElementHandler(&button_status, inputText);
+            // addElementHandler(&button_status, inputText);
+            inputElementHandler(&button_status, inputText, getInputEle);
             removeElementHandler(&remove_ele_index);
             errorHandler();
             drawLinkedList(&remove_ele_index);

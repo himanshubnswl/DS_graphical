@@ -6,12 +6,7 @@
 #include <raygui.h>
 #include <helper.h>
 #include <linkedListInternals.h>
-
-enum error_messages {
-    NOTHING = 0,
-    REMOVE_ERROR = -2,
-    ADD_ERROR = -1
-};
+#include <error.h>
 
 #define GAP_X 50
 #define WIDTH_ELE 100
@@ -20,4 +15,4 @@ enum error_messages {
 #define TEXT_TO_ELE_GAP_X 25
 #define TEXT_TO_ELE_GAP_Y 25
 
-enum error_messages error_message;
+enum ERROR_HANDLER error_message;
