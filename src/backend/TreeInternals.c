@@ -4,7 +4,11 @@
 
 #include <TreeInternals.h>
 
+#include "error.h"
+
 Node * root = nullptr;
+int * preOrder = (int *)malloc(sizeof(int) * 50);
+
 
 void initialize(int data) {
     root = (Node *)malloc(sizeof(Node));
@@ -15,7 +19,7 @@ void initialize(int data) {
 }
 void addNode(int data) {
     Node * iterateNode = root;
-    Node * parentNode;
+    Node * parentNode = nullptr;
     if (iterateNode == nullptr) {
         initialize(data);
         return;
@@ -49,10 +53,10 @@ void addNode(int data) {
 
 int removeNode(int valueToRemove) {
     if (root == nullptr) {
-        return 1;
+        return REMOVE_ERROR;
     }
     Node * currentNode = root;
-    Node * parentNode;
+    Node * parentNode = nullptr;
 
     while (currentNode != nullptr && currentNode->data != valueToRemove) {
         parentNode = currentNode;
@@ -116,6 +120,30 @@ int removeNode(int valueToRemove) {
             free(succesorNode);
         }
     }
+}
 
+int * getPreOrderTraversal() {
+    Node ** Stack = (Node **)malloc(sizeof(Node *) * 50);
+    int stack_pointer = -1;
+    int order_index = -1;
+    if (root == nullptr) {
+        free(preOrder);
+        free(Stack);
+        return nullptr;
+    }
+    Stack[++stack_pointer] = root;
+    Node * iterateNode = nullptr;
+    while (stack_pointer != -1) {
+        iterateNode = Stack[stack_pointer--];
+        preOrder[++order_index] = iterateNode->data;
 
+        if (iterateNode->rightptr != nullptr) {
+            Stack[++stack_pointer] = iterateNode->rightptr;
+        }
+        if (iterateNode->leftptr != nullptr) {
+            Stack[++stack_pointer] = iterateNode->leftptr;
+        }
+    }
+    free(Stack);
+    return preOrder;
 }

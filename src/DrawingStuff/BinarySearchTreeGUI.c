@@ -8,6 +8,10 @@
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
 
+int DrawBSTree() {
+
+}
+
 int addGuiNode(char * input) {
     int value = chars_to_int(input);
     if (value == NOT_INT) {
@@ -16,6 +20,19 @@ int addGuiNode(char * input) {
     else {
         addNode(value);
         return NO_ERROR;
+    }
+}
+
+int removeNodeHandler() {
+    Rectangle removeButton = {
+        .x = (GetScreenWidth() - 243),
+        .y = (GetScreenHeight() - 106),
+        .width = 100,
+        .height = 75
+    };
+
+    if (GuiButton(removeButton, "remove selected")) {
+
     }
 }
 
