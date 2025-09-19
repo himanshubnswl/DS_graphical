@@ -6,7 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <error.h>
-
+#include <error.h>
 typedef int (*getInput)(char *);
 
 char * int_to_chars(int number);

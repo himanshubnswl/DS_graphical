@@ -3,7 +3,7 @@
 
 #include "raygui.h"
 
-enum ERRORS  {ADD_ERROR = 1, REMOVE_ERROR = 2, NOTHING = 0};
+
 
 char * int_to_chars(int number)
 {
@@ -51,7 +51,9 @@ int inputElementHandler(bool * dialogue_box_status, char * input_text, getInput 
         .y = GetScreenHeight() - 250,
         .width = 200,
         .height = 127};
+
     int result = -2;
+
     if (GuiButton(addButton, "add element")) {
         (*dialogue_box_status) = true;
     }
@@ -61,14 +63,14 @@ int inputElementHandler(bool * dialogue_box_status, char * input_text, getInput 
 
     switch (result) {
         case 0: (*dialogue_box_status) = false;
-            return NOTHING;
+            return NO_ERROR;
             break;
-        case 1: if (getvalue(input_text) == 1) {
+        case 1: if (getvalue(input_text) == ADD_ERROR) {
             return ADD_ERROR;
         }
             break;
         default:
-            return NOTHING;
+            return NO_ERROR;
             break;
     }
 }

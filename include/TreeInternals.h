@@ -16,6 +16,9 @@ typedef struct Node {
 void initialize(int data);
 void addNode(int data);
 int removeNode(int valueToRemove);
+int * getPreOrderTraversal();
+Node * GetBSTroot();
+
 
 
 #endif //TREEINTERNALS_H

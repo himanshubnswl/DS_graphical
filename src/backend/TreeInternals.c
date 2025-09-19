@@ -2,12 +2,12 @@
 // Created by lhbdawn on 30-08-2025.
 //
 
+#include <string.h>
 #include <TreeInternals.h>
 
 #include "error.h"
 
 Node * root = nullptr;
-int * preOrder = (int *)malloc(sizeof(int) * 50);
 
 
 void initialize(int data) {
@@ -122,7 +122,18 @@ int removeNode(int valueToRemove) {
     }
 }
 
+Node * GetBSTroot() {
+    if (root == nullptr) {
+        return nullptr;
+    }
+    else
+        return root;
+}
+
 int * getPreOrderTraversal() {
+    int * preOrder = (int *)malloc(sizeof(int) * 50);
+    memset(preOrder, 0, sizeof(preOrder));
+
     Node ** Stack = (Node **)malloc(sizeof(Node *) * 50);
     int stack_pointer = -1;
     int order_index = -1;
