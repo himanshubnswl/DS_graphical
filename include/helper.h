@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <error.h>
 #include <error.h>
+#include <raygui.h>
+#include <raylib.h>
+#define RAYGUI_IMPLEMENTATION
 typedef int (*getInput)(char *);
 
 char * int_to_chars(int number);

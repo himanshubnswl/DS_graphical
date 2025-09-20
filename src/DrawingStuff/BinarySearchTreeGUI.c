@@ -1,9 +1,9 @@
 //
 // Created by lhbdawn on 04-09-2025.
 //
+#define DEBUG
 
 #include "BinarySearchTreeGUI.h"
-
 
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
@@ -18,6 +18,9 @@ struct Stack {
 
 int DrawBSTree() {
     Node * root = GetBSTroot();
+    if (root == nullptr) {
+        return 0;
+    }
 
     int screenHeight = GetScreenHeight();
     int screenwidth = GetScreenWidth();
@@ -34,27 +37,33 @@ int DrawBSTree() {
                 .column = iterate.column + 1,
                 .row = iterate.row + 1};
         }
-        else if (iterate.BSTNode->leftptr != nullptr) {
+        if (iterate.BSTNode->leftptr != nullptr) {
             stack[++sp] = (struct Stack){
                 .BSTNode = iterate.BSTNode->leftptr,
                 .column = iterate.column - 1,
                 .row = iterate.row + 1};
         }
         pos = (Vector2){
-            .x = (screenwidth/50) * (25 + (iterate.column)),
-            .y = (screenHeight/30) * (iterate.row * 2)};
-        DrawCircleV(pos, 20, WHITE);
-        DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), pos, 15, 3, GREEN);
+            .x = (screenwidth/30) * (15 + (iterate.column)),
+            .y = (screenHeight/30) * (iterate.row * 4)};
+        DrawCircleV(pos, 30, WHITE);
+        DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), (Vector2){pos.x -10, pos.y - 10}, 20, 3, GREEN);
+        DEBUG_PRINTF(iterate.BSTNode->data);
+        DEBUG_PRINTF(int_to_chars(iterate.BSTNode->data));
     }
+    return NO_ERROR;
 }
 
 int addGuiNode(char * input) {
+    DEBUG_PRINTF(input);
     int value = chars_to_int(input);
+    DEBUG_PRINTF(value);
     if (value == NOT_INT) {
         return ADD_ERROR;
     }
     else {
         addNode(value);
+        printf("\nsomething is wrong here");
         return NO_ERROR;
     }
 }
@@ -70,6 +79,7 @@ int removeNodeHandler() {
     if (GuiButton(removeButton, "remove selected")) {
 
     }
+    return NO_ERROR;
 }
 
 int main() {
@@ -82,9 +92,13 @@ int main() {
     bool dialogue_box_status;
     char inputText[10];
     while (!WindowShouldClose()) {
-
+        DEBUG_CHECKPOINT(93);
+        BeginDrawing();
+        ClearBackground(GRAY);
         inputElementHandler(&dialogue_box_status, inputText, addGuiNode);
         DrawBSTree();
         removeNodeHandler();
+        getPreOrderTraversal();
+        EndDrawing();
     }
 }

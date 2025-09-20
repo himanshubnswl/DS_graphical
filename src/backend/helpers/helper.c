@@ -8,7 +8,7 @@
 char * int_to_chars(int number)
 {
     char * result = (char *)malloc(sizeof(char) * 6); //6 to accomodate the EOL char
-    for (size_t i = 5; i > 0 ; i--)
+    for (size_t i = 5; i >= 0 ; i--)
     {
         if ((number/(int)pow(10,i)))
         {
@@ -28,7 +28,6 @@ char * int_to_chars(int number)
 int chars_to_int(char * text) {
     size_t i = 0;
     int value = 0;
-
     while (text[i] != '\0') {
         char ch = text[i];
         if ((ch <= '9') && (ch >= '0')) {
@@ -36,6 +35,7 @@ int chars_to_int(char * text) {
         }
         else
             return 0;
+        i++;
     }
     return value;
 }

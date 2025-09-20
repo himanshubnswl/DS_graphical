@@ -156,5 +156,10 @@ int * getPreOrderTraversal() {
         }
     }
     free(Stack);
+    int i = 0;
+    while (preOrder[i] != 0) {
+        printf("\n %d", preOrder[i]);
+        i++;
+    }
     return preOrder;
 }
