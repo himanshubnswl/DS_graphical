@@ -14,20 +14,8 @@
 #define RAYGUI_IMPLEMENTATION
 
 #ifdef DEBUG \
-        #define DEBUG_PRINTF(X) \
-                _Generic((X), \
-                int: printf("\nvalue of %s is: %d", #X, X), \
-                char*: printf("\nstring inside %s is: %s", #X, X) \
-                default: printf("\n type unkown") \
-                ) \
-#endif
-
-#ifdef DEBUG \
-        #define DEBUG_CHECKPOINT(X) \
-                _Generic((X), \
-                int:printf("\nwe are at line: %d", X), \
-                default: printf("type unkown") \
-                ) \
+#define DEBUG_CHECKPOINT(X) \
+#define DEBUG_PRINTF(X)
 #endif
 
 #endif //BINARYSEARCHTREEGUI_H

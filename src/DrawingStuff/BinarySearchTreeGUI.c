@@ -1,12 +1,26 @@
 //
 // Created by lhbdawn on 04-09-2025.
 //
-#define DEBUG
-
 #include "BinarySearchTreeGUI.h"
 
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
+
+#ifdef DEBUG
+    #define DEBUG_PRINTF(X) \
+    _Generic((X), \
+    int: printf("\nvalue of %s is: %d", #X, X), \
+    char*: printf("\nstring inside %s is: %s", #X, X), \
+    default: printf("\n type unkown") \
+    )
+
+    #define DEBUG_CHECKPOINT(X) \
+    _Generic((X), \
+    int:printf("\nwe are at line: %d", X), \
+    default: printf("type unkown") \
+    )
+#endif
+
 
 enum ERROR_HANDLER ERROR;
 
@@ -48,16 +62,20 @@ int DrawBSTree() {
             .y = (screenHeight/30) * (iterate.row * 4)};
         DrawCircleV(pos, 30, WHITE);
         DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), (Vector2){pos.x -10, pos.y - 10}, 20, 3, GREEN);
+#ifdef DEBUG
         DEBUG_PRINTF(iterate.BSTNode->data);
         DEBUG_PRINTF(int_to_chars(iterate.BSTNode->data));
+#endif
     }
     return NO_ERROR;
 }
 
 int addGuiNode(char * input) {
+#ifdef DEBUG
     DEBUG_PRINTF(input);
+#endif
+
     int value = chars_to_int(input);
-    DEBUG_PRINTF(value);
     if (value == NOT_INT) {
         return ADD_ERROR;
     }
@@ -92,13 +110,14 @@ int main() {
     bool dialogue_box_status;
     char inputText[10];
     while (!WindowShouldClose()) {
-        DEBUG_CHECKPOINT(93);
         BeginDrawing();
         ClearBackground(GRAY);
         inputElementHandler(&dialogue_box_status, inputText, addGuiNode);
         DrawBSTree();
         removeNodeHandler();
+#ifdef DEBUG
         getPreOrderTraversal();
+#endif
         EndDrawing();
     }
 }
