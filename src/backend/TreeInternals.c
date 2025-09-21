@@ -179,3 +179,7 @@ int SaveBSTreeToFile() {
     }
     fclose(save_file);
 }
+
+int LoadBSTreeFromFile() {
+
+}
