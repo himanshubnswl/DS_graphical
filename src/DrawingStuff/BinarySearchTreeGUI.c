@@ -108,12 +108,25 @@ int removeNodeHandler() {
     return NO_ERROR;
 }
 
+void load_file() {
+    Rectangle loadBox = {.x = GetScreenWidth()-600,
+                                .y = GetScreenHeight() - 106,
+                                .width = 100,
+                                .height = 75};
+    if (GuiButton(loadBox, "Load tree")) {
+        int value = LoadBSTreeFromFile();
+#ifdef DEBUG
+        DEBUG_PRINTF(value);
+#endif
+    }
+}
+
 void save_file() {
     Rectangle saveBox = {.x = GetScreenWidth()-443,
                                 .y = GetScreenHeight() - 106,
                                 .width = 100,
                                 .height = 75};
-    if (!GuiButton(saveBox, "Save Tree")) {
+    if (GuiButton(saveBox, "Save Tree")) {
         SaveBSTreeToFile();
     }
 }
@@ -135,9 +148,9 @@ int main() {
         removeNodeHandler();
 #ifdef DEBUG
         getPreOrderTraversal();
-
 #endif
         save_file();
+        load_file();
         EndDrawing();
     }
 }

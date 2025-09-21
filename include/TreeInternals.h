@@ -20,6 +20,9 @@ int removeNode(int valueToRemove);
 int * getPreOrderTraversal();
 Node * GetBSTroot();
 int SaveBSTreeToFile();
+int LoadBSTreeFromFile();
+void deleteBSTree();
+
 
 
 

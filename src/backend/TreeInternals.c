@@ -132,17 +132,20 @@ Node * GetBSTroot() {
 }
 
 int * getPreOrderTraversal() {
-    int * preOrder = (int *)malloc(sizeof(int) * 50);
+    static int * preOrder = nullptr;
+    if (preOrder == nullptr) {
+        preOrder = (int *)malloc(50 * sizeof(int));
+    }
     memset(preOrder, 0, sizeof(preOrder));
 
-    Node ** Stack = (Node **)malloc(sizeof(Node *) * 50);
+    Node *Stack[50];
     int stack_pointer = -1;
     int order_index = -1;
+
     if (root == nullptr) {
-        free(preOrder);
-        free(Stack);
         return nullptr;
     }
+
     Stack[++stack_pointer] = root;
     Node * iterateNode = nullptr;
     while (stack_pointer != -1) {
@@ -156,8 +159,7 @@ int * getPreOrderTraversal() {
             Stack[++stack_pointer] = iterateNode->leftptr;
         }
     }
-    free(Stack);
-    return preOrder;
+    return preOrder; //have to free this when used
 }
 
 int SaveBSTreeToFile() {
@@ -174,12 +176,51 @@ int SaveBSTreeToFile() {
     unsigned int i = 0;
     while (BSTpreOrder[i] != 0) {
         fputs(int_to_chars(BSTpreOrder[i]), save_file);
-        fputs(", " , save_file);
+        fputs("," , save_file);
         i++;
     }
     fclose(save_file);
 }
 
+void deleteBSTree() {
+    Node * iterateNode = GetBSTroot();
+    if (iterateNode == nullptr) {
+        return;
+    }
+
+    Node * stack[50];
+    int stack_pointer = -1;
+    stack[++stack_pointer] = iterateNode;
+    while (stack_pointer != -1) {
+        iterateNode = stack[stack_pointer--];
+        if (iterateNode->rightptr != nullptr) {
+            stack[++stack_pointer] = iterateNode->rightptr;
+        }
+        if (iterateNode->leftptr != nullptr) {
+            stack[++stack_pointer] = iterateNode->leftptr;
+        }
+        free(iterateNode);
+    }
+}
+
 int LoadBSTreeFromFile() {
+    deleteBSTree();
+    FILE * loadFrom = fopen("./savedfile/saveBSTree.txt", "r");
+    if (loadFrom == NULL) {
+        printf("\nCouldn't open the file, make sure you save the file first");
+        fclose(loadFrom);
+    }
+
+    char * inputBuffer = (char *)malloc(sizeof(char) *  256);
+    fgets(inputBuffer, 256, loadFrom);
+    int value = chars_to_int(strtok(inputBuffer, ","));
+    printf("\nvalue is : %d", value);
+    while (1) {
+        value = atoi(strtok(nullptr, ","));
+        if (value == NULL) {
+            break;
+        }
+        printf("\nvalue is : %d", value);
+    }
 
 }
