@@ -13,9 +13,4 @@
 #include <TreeInternals.h>
 #define RAYGUI_IMPLEMENTATION
 
-#ifdef DEBUG \
-#define DEBUG_CHECKPOINT(X) \
-#define DEBUG_PRINTF(X)
-#endif
-
 #endif //BINARYSEARCHTREEGUI_H

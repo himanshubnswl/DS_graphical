@@ -6,6 +6,7 @@
 #include <TreeInternals.h>
 
 #include "error.h"
+#include "helper.h"
 
 Node * root = nullptr;
 
@@ -156,10 +157,24 @@ int * getPreOrderTraversal() {
         }
     }
     free(Stack);
-    int i = 0;
-    while (preOrder[i] != 0) {
-        printf("\n %d", preOrder[i]);
+    return preOrder;
+}
+
+int SaveBSTreeToFile() {
+    int * BSTpreOrder = getPreOrderTraversal();
+    if (BSTpreOrder == nullptr) {
+        return 0;
+    }
+    if (_chdir("./savedfile") == -1) {
+        _mkdir("./savedfile");
+    }
+    FILE * save_file = fopen("./savedfile/saveBSTree.txt", "w");
+    unsigned int i = 0;
+    while (BSTpreOrder[i] != 0) {
+        fputs(int_to_chars(BSTpreOrder[i]), save_file);
+        fputs(", " , save_file);
         i++;
     }
-    return preOrder;
+    _chdir("../");
+    fclose(save_file);
 }

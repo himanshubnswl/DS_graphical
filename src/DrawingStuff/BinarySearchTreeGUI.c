@@ -1,10 +1,13 @@
 //
 // Created by lhbdawn on 04-09-2025.
 //
+#define DEBUG
+
 #include "BinarySearchTreeGUI.h"
 
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
+
 
 #ifdef DEBUG
     #define DEBUG_PRINTF(X) \
@@ -28,6 +31,7 @@ struct Stack {
     Node * BSTNode;
     int column;
     int row;
+    int spacing;
 };
 
 int DrawBSTree() {
@@ -40,22 +44,25 @@ int DrawBSTree() {
     int screenwidth = GetScreenWidth();
     struct Stack stack[30];
     unsigned int sp = -1;
-    stack[++sp] = (struct Stack){.BSTNode = root, .column = 0, .row = 1};
-    struct Stack iterate = {0};
+    stack[++sp] = (struct Stack){.BSTNode = root, .column = 0, .row = 1, .spacing = 5};
+    struct Stack iterate = {nullptr};
     Vector2 pos = {0};
+
     while (sp != -1) {
         iterate = stack[sp--];
         if (iterate.BSTNode->rightptr != nullptr) {
             stack[++sp] = (struct Stack){
                 .BSTNode = iterate.BSTNode->rightptr,
-                .column = iterate.column + 1,
-                .row = iterate.row + 1};
+                .column = iterate.column + (1 * iterate.spacing),
+                .row = iterate.row + 1,
+                .spacing = iterate.spacing - 1};
         }
         if (iterate.BSTNode->leftptr != nullptr) {
             stack[++sp] = (struct Stack){
                 .BSTNode = iterate.BSTNode->leftptr,
-                .column = iterate.column - 1,
-                .row = iterate.row + 1};
+                .column = iterate.column - (1 * iterate.spacing),
+                .row = iterate.row + 1,
+                .spacing = iterate.spacing - 1};
         }
         pos = (Vector2){
             .x = (screenwidth/30) * (15 + (iterate.column)),
@@ -76,14 +83,15 @@ int addGuiNode(char * input) {
 #endif
 
     int value = chars_to_int(input);
+    DEBUG_PRINTF(value);
     if (value == NOT_INT) {
         return ADD_ERROR;
     }
     else {
         addNode(value);
-        printf("\nsomething is wrong here");
         return NO_ERROR;
     }
+    DEBUG_CHECKPOINT(88);
 }
 
 int removeNodeHandler() {
@@ -98,6 +106,16 @@ int removeNodeHandler() {
 
     }
     return NO_ERROR;
+}
+
+void save_file() {
+    Rectangle saveBox = {.x = GetScreenWidth()-443,
+                                .y = GetScreenHeight() - 106,
+                                .width = 100,
+                                .height = 75};
+    if (!GuiButton(saveBox, "Save Tree")) {
+        SaveBSTreeToFile();
+    }
 }
 
 int main() {
@@ -117,7 +135,9 @@ int main() {
         removeNodeHandler();
 #ifdef DEBUG
         getPreOrderTraversal();
+
 #endif
+        save_file();
         EndDrawing();
     }
 }
