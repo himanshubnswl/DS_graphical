@@ -46,19 +46,46 @@ int chars_to_int(char * text) {
     return value;
 }
 
-int removeElementHandler() {
-    Rectangle removeButton = {
+int removeElementHandler(int (*removeElementInDS)(int)) {
+    static bool dialogue_box_status  = false;
+    static char inputText[50];
+
+    Rectangle const removeButton = {
         .x = (GetScreenWidth() - 243),
         .y = (GetScreenHeight() - 106),
         .width = 100,
         .height = 75
     };
 
-    if (GuiButton(removeButton, "remove selected")) {
+    Rectangle const dialogueBox = {
+        .x = GetScreenWidth() - 230,
+        .y = GetScreenHeight() - 250,
+        .width = 200,
+        .height = 127};
 
+    int result = -2;
+
+    if (GuiButton(removeButton, "remove element")) {
+        (dialogue_box_status) = true;
     }
-    return NO_ERROR;
+    if (dialogue_box_status) {
+        result = GuiTextInputBox(dialogueBox,nullptr, "enter element", "remove", inputText, 10, nullptr);
+    }
+
+    switch (result) {
+        case 0: (dialogue_box_status) = false;
+            return NO_ERROR;
+            break;
+        case 1: if (removeElementInDS(chars_to_int(inputText)) == REMOVE_ERROR) {
+            return REMOVE_ERROR;
+        }
+            break;
+        default:
+            return NO_ERROR;
+            break;
+    }
 }
+
 
 
 int inputElementHandler(char * input_text, getInput addElement) {

@@ -6,14 +6,23 @@
 
 Node * root = nullptr;
 
+void SetRootToNP() {
+    root = nullptr;
+}
+
+inline void checkSetRootToNP(Node * nodeToCheck) {
+    if (nodeToCheck == root) {
+        SetRootToNP();
+    }
+}
 
 void initialize(int data) {
     root = (Node *)malloc(sizeof(Node));
     root->data = data;
     root->leftptr = nullptr;
     root->rightptr = nullptr;
-
 }
+
 int addBSTNode(const int data) {
 
 #ifdef DEBUG
@@ -61,10 +70,10 @@ int removeBSTNode(const int valueToRemove) {
     if (root == nullptr) {
         return REMOVE_ERROR;
     }
-    Node * currentNode = root;
+    Node * currentNode = GetBSTroot();
     Node * parentNode = nullptr;
 
-    while (currentNode != nullptr && currentNode->data != valueToRemove) {
+    while (currentNode != nullptr || currentNode->data != valueToRemove) {
         parentNode = currentNode;
         if (valueToRemove < currentNode->data) {
             currentNode = currentNode->leftptr;
@@ -80,11 +89,13 @@ int removeBSTNode(const int valueToRemove) {
     if (currentNode->leftptr == nullptr && currentNode->rightptr == nullptr) {
         if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = nullptr;
+            checkSetRootToNP(currentNode);
             free(currentNode);
             return SUCCESS;
         }
         else {
             parentNode->rightptr = nullptr;
+            checkSetRootToNP(currentNode);
             free(currentNode);
             return SUCCESS;
         }
@@ -100,11 +111,13 @@ int removeBSTNode(const int valueToRemove) {
         }
         if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = childNode;
+            checkSetRootToNP(currentNode);
             free(currentNode);
             return SUCCESS;
         }
         else {
             parentNode->rightptr = childNode;
+            checkSetRootToNP(currentNode);
             free(currentNode);
             return SUCCESS;
         }
@@ -123,11 +136,13 @@ int removeBSTNode(const int valueToRemove) {
 
         if (succesorParent->leftptr == succesorNode) {
             succesorParent->leftptr = succesorNode->rightptr;
+            checkSetRootToNP(succesorNode);
             free(succesorNode);
             return SUCCESS;
         }
         else {
             succesorParent->rightptr = succesorNode->rightptr;
+            checkSetRootToNP(currentNode);
             free(succesorNode);
             return SUCCESS;
         }
@@ -183,7 +198,7 @@ int * getPreOrderTraversal() {
 int SaveBSTreeToFile() {
     int * BSTpreOrder = getPreOrderTraversal();
     if (BSTpreOrder == nullptr) {
-        return 0;
+        return NOTHING_TO_SAVE;
     }
     if (_chdir("./savedfile") == -1) {
         _mkdir("./savedfile");
@@ -236,6 +251,7 @@ int LoadBSTreeFromFile() { //when i load three times the app crashes, need to lo
     memset(inputBuffer, 255, sizeof(inputBuffer));
     fgets(inputBuffer, 256, loadFrom);
     int value = chars_to_int(strtok(inputBuffer, ","));
+    addBSTNode(value);
 
     while (1) {
         value = atoi(strtok(nullptr, ","));

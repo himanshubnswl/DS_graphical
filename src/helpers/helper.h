@@ -16,5 +16,7 @@ typedef int (*getInput)(char *);
 char * int_to_chars(int number);
 int chars_to_int(char * text);
 int inputElementHandler(char * input_text, getInput getvalue);
+int removeElementHandler(int (*removeElementInDS)(int));
+
 
 

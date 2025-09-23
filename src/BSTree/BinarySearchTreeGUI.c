@@ -41,7 +41,6 @@ int DrawBSTree() {
         DEBUG_PRINTF(sp);
 #endif
         iterate = stack[sp--];
-DEBUG_CHECKPOINT(46);
         posParent = (Vector2){
             .x = (screenwidth/30) * (15 + (iterate.column)),
             .y = (screenHeight/30) * (iterate.row * 4)};
@@ -59,7 +58,6 @@ DEBUG_CHECKPOINT(46);
 
             DrawLineEx(posParent, posChild, 10, BLACK);
         }
-        DEBUG_CHECKPOINT(64);
         if (iterate.BSTNode->leftptr != nullptr) {
             stack[++sp] = (struct Stack){
                 .BSTNode = iterate.BSTNode->leftptr,
@@ -74,12 +72,8 @@ DEBUG_CHECKPOINT(46);
             DrawLineEx(posParent, posChild, 10, BLACK);
         }
 
-DEBUG_CHECKPOINT(79);
         DrawCircleV(posParent, 30, WHITE);
-        DEBUG_CHECKPOINT(81);
-        DEBUG_PRINTF(iterate.BSTNode->data);
         DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), (Vector2){posParent.x -10, posParent.y - 10}, 20, 3, GREEN);
-        DEBUG_CHECKPOINT(82);
 #ifdef DEBUG
         DEBUG_PRINTF(iterate.BSTNode->data);
         DEBUG_PRINTF(int_to_chars(iterate.BSTNode->data));
@@ -98,31 +92,28 @@ int addGuiNode(char * input) {
     DEBUG_CHECKPOINT(value);
 #endif
 
-    DEBUG_CHECKPOINT(90);
     if (value == NOT_INT) {
         return ADD_ERROR;
     }
     else {
-        DEBUG_CHECKPOINT(94);
         addBSTNode(value);
-        DEBUG_CHECKPOINT(96);
         return NO_ERROR;
     }
 }
 
-int removeNodeHandler() {
-    Rectangle removeButton = {
-        .x = (GetScreenWidth() - 243),
-        .y = (GetScreenHeight() - 106),
-        .width = 100,
-        .height = 75
-    };
-
-    if (GuiButton(removeButton, "remove selected")) {
-
-    }
-    return NO_ERROR;
-}
+// int removeNodeHandler() {
+//     Rectangle removeButton = {
+//         .x = (GetScreenWidth() - 243),
+//         .y = (GetScreenHeight() - 106),
+//         .width = 100,
+//         .height = 75
+//     };
+//
+//     if (GuiButton(removeButton, "remove selected")) {
+//
+//     }
+//     return NO_ERROR;
+// }
 
 void load_file() {
     Rectangle loadBox = {.x = GetScreenWidth()-600,
@@ -156,13 +147,9 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
-        DEBUG_CHECKPOINT(151);
         inputElementHandler(inputText, addGuiNode);
-        DEBUG_CHECKPOINT(153);
         DrawBSTree();
-        DEBUG_CHECKPOINT(155);
-        removeNodeHandler();
-        DEBUG_CHECKPOINT(157);
+        removeElementHandler(removeBSTNode);
 #ifdef DEBUG
         getPreOrderTraversal();
 #endif

@@ -27,6 +27,9 @@ Node * GetBSTroot(); //to get the root of the tree
 int SaveBSTreeToFile(); //to save the tree to a file
 int LoadBSTreeFromFile();//to load a tree from the file
 void deleteBSTree(); //to delete the entire tree
+void SetRootToNP();
+inline void checkSetRootToNP(Node * nodeToCheck);
+
 
 
 
