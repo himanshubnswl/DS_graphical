@@ -1,7 +1,6 @@
 //
 // Created by lhbdawn on 04-09-2025.
 //
-#define DEBUG
 
 #include "BinarySearchTreeGUI.h"
 
@@ -28,20 +27,35 @@ int DrawBSTree() {
 
     int screenHeight = GetScreenHeight();
     int screenwidth = GetScreenWidth();
-    struct Stack stack[30];
+
+    static struct Stack stack[30];
     unsigned int sp = -1;
     stack[++sp] = (struct Stack){.BSTNode = root, .column = 0, .row = 1, .spacing = 5};
+
+
     struct Stack iterate = {nullptr};
-    Vector2 pos = {0};
+    Vector2 posParent = {0};
+    Vector2 posChild = {0};
 
     while (sp != -1) {
         iterate = stack[sp--];
+
+        posParent = (Vector2){
+            .x = (screenwidth/30) * (15 + (iterate.column)),
+            .y = (screenHeight/30) * (iterate.row * 4)};
+
         if (iterate.BSTNode->rightptr != nullptr) {
             stack[++sp] = (struct Stack){
                 .BSTNode = iterate.BSTNode->rightptr,
                 .column = iterate.column + (1 * iterate.spacing),
                 .row = iterate.row + 1,
                 .spacing = iterate.spacing - 1};
+
+            posChild = (Vector2){
+                .x = (screenwidth/30) * (15 + (stack[sp].column)),
+                .y = (screenHeight/30) * (stack[sp].row * 4)};
+
+            DrawLineEx(posParent, posChild, 10, BLACK);
         }
         if (iterate.BSTNode->leftptr != nullptr) {
             stack[++sp] = (struct Stack){
@@ -49,12 +63,16 @@ int DrawBSTree() {
                 .column = iterate.column - (1 * iterate.spacing),
                 .row = iterate.row + 1,
                 .spacing = iterate.spacing - 1};
+
+            posChild = (Vector2){
+                .x = (screenwidth/30) * (15 + (stack[sp].column)),
+                .y = (screenHeight/30) * (stack[sp].row * 4)};
+
+            DrawLineEx(posParent, posChild, 10, BLACK);
         }
-        pos = (Vector2){
-            .x = (screenwidth/30) * (15 + (iterate.column)),
-            .y = (screenHeight/30) * (iterate.row * 4)};
-        DrawCircleV(pos, 30, WHITE);
-        DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), (Vector2){pos.x -10, pos.y - 10}, 20, 3, GREEN);
+
+        DrawCircleV(posParent, 30, WHITE);
+        DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), (Vector2){posParent.x -10, posParent.y - 10}, 20, 3, GREEN);
 #ifdef DEBUG
         DEBUG_PRINTF(iterate.BSTNode->data);
         DEBUG_PRINTF(int_to_chars(iterate.BSTNode->data));
@@ -69,7 +87,6 @@ int addGuiNode(char * input) {
 #endif
 
     int value = chars_to_int(input);
-    DEBUG_PRINTF(value);
     if (value == NOT_INT) {
         return ADD_ERROR;
     }
@@ -77,7 +94,6 @@ int addGuiNode(char * input) {
         addBSTNode(value);
         return NO_ERROR;
     }
-    DEBUG_CHECKPOINT(88);
 }
 
 int removeNodeHandler() {
@@ -100,7 +116,8 @@ void load_file() {
                                 .width = 100,
                                 .height = 75};
     if (GuiButton(loadBox, "Load tree")) {
-        int value = LoadBSTreeFromFile();
+        LoadBSTreeFromFile();
+
 #ifdef DEBUG
         DEBUG_PRINTF(value);
 #endif

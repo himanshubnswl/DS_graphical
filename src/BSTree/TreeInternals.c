@@ -183,6 +183,7 @@ int SaveBSTreeToFile() {
     }
     fputs(int_to_chars(BSTpreOrder[i]), save_file);
     fclose(save_file);
+    return NO_ERROR;
 }
 
 void deleteBSTree() {
@@ -203,6 +204,7 @@ void deleteBSTree() {
             stack[++stack_pointer] = iterateNode->leftptr;
         }
         free(iterateNode);
+        root = nullptr;
     }
 }
 
@@ -215,16 +217,20 @@ int LoadBSTreeFromFile() { //when i load three times the app crashes, need to lo
     }
 
     char * inputBuffer = (char *)malloc(sizeof(char) *  256);
+    memset(inputBuffer, 255, sizeof(inputBuffer));
     fgets(inputBuffer, 256, loadFrom);
     int value = chars_to_int(strtok(inputBuffer, ","));
-    printf("\nvalue is : %d", value);
+    printf("\nvalue taken from file is %d", value);
     while (1) {
         value = atoi(strtok(nullptr, ","));
-        printf("\n%d", value);
+
         if (value == 0) {
             break;
         }
+        printf("\nvalue taken from file is %d", value);
         addBSTNode(value);
     }
-
+    free(inputBuffer);
+    fclose(loadFrom);
+    return NO_ERROR;
 }
