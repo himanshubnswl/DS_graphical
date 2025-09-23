@@ -9,11 +9,12 @@
 #include <error.h>
 #include <raygui.h>
 #include <raylib.h>
+#include <debug.h>
 #define RAYGUI_IMPLEMENTATION
 typedef int (*getInput)(char *);
 
 char * int_to_chars(int number);
 int chars_to_int(char * text);
-int inputElementHandler(bool * dialogue_box_status, char * input_text, getInput getvalue);
+int inputElementHandler(char * input_text, getInput getvalue);
 
 

@@ -5,6 +5,8 @@
     _Generic((X), \
         int: printf("\nvalue of %s is: %d", #X, X), \
         char*: printf("\nstring inside %s is: %s", #X, X), \
+        char: printf("\nvalue of %s is: %c", #X, X), \
+        unsigned int:printf("\nvalue of %s is: %d", #X, X), \
         default: printf("\n type unkown") \
     )
 

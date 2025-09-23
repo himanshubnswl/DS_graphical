@@ -29,9 +29,15 @@ int chars_to_int(char * text) {
     size_t i = 0;
     int value = 0;
     while (text[i] != '\0') {
+#ifdef DEBUG
+        DEBUG_PRINTF(text);
+#endif
         char ch = text[i];
         if ((ch <= '9') && (ch >= '0')) {
             value = (value * 10 ) + (ch - '0');
+#ifdef DEBUG
+            DEBUG_PRINTF(value);
+#endif
         }
         else
             return 0;
@@ -40,13 +46,31 @@ int chars_to_int(char * text) {
     return value;
 }
 
-int inputElementHandler(bool * dialogue_box_status, char * input_text, getInput getvalue) {
-    Rectangle addButton = {
+int removeElementHandler() {
+    Rectangle removeButton = {
+        .x = (GetScreenWidth() - 243),
+        .y = (GetScreenHeight() - 106),
+        .width = 100,
+        .height = 75
+    };
+
+    if (GuiButton(removeButton, "remove selected")) {
+
+    }
+    return NO_ERROR;
+}
+
+
+int inputElementHandler(char * input_text, getInput addElement) {
+    static bool dialogue_box_status  = false;
+
+    Rectangle const addButton = {
         .x = GetScreenWidth() - 129,
         .y = GetScreenHeight() - 106,
         .width = 100,
         .height = 75};
-    Rectangle dialogueBox = {
+
+    Rectangle const dialogueBox = {
         .x = GetScreenWidth() - 230,
         .y = GetScreenHeight() - 250,
         .width = 200,
@@ -55,17 +79,17 @@ int inputElementHandler(bool * dialogue_box_status, char * input_text, getInput 
     int result = -2;
 
     if (GuiButton(addButton, "add element")) {
-        (*dialogue_box_status) = true;
+        (dialogue_box_status) = true;
     }
-    if (*dialogue_box_status) {
+    if (dialogue_box_status) {
         result = GuiTextInputBox(dialogueBox,nullptr, "enter element", "add", input_text, 10, nullptr);
     }
 
     switch (result) {
-        case 0: (*dialogue_box_status) = false;
+        case 0: (dialogue_box_status) = false;
             return NO_ERROR;
             break;
-        case 1: if (getvalue(input_text) == ADD_ERROR) {
+        case 1: if (addElement(input_text) == ADD_ERROR) {
             return ADD_ERROR;
         }
             break;

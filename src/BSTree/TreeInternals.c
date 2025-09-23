@@ -14,12 +14,21 @@ void initialize(int data) {
     root->rightptr = nullptr;
 
 }
-void addBSTNode(const int data) {
+int addBSTNode(const int data) {
+
+#ifdef DEBUG
+    DEBUG_PRINTF(data);
+#endif
+
+    if (data == 0) {
+        return ZERO_DATA;
+    }
+
     Node * iterateNode = root;
     Node * parentNode = nullptr;
     if (iterateNode == nullptr) {
         initialize(data);
-        return;
+        return NO_ERROR;
     }
     Node * newNode = (Node *)malloc(sizeof(Node));
     newNode->data = data;
@@ -29,7 +38,7 @@ void addBSTNode(const int data) {
     while (iterateNode != nullptr) {
         if (iterateNode->data == data) {
             free(newNode);
-            return;
+            return NO_ERROR;
         }
         parentNode = iterateNode;
 
@@ -161,6 +170,13 @@ int * getPreOrderTraversal() {
             Stack[++stack_pointer] = iterateNode->leftptr;
         }
     }
+#ifdef DEBUG
+    int i = 0;
+    while (preOrder[i] != 0) {
+        DEBUG_PRINTF(preOrder[i]);
+        i++;
+    }
+#endif
     return preOrder; //have to free this when used
 }
 
@@ -220,14 +236,13 @@ int LoadBSTreeFromFile() { //when i load three times the app crashes, need to lo
     memset(inputBuffer, 255, sizeof(inputBuffer));
     fgets(inputBuffer, 256, loadFrom);
     int value = chars_to_int(strtok(inputBuffer, ","));
-    printf("\nvalue taken from file is %d", value);
+
     while (1) {
         value = atoi(strtok(nullptr, ","));
 
         if (value == 0) {
             break;
         }
-        printf("\nvalue taken from file is %d", value);
         addBSTNode(value);
     }
     free(inputBuffer);

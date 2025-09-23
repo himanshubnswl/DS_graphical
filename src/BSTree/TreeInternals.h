@@ -20,7 +20,7 @@ typedef struct Node {
 }Node;
 
 void initialize(int data); //initialize a function, is called internally by addBSTNode()
-void addBSTNode(int data); //add a node to the tree
+int addBSTNode(int data); //add a node to the tree
 int removeBSTNode(int valueToRemove);//remove the node from the tree by the value specified
 int * getPreOrderTraversal(); //returns an array with preOrder values of tree
 Node * GetBSTroot(); //to get the root of the tree

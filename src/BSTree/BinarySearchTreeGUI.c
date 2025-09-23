@@ -7,9 +7,6 @@
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
 
-
-
-
 enum ERROR_HANDLER ERROR;
 
 struct Stack {
@@ -20,7 +17,8 @@ struct Stack {
 };
 
 int DrawBSTree() {
-    Node * root = GetBSTroot();
+    static Node * root;
+    root = GetBSTroot();
     if (root == nullptr) {
         return 0;
     }
@@ -28,18 +26,22 @@ int DrawBSTree() {
     int screenHeight = GetScreenHeight();
     int screenwidth = GetScreenWidth();
 
-    static struct Stack stack[30];
-    unsigned int sp = -1;
+    struct Stack static stack[30];
+    static unsigned int sp = -1;
+
     stack[++sp] = (struct Stack){.BSTNode = root, .column = 0, .row = 1, .spacing = 5};
 
 
-    struct Stack iterate = {nullptr};
-    Vector2 posParent = {0};
-    Vector2 posChild = {0};
+    static struct Stack iterate = {nullptr};
+    static Vector2 posParent = {0};
+    static Vector2 posChild = {0};
 
     while (sp != -1) {
+#ifdef DEBUG
+        DEBUG_PRINTF(sp);
+#endif
         iterate = stack[sp--];
-
+DEBUG_CHECKPOINT(46);
         posParent = (Vector2){
             .x = (screenwidth/30) * (15 + (iterate.column)),
             .y = (screenHeight/30) * (iterate.row * 4)};
@@ -57,6 +59,7 @@ int DrawBSTree() {
 
             DrawLineEx(posParent, posChild, 10, BLACK);
         }
+        DEBUG_CHECKPOINT(64);
         if (iterate.BSTNode->leftptr != nullptr) {
             stack[++sp] = (struct Stack){
                 .BSTNode = iterate.BSTNode->leftptr,
@@ -71,8 +74,12 @@ int DrawBSTree() {
             DrawLineEx(posParent, posChild, 10, BLACK);
         }
 
+DEBUG_CHECKPOINT(79);
         DrawCircleV(posParent, 30, WHITE);
+        DEBUG_CHECKPOINT(81);
+        DEBUG_PRINTF(iterate.BSTNode->data);
         DrawTextEx(GetFontDefault(), int_to_chars(iterate.BSTNode->data), (Vector2){posParent.x -10, posParent.y - 10}, 20, 3, GREEN);
+        DEBUG_CHECKPOINT(82);
 #ifdef DEBUG
         DEBUG_PRINTF(iterate.BSTNode->data);
         DEBUG_PRINTF(int_to_chars(iterate.BSTNode->data));
@@ -87,11 +94,18 @@ int addGuiNode(char * input) {
 #endif
 
     int value = chars_to_int(input);
+#ifdef DEBUG
+    DEBUG_CHECKPOINT(value);
+#endif
+
+    DEBUG_CHECKPOINT(90);
     if (value == NOT_INT) {
         return ADD_ERROR;
     }
     else {
+        DEBUG_CHECKPOINT(94);
         addBSTNode(value);
+        DEBUG_CHECKPOINT(96);
         return NO_ERROR;
     }
 }
@@ -118,9 +132,6 @@ void load_file() {
     if (GuiButton(loadBox, "Load tree")) {
         LoadBSTreeFromFile();
 
-#ifdef DEBUG
-        DEBUG_PRINTF(value);
-#endif
     }
 }
 
@@ -141,14 +152,17 @@ int main() {
 
     SetTargetFPS(60);
 
-    bool dialogue_box_status;
     char inputText[10];
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
-        inputElementHandler(&dialogue_box_status, inputText, addGuiNode);
+        DEBUG_CHECKPOINT(151);
+        inputElementHandler(inputText, addGuiNode);
+        DEBUG_CHECKPOINT(153);
         DrawBSTree();
+        DEBUG_CHECKPOINT(155);
         removeNodeHandler();
+        DEBUG_CHECKPOINT(157);
 #ifdef DEBUG
         getPreOrderTraversal();
 #endif
