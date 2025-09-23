@@ -4139,12 +4139,12 @@ int GuiTextInputBox(Rectangle bounds, const char *title, const char *message, co
         #define RAYGUI_TEXTINPUTBOX_BUTTON_PADDING     12
     #endif
     #if !defined(RAYGUI_TEXTINPUTBOX_HEIGHT)
-        #define RAYGUI_TEXTINPUTBOX_HEIGHT             26
+        #define RAYGUI_TEXTINPUTBOX_HEIGHT             40
     #endif
 
     // Used to enable text edit mode
     // WARNING: No more than one GuiTextInputBox() should be open at the same time
-    static bool textEditMode = false;
+    static bool textEditMode = true;
 
     int result = -1;
 
@@ -4200,18 +4200,18 @@ int GuiTextInputBox(Rectangle bounds, const char *title, const char *message, co
     }
     else
     {
-        if (GuiTextBox(textBoxBounds, text, textMaxSize, textEditMode)) textEditMode = !textEditMode;
+        if (GuiTextBox(textBoxBounds, text, 30, textEditMode)) textEditMode = !textEditMode;
     }
-
     int prevBtnTextAlignment = GuiGetStyle(BUTTON, TEXT_ALIGNMENT);
     GuiSetStyle(BUTTON, TEXT_ALIGNMENT, TEXT_ALIGN_CENTER);
-
     for (int i = 0; i < buttonCount; i++)
     {
         if (GuiButton(buttonBounds, buttonsText[i])) result = i + 1;
         buttonBounds.x += (buttonBounds.width + RAYGUI_MESSAGEBOX_BUTTON_PADDING);
     }
-
+    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) {
+        result = 1;
+    }
     if (result >= 0) textEditMode = false;
 
     GuiSetStyle(BUTTON, TEXT_ALIGNMENT, prevBtnTextAlignment);

@@ -2,11 +2,7 @@
 // Created by lhbdawn on 30-08-2025.
 //
 
-#include <string.h>
-#include <TreeInternals.h>
-
-#include "error.h"
-#include "helper.h"
+#include "TreeInternals.h"
 
 Node * root = nullptr;
 
@@ -18,7 +14,7 @@ void initialize(int data) {
     root->rightptr = nullptr;
 
 }
-void addNode(int data) {
+void addBSTNode(const int data) {
     Node * iterateNode = root;
     Node * parentNode = nullptr;
     if (iterateNode == nullptr) {
@@ -52,7 +48,7 @@ void addNode(int data) {
     }
 }
 
-int removeNode(int valueToRemove) {
+int removeBSTNode(const int valueToRemove) {
     if (root == nullptr) {
         return REMOVE_ERROR;
     }
@@ -76,10 +72,12 @@ int removeNode(int valueToRemove) {
         if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = nullptr;
             free(currentNode);
+            return SUCCESS;
         }
         else {
             parentNode->rightptr = nullptr;
             free(currentNode);
+            return SUCCESS;
         }
     }
 
@@ -94,10 +92,12 @@ int removeNode(int valueToRemove) {
         if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = childNode;
             free(currentNode);
+            return SUCCESS;
         }
         else {
             parentNode->rightptr = childNode;
             free(currentNode);
+            return SUCCESS;
         }
     }
 
@@ -115,10 +115,12 @@ int removeNode(int valueToRemove) {
         if (succesorParent->leftptr == succesorNode) {
             succesorParent->leftptr = succesorNode->rightptr;
             free(succesorNode);
+            return SUCCESS;
         }
         else {
             succesorParent->rightptr = succesorNode->rightptr;
             free(succesorNode);
+            return SUCCESS;
         }
     }
 }
@@ -174,11 +176,12 @@ int SaveBSTreeToFile() {
     _chdir("../");
     FILE * save_file = fopen("./savedfile/saveBSTree.txt", "w");
     unsigned int i = 0;
-    while (BSTpreOrder[i] != 0) {
+    while (BSTpreOrder[i+1] != 0) {
         fputs(int_to_chars(BSTpreOrder[i]), save_file);
         fputs("," , save_file);
         i++;
     }
+    fputs(int_to_chars(BSTpreOrder[i]), save_file);
     fclose(save_file);
 }
 
@@ -203,7 +206,7 @@ void deleteBSTree() {
     }
 }
 
-int LoadBSTreeFromFile() {
+int LoadBSTreeFromFile() { //when i load three times the app crashes, need to look into it
     deleteBSTree();
     FILE * loadFrom = fopen("./savedfile/saveBSTree.txt", "r");
     if (loadFrom == NULL) {
@@ -217,10 +220,11 @@ int LoadBSTreeFromFile() {
     printf("\nvalue is : %d", value);
     while (1) {
         value = atoi(strtok(nullptr, ","));
-        if (value == NULL) {
+        printf("\n%d", value);
+        if (value == 0) {
             break;
         }
-        printf("\nvalue is : %d", value);
+        addBSTNode(value);
     }
 
 }

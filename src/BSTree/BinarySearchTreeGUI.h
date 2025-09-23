@@ -8,9 +8,14 @@
 #include <stdlib.h>
 #include <raylib.h>
 #include <raygui.h>
-#include <helper.h>
+#include "../helpers/helper.h"
 #include <error.h>
-#include <TreeInternals.h>
+#include "TreeInternals.h"
 #define RAYGUI_IMPLEMENTATION
+
+#ifdef DEBUG
+#include <debug.h>
+#endif
+
 
 #endif //BINARYSEARCHTREEGUI_H

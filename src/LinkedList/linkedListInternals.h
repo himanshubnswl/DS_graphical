@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <raylib.h>
+#include <../../include/raylib.h>
 
 typedef struct __NODE {
     int data;

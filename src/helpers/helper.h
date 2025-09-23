@@ -5,7 +5,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <error.h>
+#include <stdio.h>
 #include <error.h>
 #include <raygui.h>
 #include <raylib.h>

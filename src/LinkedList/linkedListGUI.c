@@ -1,4 +1,4 @@
-#include "linkedListGUI.h"
+#include "../DrawingStuff/linkedListGUI.h"
 
 void errorHandler() {
     switch (error_message) {
