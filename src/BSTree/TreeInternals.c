@@ -215,6 +215,9 @@ int SaveBSTreeToFile() {
     }
     _chdir("../");
     FILE * save_file = fopen("./savedfile/saveBSTree.txt", "w");
+    if (save_file == NULL) {
+        return NOTHING_TO_SAVE;
+    }
     unsigned int i = 0;
     while (BSTpreOrder[i+1] != 0) {
         fputs(int_to_chars(BSTpreOrder[i]), save_file);

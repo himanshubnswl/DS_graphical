@@ -7,7 +7,8 @@
 
 #include <raygui.h>
 #include <raylib.h>
-
+#include <debug.h>
+#define DEBUG
 enum ERROR_HANDLER {
     ADD_ERROR = -1,
     REMOVE_ERROR = -2,
@@ -21,7 +22,7 @@ enum ERROR_HANDLER {
 
 #ifdef ERROR_IMPLEMENTATION
 void CheckAndDrawError(enum ERROR_HANDLER error) {
-    char * message;
+    static char * message;
     switch (error) {
         case ADD_ERROR:
             message = "Check value, only Integers allowed";
@@ -58,6 +59,12 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
         default:
             message = nullptr;
     }
+
+
+#ifdef DEBUG
+    DEBUG_PRINTF(message);
+#endif
+
 
     if (message != nullptr) {
         Rectangle errorBox = {

@@ -40,7 +40,7 @@ int chars_to_int(char * text) {
 #endif
         }
         else
-            return 0;
+            return NOT_INT;
         i++;
     }
     return value;
@@ -76,9 +76,8 @@ int removeElementHandler(int (*removeElementInDS)(int)) {
         case 0: (dialogue_box_status) = false;
             return SUCCESS;
             break;
-        case 1: if (removeElementInDS(chars_to_int(inputText)) == REMOVE_ERROR) {
-            return REMOVE_ERROR;
-        }
+        case 1:
+            return removeElementInDS(chars_to_int(inputText));
             break;
         default:
             return SUCCESS;
@@ -116,9 +115,8 @@ int inputElementHandler(char * input_text, getInput addElement) {
         case 0: (dialogue_box_status) = false;
             return SUCCESS;
             break;
-        case 1: if (addElement(input_text) == ADD_ERROR) {
-            return ADD_ERROR;
-        }
+        case 1:
+            return addElement(input_text);
             break;
         default:
             return SUCCESS;
