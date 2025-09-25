@@ -67,7 +67,7 @@ int removeElementHandler(int (*removeElementInDS)(int)) {
 
     int result = -2;
 
-    if (GuiButton(removeButton, "remove element")) {
+    if (GuiButton(removeButton, "remove\nelement")) {
         (dialogue_box_status) = true;
     }
     if (dialogue_box_status) {
@@ -109,7 +109,7 @@ int inputElementHandler(char * input_text, getInput addElement) {
 
     int result = -2;
 
-    if (GuiButton(addButton, "add element")) {
+    if (GuiButton(addButton, "add\nelement")) {
         (dialogue_box_status) = true;
     }
     if (dialogue_box_status) {
