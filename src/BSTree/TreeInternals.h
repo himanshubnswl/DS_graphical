@@ -9,6 +9,7 @@
 #include <direct.h>
 #include <string.h>
 #include "../helpers/helper.h"
+#include "../helpers/error.h"
 #ifdef DEBUG
 #include <debug.h>
 #endif
@@ -28,7 +29,7 @@ int SaveBSTreeToFile(); //to save the tree to a file
 int LoadBSTreeFromFile();//to load a tree from the file
 void deleteBSTree(); //to delete the entire tree
 void SetRootToNP();
-inline void checkSetRootToNP(Node * nodeToCheck);
+void checkSetRootToNP(Node * nodeToCheck);
 
 
 

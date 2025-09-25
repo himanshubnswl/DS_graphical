@@ -74,14 +74,14 @@ int removeElementHandler(int (*removeElementInDS)(int)) {
 
     switch (result) {
         case 0: (dialogue_box_status) = false;
-            return NO_ERROR;
+            return SUCCESS;
             break;
         case 1: if (removeElementInDS(chars_to_int(inputText)) == REMOVE_ERROR) {
             return REMOVE_ERROR;
         }
             break;
         default:
-            return NO_ERROR;
+            return SUCCESS;
             break;
     }
 }
@@ -114,14 +114,14 @@ int inputElementHandler(char * input_text, getInput addElement) {
 
     switch (result) {
         case 0: (dialogue_box_status) = false;
-            return NO_ERROR;
+            return SUCCESS;
             break;
         case 1: if (addElement(input_text) == ADD_ERROR) {
             return ADD_ERROR;
         }
             break;
         default:
-            return NO_ERROR;
+            return SUCCESS;
             break;
     }
 }

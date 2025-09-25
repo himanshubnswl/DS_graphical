@@ -2,8 +2,8 @@
 // Created by lhbdawn on 04-09-2025.
 //
 
+#define ERROR_IMPLEMENTATION
 #include "BinarySearchTreeGUI.h"
-
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
 
@@ -16,11 +16,11 @@ struct Stack {
     int spacing;
 };
 
-int DrawBSTree() {
+void DrawBSTree() {
     static Node * root;
     root = GetBSTroot();
     if (root == nullptr) {
-        return 0;
+        return;
     }
 
     int screenHeight = GetScreenHeight();
@@ -79,7 +79,6 @@ int DrawBSTree() {
         DEBUG_PRINTF(int_to_chars(iterate.BSTNode->data));
 #endif
     }
-    return NO_ERROR;
 }
 
 int addGuiNode(char * input) {
@@ -96,44 +95,34 @@ int addGuiNode(char * input) {
         return ADD_ERROR;
     }
     else {
-        addBSTNode(value);
-        return NO_ERROR;
+        ERROR = addBSTNode(value);
+        return ERROR;
     }
 }
 
-// int removeNodeHandler() {
-//     Rectangle removeButton = {
-//         .x = (GetScreenWidth() - 243),
-//         .y = (GetScreenHeight() - 106),
-//         .width = 100,
-//         .height = 75
-//     };
-//
-//     if (GuiButton(removeButton, "remove selected")) {
-//
-//     }
-//     return NO_ERROR;
-// }
 
-void load_file() {
+int load_file() {
     Rectangle loadBox = {.x = GetScreenWidth()-600,
                                 .y = GetScreenHeight() - 106,
                                 .width = 100,
                                 .height = 75};
     if (GuiButton(loadBox, "Load tree")) {
-        LoadBSTreeFromFile();
-
+        ERROR = LoadBSTreeFromFile();
+        return ERROR;
     }
+    return ERROR;
 }
 
-void save_file() {
+int save_file() {
     Rectangle saveBox = {.x = GetScreenWidth()-443,
                                 .y = GetScreenHeight() - 106,
                                 .width = 100,
                                 .height = 75};
     if (GuiButton(saveBox, "Save Tree")) {
-        SaveBSTreeToFile();
+        ERROR = SaveBSTreeToFile();
+        return ERROR;
     }
+    return ERROR;
 }
 
 int main() {
@@ -147,14 +136,15 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
-        inputElementHandler(inputText, addGuiNode);
         DrawBSTree();
-        removeElementHandler(removeBSTNode);
+        ERROR = inputElementHandler(inputText, addGuiNode);
+        ERROR = removeElementHandler(removeBSTNode);
 #ifdef DEBUG
         getPreOrderTraversal();
 #endif
-        save_file();
-        load_file();
+        ERROR = save_file();
+        ERROR = load_file();
         EndDrawing();
+        CheckAndDrawError(ERROR);
     }
 }

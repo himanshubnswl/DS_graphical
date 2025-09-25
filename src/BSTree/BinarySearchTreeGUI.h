@@ -9,13 +9,18 @@
 #include <raylib.h>
 #include <raygui.h>
 #include "../helpers/helper.h"
-#include <../helpers/error.h>
+#include "../helpers/error.h"
 #include "TreeInternals.h"
 #define RAYGUI_IMPLEMENTATION
 
 #ifdef DEBUG
 #include <debug.h>
 #endif
+
+void DrawBSTree();
+int addGuiNode(char * input);
+int load_file();
+int save_file();
 
 
 #endif //BINARYSEARCHTREEGUI_H

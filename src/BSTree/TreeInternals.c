@@ -29,7 +29,7 @@ int addBSTNode(const int data) {
     DEBUG_PRINTF(data);
 #endif
 
-    if (data == 0) {
+    if (data <= 0) {
         return ZERO_DATA;
     }
 
@@ -37,7 +37,7 @@ int addBSTNode(const int data) {
     Node * parentNode = nullptr;
     if (iterateNode == nullptr) {
         initialize(data);
-        return NO_ERROR;
+        return SUCCESS;
     }
     Node * newNode = (Node *)malloc(sizeof(Node));
     newNode->data = data;
@@ -47,7 +47,7 @@ int addBSTNode(const int data) {
     while (iterateNode != nullptr) {
         if (iterateNode->data == data) {
             free(newNode);
-            return NO_ERROR;
+            return SUCCESS;
         }
         parentNode = iterateNode;
 
@@ -58,11 +58,13 @@ int addBSTNode(const int data) {
             iterateNode = iterateNode->rightptr;
         }
     }
+
     if (data < parentNode->data) {
         parentNode->leftptr = newNode;
     }
     else {
         parentNode->rightptr = newNode;
+        return SUCCESS;
     }
 }
 
@@ -84,7 +86,7 @@ int removeBSTNode(const int valueToRemove) {
         }
     }
     if (currentNode == nullptr) {
-        return 2;
+        return VALUE_NOT_FOUND;
     }
 
     if (currentNode->leftptr == nullptr && currentNode->rightptr == nullptr) {
@@ -221,7 +223,7 @@ int SaveBSTreeToFile() {
     }
     fputs(int_to_chars(BSTpreOrder[i]), save_file);
     fclose(save_file);
-    return NO_ERROR;
+    return SUCCESS;
 }
 
 void deleteBSTree() {
@@ -271,5 +273,5 @@ int LoadBSTreeFromFile() { //when i load three times the app crashes, need to lo
     }
     free(inputBuffer);
     fclose(loadFrom);
-    return NO_ERROR;
+    return SUCCESS;
 }
