@@ -8,7 +8,7 @@
 #include <raygui.h>
 #include <raylib.h>
 #include <debug.h>
-#define DEBUG
+
 enum ERROR_HANDLER {
     ADD_ERROR = -1,
     REMOVE_ERROR = -2,
@@ -73,7 +73,10 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
             .width = MeasureText(message, 35) + 100,
             .height = 100
         };
-        GuiTextBox(errorBox, message, 35, false);
+        int prev = GuiGetStyle(DEFAULT, TEXT_SIZE);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 45);
+        GuiTextBox(errorBox, message, 256, false);
+        GuiSetStyle(DEFAULT, TEXT_SIZE, prev);
     }
 }
 #endif

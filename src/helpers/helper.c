@@ -49,6 +49,8 @@ int chars_to_int(char * text) {
 int removeElementHandler(int (*removeElementInDS)(int)) {
     static bool dialogue_box_status  = false;
     static char inputText[50];
+    static enum ERROR_HANDLER error;
+
 
     Rectangle const removeButton = {
         .x = (GetScreenWidth() - 243),
@@ -71,16 +73,18 @@ int removeElementHandler(int (*removeElementInDS)(int)) {
     if (dialogue_box_status) {
         result = GuiTextInputBox(dialogueBox,nullptr, "enter element", "remove", inputText, 10, nullptr);
     }
-
     switch (result) {
+        case -1:
+            return error;
+            break;
         case 0: (dialogue_box_status) = false;
             return SUCCESS;
             break;
         case 1:
-            return removeElementInDS(chars_to_int(inputText));
+            error = removeElementInDS(chars_to_int(inputText));
+            return error;
             break;
         default:
-            return SUCCESS;
             break;
     }
 }
@@ -89,6 +93,7 @@ int removeElementHandler(int (*removeElementInDS)(int)) {
 
 int inputElementHandler(char * input_text, getInput addElement) {
     static bool dialogue_box_status  = false;
+    static enum ERROR_HANDLER error;
 
     Rectangle const addButton = {
         .x = GetScreenWidth() - 129,
@@ -112,14 +117,17 @@ int inputElementHandler(char * input_text, getInput addElement) {
     }
 
     switch (result) {
+        case -1:
+            return error;
+            break;
         case 0: (dialogue_box_status) = false;
             return SUCCESS;
             break;
         case 1:
-            return addElement(input_text);
+            error = addElement(input_text);
+            return error;
             break;
         default:
-            return SUCCESS;
             break;
     }
 }

@@ -7,7 +7,7 @@
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
 
-enum ERROR_HANDLER ERROR;
+enum ERROR_HANDLER ERROR,ERROR1, ERROR2, ERROR3,ERROR4;
 
 struct Stack {
     Node * BSTNode;
@@ -127,6 +127,7 @@ int save_file() {
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    GuiSetFont(LoadFont("Roboto-Italic-VariableFont_wdth,wght.ttf"));
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "BSTGUI");
 
@@ -134,17 +135,24 @@ int main() {
 
     char inputText[10];
     while (!WindowShouldClose()) {
+
+        GuiSetStyle(DEFAULT, TEXT_SIZE, 18);
         BeginDrawing();
         ClearBackground(GRAY);
         DrawBSTree();
-        ERROR = inputElementHandler(inputText, addGuiNode);
-        ERROR = removeElementHandler(removeBSTNode);
+        ERROR1 = inputElementHandler(inputText, addGuiNode);
+        ERROR2 = removeElementHandler(removeBSTNode);
+
 #ifdef DEBUG
         getPreOrderTraversal();
 #endif
-        ERROR = save_file();
-        ERROR = load_file();
+
+        ERROR3 = save_file();
+        ERROR4 = load_file();
         EndDrawing();
-        CheckAndDrawError(ERROR);
+        CheckAndDrawError(ERROR1);
+        CheckAndDrawError(ERROR2);
+        CheckAndDrawError(ERROR3);
+        CheckAndDrawError(ERROR4);
     }
 }
