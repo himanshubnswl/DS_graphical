@@ -9,7 +9,7 @@
 #include <raylib.h>
 #include <raygui.h>
 #include "../helpers/helper.h"
-#include <error.h>
+#include <../helpers/error.h>
 #include "TreeInternals.h"
 #define RAYGUI_IMPLEMENTATION
 

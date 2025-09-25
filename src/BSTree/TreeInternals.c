@@ -10,7 +10,7 @@ void SetRootToNP() {
     root = nullptr;
 }
 
-inline void checkSetRootToNP(Node * nodeToCheck) {
+void checkSetRootToNP(Node * nodeToCheck) {
     if (nodeToCheck == root) {
         SetRootToNP();
     }
@@ -67,13 +67,14 @@ int addBSTNode(const int data) {
 }
 
 int removeBSTNode(const int valueToRemove) {
-    if (root == nullptr) {
-        return REMOVE_ERROR;
-    }
     Node * currentNode = GetBSTroot();
     Node * parentNode = nullptr;
 
-    while (currentNode != nullptr || currentNode->data != valueToRemove) {
+    if (currentNode == nullptr) {
+        return REMOVE_ERROR;
+    }
+
+    while (currentNode != nullptr && currentNode->data != valueToRemove) {
         parentNode = currentNode;
         if (valueToRemove < currentNode->data) {
             currentNode = currentNode->leftptr;
@@ -87,6 +88,11 @@ int removeBSTNode(const int valueToRemove) {
     }
 
     if (currentNode->leftptr == nullptr && currentNode->rightptr == nullptr) {
+        if (currentNode == GetBSTroot()) {
+            checkSetRootToNP(currentNode);
+            free(currentNode);
+            return SUCCESS;
+        }
         if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = nullptr;
             checkSetRootToNP(currentNode);
@@ -109,15 +115,18 @@ int removeBSTNode(const int valueToRemove) {
         else {
             childNode = currentNode->leftptr;
         }
+        if (currentNode == GetBSTroot()) {
+            root = childNode;
+            free(currentNode);
+            return SUCCESS;
+        }
         if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = childNode;
-            checkSetRootToNP(currentNode);
             free(currentNode);
             return SUCCESS;
         }
         else {
             parentNode->rightptr = childNode;
-            checkSetRootToNP(currentNode);
             free(currentNode);
             return SUCCESS;
         }
@@ -136,13 +145,11 @@ int removeBSTNode(const int valueToRemove) {
 
         if (succesorParent->leftptr == succesorNode) {
             succesorParent->leftptr = succesorNode->rightptr;
-            checkSetRootToNP(succesorNode);
             free(succesorNode);
             return SUCCESS;
         }
         else {
             succesorParent->rightptr = succesorNode->rightptr;
-            checkSetRootToNP(currentNode);
             free(succesorNode);
             return SUCCESS;
         }
@@ -254,7 +261,8 @@ int LoadBSTreeFromFile() { //when i load three times the app crashes, need to lo
     addBSTNode(value);
 
     while (1) {
-        value = atoi(strtok(nullptr, ","));
+        // value = atoi(strtok(nullptr, ","));
+        value = strtol(strtok(nullptr, ","), nullptr, 10);
 
         if (value == 0) {
             break;
