@@ -171,8 +171,8 @@ int * getPreOrderTraversal() {
     if (preOrder == nullptr) {
         preOrder = (int *)malloc(50 * sizeof(int));
     }
-    memset(preOrder, 0, sizeof(preOrder));
 
+    memset(preOrder, 0, (sizeof(int) * 50));
     Node *Stack[50];
     int stack_pointer = -1;
     int order_index = -1;
@@ -194,6 +194,7 @@ int * getPreOrderTraversal() {
             Stack[++stack_pointer] = iterateNode->leftptr;
         }
     }
+#define DEBUG
 #ifdef DEBUG
     int i = 0;
     while (preOrder[i] != 0) {
@@ -204,7 +205,7 @@ int * getPreOrderTraversal() {
     return preOrder; //have to free this when used
 }
 
-int SaveBSTreeToFile() {
+int SaveBSTreeToFile() { //multiple saving breaks
     int * BSTpreOrder = getPreOrderTraversal();
     if (BSTpreOrder == nullptr) {
         return NOTHING_TO_SAVE;
