@@ -16,5 +16,6 @@ int main() {
     char * input_text = malloc(256*sizeof(char));
     while (!WindowShouldClose()) {
         inputElementHandler(input_text, add_graph_node);
+
     }
 }

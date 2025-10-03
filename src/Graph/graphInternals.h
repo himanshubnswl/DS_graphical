@@ -13,13 +13,17 @@
 #define MAX_ROWS 50;
 #define MAX_COLUMNS 50;
 #define MAX_DELETED_NODES 20;
+#define DEFAULT_RADIUS 20;
 
 typedef struct graphNode {
     int index;
     int data;
     int pos_x;
     int pos_y;
+    int radius;
     Color color;
+    int adjacency_list_index;
+    struct graphNode * adjacency_list[20];
 }Graph_Node;
 
 void initialize_graph();
