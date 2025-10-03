@@ -15,6 +15,14 @@
 #define MAX_DELETED_NODES 20;
 #define DEFAULT_RADIUS 20;
 
+struct graphNode;
+struct AdList;
+
+struct AdList {
+    struct graphNode * node;
+    unsigned int weight;
+};
+
 typedef struct graphNode {
     int index;
     int data;
@@ -23,7 +31,7 @@ typedef struct graphNode {
     int radius;
     Color color;
     int adjacency_list_index;
-    struct graphNode * adjacency_list[20];
+    struct AdList * adjacency_list[20];
 }Graph_Node;
 
 void initialize_graph();

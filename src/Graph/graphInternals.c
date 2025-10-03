@@ -7,22 +7,46 @@
 
 Graph_Node * root;
 
-int Add_Graph_Node(int data, Graph_Node * parent) {
+int Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
+    newNode->data = data;
+    newNode->adjacency_list_index = -1;
+    newNode->radius = DEFAULT_RADIUS;
+    newNode->color = WHITE;
 
     if (parent == nullptr) {
         root = newNode;
-        newNode->data;
-        newNode->radius = DEFAULT_RADIUS;
         newNode->pos_x = (GetScreenWidth()/50) * 1;
         newNode->pos_y = (GetScreenHeight()/50) * 25;
-        newNode->adjacency_list_index = -1;
     }
+
     else {
-        parent->adjacency_list[++(parent->adjacency_list_index)] = newNode;
-        newNode->data = data;
-        newNode->radius = DEFAULT_RADIUS;
+        parent->adjacency_list[++(parent->adjacency_list_index)]->node = newNode;
+        parent->adjacency_list[(parent->adjacency_list_index)]->weight = weight;
+        newNode->pos_x = parent->pos_x + 50;
+        newNode->pos_y = parent->pos_y * (parent->adjacency_list_index + 1);
     }
+}
+
+int Remove_Graph_Node(Graph_Node * node, Graph_Node * parentNode) {
+
+    for (size_t i = 0; i <= parentNode->adjacency_list_index; i++) {
+        if (parentNode->adjacency_list[i]->node == node) {
+            if (i == parentNode->adjacency_list_index) {
+                parentNode->adjacency_list_index--;
+            }
+            else {
+                for (size_t j = i; j < parentNode->adjacency_list_index; j++) {
+                    parentNode->adjacency_list[j] = parentNode->adjacency_list[j+1];
+                }
+                parentNode->adjacency_list_index--;
+            }
+        }
+    }
+
+        free(node);
+        return SUCCESS;
+
 }
 
 
