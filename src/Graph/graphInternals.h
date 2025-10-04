@@ -18,7 +18,7 @@
 struct graphNode;
 struct AdList;
 
-struct AdList {
+struct AdListItem {
     struct graphNode * node;
     unsigned int weight;
 };
@@ -26,14 +26,10 @@ struct AdList {
 typedef struct graphNode {
     int index;
     int data;
-    int pos_x;
-    int pos_y;
-    int radius;
-    Color color;
     int incoming_edges_index;
-    struct AdList * incoming_edges;
+    struct AdListItem * incoming_edges[20];
     int outgoing_edges_index;
-    struct AdList * outgoing_edges[20];
+    struct AdListItem * outgoing_edges[20];
 }Graph_Node;
 
 void initialize_graph();
