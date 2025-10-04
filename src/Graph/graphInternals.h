@@ -22,6 +22,11 @@ typedef struct graphNode {
     Color color;
 }Graph_Node;
 
+typedef struct Vertex {
+    Graph_Node * node;
+    size_t weight;
+};
+
 void initialize_graph();
 void free_adjacency_matrix();
 Graph_Node ** get_adjacencymatrix();
