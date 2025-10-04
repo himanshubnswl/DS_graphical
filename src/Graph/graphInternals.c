@@ -5,49 +5,103 @@
 
 #include <string.h>
 
-Graph_Node * root;
+Graph_Node * root = nullptr;
 
 int Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
+
+    if (newNode == nullptr) {
+        return BAD_ALLOC;
+    }
+
     newNode->data = data;
-    newNode->adjacency_list_index = -1;
+    newNode->outgoing_edges_index = -1;
     newNode->radius = DEFAULT_RADIUS;
     newNode->color = WHITE;
 
     if (parent == nullptr) {
+
+        if (root != nullptr) {
+            return ADD_ERROR;
+        }
+
         root = newNode;
         newNode->pos_x = (GetScreenWidth()/50) * 1;
         newNode->pos_y = (GetScreenHeight()/50) * 25;
+        newNode->parentNode = nullptr;
     }
 
     else {
-        parent->adjacency_list[++(parent->adjacency_list_index)]->node = newNode;
-        parent->adjacency_list[(parent->adjacency_list_index)]->weight = weight;
+        parent->outgoing_edges[++(parent->outgoing_edges_index)]->node = newNode;
+        parent->outgoing_edges[(parent->outgoing_edges_index)]->weight = weight;
         newNode->pos_x = parent->pos_x + 50;
-        newNode->pos_y = parent->pos_y * (parent->adjacency_list_index + 1);
+        newNode->pos_y = parent->pos_y * (parent->outgoing_edges_index + 1);
+        newNode->parentNode = parent;
+    }
+    return SUCCESS;
+}
+
+int clear_node_adjacency(Graph_Node * node) {
+    Graph_Node * stack[20] = {nullptr};
+    int SP = -1;
+    stack[++SP] = node;
+
+    Graph_Node * bufferNode;
+    while (SP != -1) {
+        bufferNode = stack[SP--];
+
+        for (size_t i = 0; i <= node->outgoing_edges_index; i++) {
+            stack[++SP] = node->outgoing_edges[i]->node;
+        }
     }
 }
 
-int Remove_Graph_Node(Graph_Node * node, Graph_Node * parentNode) {
+int Remove_Graph_Node(Graph_Node * node) {
+    Graph_Node * parentNode = node->parentNode;
 
-    for (size_t i = 0; i <= parentNode->adjacency_list_index; i++) {
-        if (parentNode->adjacency_list[i]->node == node) {
-            if (i == parentNode->adjacency_list_index) {
-                parentNode->adjacency_list_index--;
+
+    if (parentNode == nullptr) { //case when node is the root
+        free(node);
+        return SUCCESS;
+    }
+
+    for (size_t i = 0; i <= parentNode->outgoing_edges_index; i++) {
+        if (parentNode->outgoing_edges[i]->node == node) {
+            if (i == parentNode->outgoing_edges_index) {
+                parentNode->outgoing_edges_index--;
             }
             else {
-                for (size_t j = i; j < parentNode->adjacency_list_index; j++) {
-                    parentNode->adjacency_list[j] = parentNode->adjacency_list[j+1];
+                for (size_t j = i; j < parentNode->outgoing_edges_index; j++) {
+                    parentNode->outgoing_edges[j] = parentNode->outgoing_edges[j+1];
                 }
-                parentNode->adjacency_list_index--;
+                parentNode->outgoing_edges_index--;
             }
         }
     }
 
         free(node);
         return SUCCESS;
+}
+
+Graph_Node * Get_Graph_Root() {
+    if (root != nullptr) {
+        return root;
+    }
+    else {
+        return nullptr;
+    }
+}
+
+Graph_Node * BST_Iterate_Graph(bool ResetFlag) { //func upon calling will return graph node, needs to called repeatedly
+    static size_t func_called_num;
+    if (ResetFlag == true) {
+        func_called_num = 0;
+    }
+
+
 
 }
+
 
 
 // Graph_Node ** adjacency_matrix = nullptr;

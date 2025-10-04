@@ -30,8 +30,10 @@ typedef struct graphNode {
     int pos_y;
     int radius;
     Color color;
-    int adjacency_list_index;
-    struct AdList * adjacency_list[20];
+    int incoming_edges_index;
+    struct AdList * incoming_edges;
+    int outgoing_edges_index;
+    struct AdList * outgoing_edges[20];
 }Graph_Node;
 
 void initialize_graph();
