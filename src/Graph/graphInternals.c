@@ -84,6 +84,7 @@ int Remove_Graph_Node(Graph_Node * node) {
                 for (size_t k = j; k < parent->outgoing_edges_index; k++) {
                     parent->outgoing_edges[k] = parent->outgoing_edges[k+1];
                 }
+                parent->outgoing_edges_index--;
             }
         }
     }
