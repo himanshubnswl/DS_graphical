@@ -29,6 +29,36 @@ int Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     }
 }
 
+Graph_Node ** Get_DFS_traversal() {
+    if (root == nullptr) return nullptr;
+
+    Graph_Node * stack[50] = {nullptr};
+    int sp = -1;
+    Graph_Node ** traversal = calloc(50, sizeof(Graph_Node *));
+    int traversal_index = -1;
+
+    stack[++sp] = root;
+    while (sp != -1) {
+        Graph_Node * bufferNode = stack[sp--];
+        for (size_t i = bufferNode->outgoing_edges_index; i <= 0; i--) {
+            if (visited_array_search(traversal, bufferNode->outgoing_edges[i]->node) == false) {
+                stack[++sp] = bufferNode->outgoing_edges[i]->node;
+            }
+        }
+        traversal[++traversal_index] = bufferNode;
+    }
+    return traversal;
+}
+
+bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
+    for (size_t i = 0; visited[i] != nullptr; i++ ) {
+        if (visited[i] == toBeSearched) {
+            return true;
+        }
+    }
+    return false;
+}
+
 int Remove_Graph_Node(Graph_Node * node) {
 
 }

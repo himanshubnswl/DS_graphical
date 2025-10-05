@@ -32,9 +32,7 @@ typedef struct graphNode {
     struct AdListItem * outgoing_edges[20];
 }Graph_Node;
 
-void initialize_graph();
-void free_adjacency_matrix();
-Graph_Node ** get_adjacencymatrix();
-int add_graph_node(int data);
+bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched);
+
 
 #endif //GRAPHINTERNALS_H
