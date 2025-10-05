@@ -59,8 +59,47 @@ bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
     return false;
 }
 
-int Remove_Graph_Node(Graph_Node * node) {
+Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
+    Graph_Node ** missingarr = calloc(50, sizeof(Graph_Node*));
+    size_t i = 0;
+    size_t m = 0;
 
+    while (first[i] != nullptr) {
+        if (visited_array_search(second, first[i]) == false) {
+            missingarr[m++] = first[i];
+        }
+        i++;
+    }
+
+    return missingarr;
+}
+
+int Remove_Graph_Node(Graph_Node * node) {
+    Graph_Node ** firstarr = Get_DFS_traversal();
+
+    for (size_t i = 0; i <= node->incoming_edges_index; i++) {
+        Graph_Node * parent = node->incoming_edges[i]->node;
+        for (size_t j = 0; j <= parent->outgoing_edges_index; j++) {
+            if (parent->outgoing_edges[i]->node == node) {
+                for (size_t k = j; k < parent->outgoing_edges_index; k++) {
+                    parent->outgoing_edges[k] = parent->outgoing_edges[k+1];
+                }
+            }
+        }
+    }
+
+    Graph_Node ** secondarr = Get_DFS_traversal();
+    Graph_Node ** missingnodes = Get_Diff(firstarr, secondarr);
+
+    size_t i = 0;
+    while (missingnodes[i] != nullptr) {
+        free(missingnodes[i]);
+        i++;
+    }
+    free(firstarr);
+    free(secondarr);
+    free(missingnodes);
+    return SUCCESS;
 }
 
 Graph_Node * Get_Graph_Root() {
