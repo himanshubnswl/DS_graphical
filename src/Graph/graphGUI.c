@@ -7,6 +7,17 @@
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 
+Vertex * L_Search_Node(Graph_Node * node) {
+    size_t i = 0;
+    while (vertexList[i] != nullptr) {
+        if (vertexList[i]->node == node) {
+            return vertexList[i];
+        }
+        i++;
+    }
+    return nullptr;
+}
+
 void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
     Vector2 p1 = {
         .x = end.x-10,
@@ -22,18 +33,23 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
 
 int DrawEdges(Vertex * vertex) {
     for (size_t i = 0; i <= vertex->node->outgoing_edges_index; i++) {
-        DrawPointyLine(vertex->pos,  , 20, BLACK);
+        Vertex * dest = L_Search_Node(vertex->node->outgoing_edges[i]->node);
+        DrawPointyLine(vertex->pos, dest->pos , 20, BLACK);
+    }
+    for (size_t i = 0; i <= vertex->node->incoming_edges_index; i++) {
+        Vertex * dest = L_Search_Node(vertex->node->incoming_edges[i]->node);
+        DrawPointyLine(vertex->pos, dest->pos , 20, BLACK);
     }
 }
 
 int DrawGraph() {
     size_t i = 0;
     while (vertexList[i] != nullptr) {
-
-
-
+        DrawEdges(vertexList[i]);
         DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
         DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, 20, 5, BLACK);
+
+
     }
 }
 
