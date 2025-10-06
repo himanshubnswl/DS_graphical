@@ -10,10 +10,8 @@
 #include <limits.h>
 #include "../helpers/error.h"
 
-#define MAX_ROWS 50;
-#define MAX_COLUMNS 50;
-#define MAX_DELETED_NODES 20;
-#define DEFAULT_RADIUS 20;
+#define MAX_ELEMENTS_NUM 50
+#define MAX_DELETED_NODES 20
 
 struct graphNode;
 struct AdList;
@@ -33,6 +31,10 @@ typedef struct graphNode {
 }Graph_Node;
 
 bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched);
+Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, size_t weight);
+int Remove_Graph_Node(Graph_Node * node);
+Graph_Node * Get_Graph_Root();
+
 
 
 #endif //GRAPHINTERNALS_H

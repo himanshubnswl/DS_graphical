@@ -7,7 +7,7 @@
 
 Graph_Node * root = nullptr;
 
-int Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
+Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
     if (newNode == nullptr) {
         return ADD_ERROR;
@@ -18,23 +18,23 @@ int Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     newNode->outgoing_edges_index = -1;
 
     if (parent == nullptr) {
-        return SUCCESS;
+        return newNode;
     }
     else {
         ( parent->outgoing_edges[++(parent->outgoing_edges_index)] )->node = newNode;
         ( parent->outgoing_edges[++(parent->outgoing_edges_index)] )->weight = weight;
         ( newNode->incoming_edges[++(newNode->incoming_edges_index)] )->node = parent;
         ( newNode->incoming_edges[++(newNode->incoming_edges_index)] )->weight = weight;
-        return SUCCESS;
+        return newNode;
     }
 }
 
 Graph_Node ** Get_DFS_traversal() {
     if (root == nullptr) return nullptr;
 
-    Graph_Node * stack[50] = {nullptr};
+    Graph_Node * stack[MAX_ELEMENTS_NUM] = {nullptr};
     int sp = -1;
-    Graph_Node ** traversal = calloc(50, sizeof(Graph_Node *));
+    Graph_Node ** traversal = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int traversal_index = -1;
 
     stack[++sp] = root;
@@ -60,7 +60,7 @@ bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
 }
 
 Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
-    Graph_Node ** missingarr = calloc(50, sizeof(Graph_Node*));
+    Graph_Node ** missingarr = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node*));
     size_t i = 0;
     size_t m = 0;
 
