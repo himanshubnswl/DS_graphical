@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include "../helpers/error.h"
 #include <stdlib.h>
+#include <debug.h>
 
+#define DEBUG
 #define WINDOW_HEIGHT 900
 #define WINDOW_WIDTH 1700
 #define FONT_SIZE 20

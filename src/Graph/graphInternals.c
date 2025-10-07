@@ -18,6 +18,7 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     newNode->outgoing_edges_index = -1;
 
     if (parent == nullptr) {
+        root = newNode;
         return newNode;
     }
     else {

@@ -7,7 +7,7 @@
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Graph_Node * selected_vertex = nullptr;
-
+size_t V_List_Top = 0;
 
 Vertex * L_Search_Node(Graph_Node * node) {
     size_t i = 0;
@@ -77,30 +77,42 @@ int DrawGraph() {
         DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, FONT_SIZE, FONT_SPACING, BLACK);
         selected_vertex = Selection_Graph(vertexList[i]);
         Reposition_Vertex(vertexList[i]);
+        i++;
+        DEBUG_PRINTF(i);
     }
     return SUCCESS;
 }
 
 int Add_Vertex_Handler(Graph_Node * parent, size_t weight, int data) {
-    if (parent == nullptr && vertexList[0] == nullptr) {
+    if (parent == nullptr && vertexList[0] != nullptr) {
         return NO_SELECTION;
     }
     else {
+        Vertex * new_vertex = malloc(sizeof(Vertex));
+
         if (parent == nullptr) {
-            Add_Graph_Node(data, nullptr, weight);
-            return SUCCESS;
+            new_vertex->node = Add_Graph_Node(data, nullptr, weight);
+            DEBUG_PRINTF("here at nullptr");
         }
         else {
-            Add_Graph_Node(data, parent, weight);
-            return SUCCESS;
+            new_vertex->node = Add_Graph_Node(data, parent, weight);
         }
+        new_vertex->radius = DEFAULT_RADIUS;
+        new_vertex->color = DEFAULT_COLOR;
+        new_vertex->pos = (Vector2){
+            .x = GetRandomValue(10, WINDOW_WIDTH),
+            .y = GetRandomValue(10, WINDOW_HEIGHT)};
+        vertexList[V_List_Top++] = new_vertex;
+        DEBUG_PRINTF(new_vertex->node->data);
+        DEBUG_PRINTF(new_vertex->pos.x);
+        DEBUG_PRINTF(new_vertex->pos.y);
+        return SUCCESS;
     }
 }
 
 int inputElementHandlerGraph() {
     static char * valueIN  = nullptr;
     static char * weightch = nullptr;
-
     if (valueIN == nullptr) {
         valueIN = calloc(TEXT_MAX_SIZE, sizeof(char));
     }
@@ -123,6 +135,11 @@ int inputElementHandlerGraph() {
         .y = GetScreenHeight() - 250,
         .width = 200,
         .height = 127};
+    Rectangle const dialogueBox2 = {
+        .x = GetScreenWidth() - 230,
+        .y = GetScreenHeight() - 450,
+        .width = 200,
+        .height = 127};
 
     if (GuiButton(inputBox, "Add Vertex")) {
         dialogue_stat = true;
@@ -132,7 +149,7 @@ int inputElementHandlerGraph() {
         result = GuiTextInputBox(dialogueBox, nullptr, nullptr, "ADD", valueIN , TEXT_MAX_SIZE, false);
     }
 
-    switch (result) {
+    switch(result) {
         case -1:
             return ADD_ERROR;
             break;
@@ -144,15 +161,20 @@ int inputElementHandlerGraph() {
 
         case 1:
             dialogue_stat = false;
-            int WRresult = GuiTextInputBox(dialogueBox, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,false);
+            int WRresult = GuiTextInputBox(dialogueBox2, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,false);
             if (WRresult == 1) {
                 if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
                 if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
+                DEBUG_PRINTF(chars_to_int(weightch));
+                DEBUG_PRINTF(chars_to_int(valueIN));
                 Add_Vertex_Handler(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
+                DEBUG_CHECKPOINT(165);
             }
             else if (WRresult == 0) {
                 result = -2;
             }
+        default:
+            break;
     }
 }
 
