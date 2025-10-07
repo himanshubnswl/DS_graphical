@@ -19,7 +19,8 @@ enum ERROR_HANDLER {
     NOTHING_TO_SAVE = -7 ,
     VALUE_NOT_FOUND = -8,
     FULL = -9,
-    BAD_ALLOC = -10
+    BAD_ALLOC = -10,
+    NO_SELECTION = -11
 };
 
 #ifdef ERROR_IMPLEMENTATION

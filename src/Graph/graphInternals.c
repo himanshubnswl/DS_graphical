@@ -10,7 +10,7 @@ Graph_Node * root = nullptr;
 Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
     if (newNode == nullptr) {
-        return ADD_ERROR;
+        return nullptr;
     }
 
     newNode->data = data;

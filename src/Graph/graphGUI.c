@@ -6,6 +6,8 @@
 
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
+Graph_Node * selected_vertex = nullptr;
+
 
 Vertex * L_Search_Node(Graph_Node * node) {
     size_t i = 0;
@@ -34,11 +36,36 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
 int DrawEdges(Vertex * vertex) {
     for (size_t i = 0; i <= vertex->node->outgoing_edges_index; i++) {
         Vertex * dest = L_Search_Node(vertex->node->outgoing_edges[i]->node);
-        DrawPointyLine(vertex->pos, dest->pos , 20, BLACK);
+        DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
     }
     for (size_t i = 0; i <= vertex->node->incoming_edges_index; i++) {
         Vertex * dest = L_Search_Node(vertex->node->incoming_edges[i]->node);
-        DrawPointyLine(vertex->pos, dest->pos , 20, BLACK);
+        DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
+    }
+    return SUCCESS;
+}
+
+Graph_Node * Selection_Graph(Vertex * vertex) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+        if (CheckCollisionPointCircle(GetMousePosition() , vertex->pos, vertex->radius)) {
+            vertex->radius += 5;
+            vertex->color = GREEN;
+            return vertex->node;
+        }
+        else {
+            vertex->color = DEFAULT_COLOR;
+            vertex->radius = DEFAULT_RADIUS;
+        }
+    }
+    return nullptr;
+}
+
+int Reposition_Vertex(Vertex * vertex) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+        if (CheckCollisionPointCircle(GetMousePosition(), vertex->pos, vertex->radius)) {
+            vertex->pos = GetMousePosition();
+            return SUCCESS;
+        }
     }
 }
 
@@ -46,26 +73,52 @@ int DrawGraph() {
     size_t i = 0;
     while (vertexList[i] != nullptr) {
         DrawEdges(vertexList[i]);
-        DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
-        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, 20, 5, BLACK);
+        DrawCircleV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
+        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, FONT_SIZE, FONT_SPACING, BLACK);
+        selected_vertex = Selection_Graph(vertexList[i]);
+        Reposition_Vertex(vertexList[i]);
+    }
+    return SUCCESS;
+}
 
-
+int Add_Vertex_Handler(Graph_Node * parent, size_t weight, int data) {
+    if (parent == nullptr && vertexList[0] == nullptr) {
+        return NO_SELECTION;
+    }
+    else {
+        if (parent == nullptr) {
+            Add_Graph_Node(data, nullptr, weight);
+            return SUCCESS;
+        }
+        else {
+            Add_Graph_Node(data, parent, weight);
+            return SUCCESS;
+        }
     }
 }
 
-int inputElementHandler () {
-    static char * textIN = malloc(sizeof(char) * 20);
-    static bool dialogue_stat = false;
-    int result = -2; //magic number intended
+int inputElementHandlerGraph() {
+    static char * valueIN  = nullptr;
+    static char * weightch = nullptr;
 
-    static Rectangle const inputBox = {
+    if (valueIN == nullptr) {
+        valueIN = malloc(sizeof(char) * TEXT_MAX_SIZE);
+    }
+    if (weightch == nullptr) {
+        valueIN = malloc(sizeof(char) * TEXT_MAX_SIZE);
+    }
+
+    static bool dialogue_stat = false;
+    static int result = -2; //magic number intended
+
+    Rectangle const inputBox = {
         .x = GetScreenWidth() - 129,
         .y = GetScreenHeight() - 106,
         .width = 100,
         .height = 75};
 
 
-    static Rectangle const dialogueBox = {
+    Rectangle const dialogueBox = {
         .x = GetScreenWidth() - 230,
         .y = GetScreenHeight() - 250,
         .width = 200,
@@ -74,8 +127,9 @@ int inputElementHandler () {
     if (GuiButton(inputBox, "Add Vertex")) {
         dialogue_stat = true;
     }
+
     if (dialogue_stat) {
-        result = GuiTextInputBox(dialogueBox, nullptr, nullptr, "ADD", textIN , 20, false);
+        result = GuiTextInputBox(dialogueBox, nullptr, nullptr, "ADD", valueIN , TEXT_MAX_SIZE, false);
     }
 
     switch (result) {
@@ -89,7 +143,11 @@ int inputElementHandler () {
             break;
 
         case 1:
-            // Add_Graph_Node(chars_to_int(textIN), );
+            dialogue_stat = false;
+            if (GuiTextInputBox(dialogueBox, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,false)) {
+                Add_Vertex_Handler(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
+                return SUCCESS;
+            }
     }
 }
 
@@ -102,7 +160,10 @@ int main() {
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
-
-
+        BeginDrawing();
+        ClearBackground(GRAY);
+        inputElementHandlerGraph();
+        DrawGraph();
+        EndDrawing();
     }
 }

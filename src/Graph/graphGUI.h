@@ -6,7 +6,6 @@
 #define GRAPHGUI_H
 #include <raylib.h>
 #include <raygui.h>
-#define RAYGUI_IMPLEMENTATION
 #include "graphInternals.h"
 #include <stdio.h>
 #include "../helpers/error.h"
@@ -14,6 +13,12 @@
 
 #define WINDOW_HEIGHT 900
 #define WINDOW_WIDTH 1700
+#define FONT_SIZE 20
+#define FONT_SPACING 5
+#define DEFAULT_COLOR BLACK
+#define DEFAULT_RADIUS 20
+#define DEFAULT_LINE_THICKNESS 20
+#define TEXT_MAX_SIZE 20
 
 typedef struct Edge {
     Graph_Node * start;
