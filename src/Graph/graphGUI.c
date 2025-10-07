@@ -102,10 +102,10 @@ int inputElementHandlerGraph() {
     static char * weightch = nullptr;
 
     if (valueIN == nullptr) {
-        valueIN = malloc(sizeof(char) * TEXT_MAX_SIZE);
+        valueIN = calloc(TEXT_MAX_SIZE, sizeof(char));
     }
     if (weightch == nullptr) {
-        valueIN = malloc(sizeof(char) * TEXT_MAX_SIZE);
+        weightch = calloc(TEXT_MAX_SIZE, sizeof(char));
     }
 
     static bool dialogue_stat = false;
@@ -144,9 +144,14 @@ int inputElementHandlerGraph() {
 
         case 1:
             dialogue_stat = false;
-            if (GuiTextInputBox(dialogueBox, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,false)) {
+            int WRresult = GuiTextInputBox(dialogueBox, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,false);
+            if (WRresult == 1) {
+                if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
+                if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
                 Add_Vertex_Handler(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
-                return SUCCESS;
+            }
+            else if (WRresult == 0) {
+                result = -2;
             }
     }
 }

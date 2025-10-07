@@ -114,10 +114,12 @@ int load_file() {
 }
 
 int save_file() {
-    Rectangle saveBox = {.x = GetScreenWidth()-443,
-                                .y = GetScreenHeight() - 106,
-                                .width = 100,
-                                .height = 75};
+    Rectangle saveBox = {
+        .x = GetScreenWidth()-443,
+        .y = GetScreenHeight() - 106,
+        .width = 100,
+        .height = 75};
+
     if (GuiButton(saveBox, "Save Tree")) {
         ERROR = SaveBSTreeToFile();
         return ERROR;
