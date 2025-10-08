@@ -7,11 +7,11 @@
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Graph_Node * selected_vertex = nullptr;
-size_t V_List_Top = 0;
+int V_List_Top = -1;
 
 Vertex * L_Search_Node(Graph_Node * node) {
     size_t i = 0;
-    while (vertexList[i] != nullptr) {
+    while (i <= V_List_Top) {
         if (vertexList[i]->node == node) {
             return vertexList[i];
         }
@@ -34,51 +34,51 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
 }
 
 int DrawEdges(Vertex * vertex) {
-    for (size_t i = 0; i <= vertex->node->outgoing_edges_index; i++) {
+    for (int i = 0; i <= vertex->node->outgoing_edges_index; i++) {
         Vertex * dest = L_Search_Node(vertex->node->outgoing_edges[i]->node);
         DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
     }
-    for (size_t i = 0; i <= vertex->node->incoming_edges_index; i++) {
+    for (int i = 0; i <= vertex->node->incoming_edges_index; i++) {
         Vertex * dest = L_Search_Node(vertex->node->incoming_edges[i]->node);
         DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
     }
     return SUCCESS;
 }
 
-Graph_Node * Selection_Graph(Vertex * vertex) {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+void Selection_Graph(Vertex * vertex) {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         if (CheckCollisionPointCircle(GetMousePosition() , vertex->pos, vertex->radius)) {
-            vertex->radius += 5;
-            vertex->color = GREEN;
-            return vertex->node;
-        }
-        else {
-            vertex->color = DEFAULT_COLOR;
-            vertex->radius = DEFAULT_RADIUS;
+            vertex->radius = SELECTED_VERT_RADIUS;
+            vertex->color = SELECTED_VERT_COLOR;
+            selected_vertex = vertex->node;
         }
     }
-    return nullptr;
+    else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+        selected_vertex = nullptr;
+        vertex->color = DEFAULT_COLOR;
+        vertex->radius = DEFAULT_RADIUS;
+    }
 }
 
-int Reposition_Vertex(Vertex * vertex) {
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+void Reposition_Vertex(Vertex * vertex) {
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (CheckCollisionPointCircle(GetMousePosition(), vertex->pos, vertex->radius)) {
             vertex->pos = GetMousePosition();
-            return SUCCESS;
+            return;
         }
     }
 }
 
 int DrawGraph() {
-    size_t i = 0;
-    while (vertexList[i] != nullptr) {
+    int i = 0;
+    while (i <= V_List_Top) {
         DrawEdges(vertexList[i]);
         DrawCircleV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
+        DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, BLACK);
         DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, FONT_SIZE, FONT_SPACING, BLACK);
-        selected_vertex = Selection_Graph(vertexList[i]);
+        Selection_Graph(vertexList[i]);
         Reposition_Vertex(vertexList[i]);
         i++;
-        DEBUG_PRINTF(i);
     }
     return SUCCESS;
 }
@@ -102,7 +102,7 @@ int Add_Vertex_Handler(Graph_Node * parent, size_t weight, int data) {
         new_vertex->pos = (Vector2){
             .x = GetRandomValue(10, WINDOW_WIDTH),
             .y = GetRandomValue(10, WINDOW_HEIGHT)};
-        vertexList[V_List_Top++] = new_vertex;
+        vertexList[++V_List_Top] = new_vertex;
         DEBUG_PRINTF(new_vertex->node->data);
         DEBUG_PRINTF(new_vertex->pos.x);
         DEBUG_PRINTF(new_vertex->pos.y);
@@ -120,58 +120,57 @@ int inputElementHandlerGraph() {
         weightch = calloc(TEXT_MAX_SIZE, sizeof(char));
     }
 
-    static bool dialogue_stat = false;
-    static int result = -2; //magic number intended
+    static bool dial_value_show = false;
+    static int butt_value = -2; //magic number intended
 
-    Rectangle const inputBox = {
+    Rectangle const add_butt = {
         .x = GetScreenWidth() - 129,
         .y = GetScreenHeight() - 106,
         .width = 100,
         .height = 75};
 
 
-    Rectangle const dialogueBox = {
+    Rectangle const dial_value = {
         .x = GetScreenWidth() - 230,
         .y = GetScreenHeight() - 250,
         .width = 200,
         .height = 127};
-    Rectangle const dialogueBox2 = {
+    Rectangle const dial_weight = {
         .x = GetScreenWidth() - 230,
         .y = GetScreenHeight() - 450,
         .width = 200,
         .height = 127};
 
-    if (GuiButton(inputBox, "Add Vertex")) {
-        dialogue_stat = true;
+    if (GuiButton(add_butt, "Add Vertex")) {
+        dial_value_show = true;
     }
 
-    if (dialogue_stat) {
-        result = GuiTextInputBox(dialogueBox, nullptr, nullptr, "ADD", valueIN , TEXT_MAX_SIZE, false);
+    if (dial_value_show) {
+        butt_value = GuiTextInputBox(dial_value, nullptr, nullptr, "ADD", valueIN , TEXT_MAX_SIZE, nullptr);
     }
 
-    switch(result) {
+    switch(butt_value) {
         case -1:
             return ADD_ERROR;
             break;
 
         case 0:
-            dialogue_stat = false;
+            dial_value_show = false;
             return SUCCESS;
             break;
 
         case 1:
-            dialogue_stat = false;
-            int WRresult = GuiTextInputBox(dialogueBox2, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,false);
+            dial_value_show = false;
+            int WRresult = GuiTextInputBox(dial_weight, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,nullptr);
             if (WRresult == 1) {
                 if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
                 if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
                 DEBUG_PRINTF(chars_to_int(weightch));
                 DEBUG_PRINTF(chars_to_int(valueIN));
                 Add_Vertex_Handler(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
-                DEBUG_CHECKPOINT(165);
             }
             else if (WRresult == 0) {
-                result = -2;
+                butt_value = -2;
             }
         default:
             break;

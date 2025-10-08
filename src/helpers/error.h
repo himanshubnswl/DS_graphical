@@ -20,7 +20,8 @@ enum ERROR_HANDLER {
     VALUE_NOT_FOUND = -8,
     FULL = -9,
     BAD_ALLOC = -10,
-    NO_SELECTION = -11
+    NO_SELECTION = -11,
+    ALLOC_FAIL = -12
 };
 
 #ifdef ERROR_IMPLEMENTATION

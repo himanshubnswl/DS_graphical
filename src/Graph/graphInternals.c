@@ -5,13 +5,12 @@
 
 #include <string.h>
 
+#include "../helpers/helper.h"
+
 Graph_Node * root = nullptr;
 
 Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, size_t weight) {
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
-    if (newNode == nullptr) {
-        return nullptr;
-    }
 
     newNode->data = data;
     newNode->incoming_edges_index = -1;
@@ -41,7 +40,7 @@ Graph_Node ** Get_DFS_traversal() {
     stack[++sp] = root;
     while (sp != -1) {
         Graph_Node * bufferNode = stack[sp--];
-        for (size_t i = bufferNode->outgoing_edges_index; i <= 0; i--) {
+        for (int i = bufferNode->outgoing_edges_index; i <= 0; i--) {
             if (visited_array_search(traversal, bufferNode->outgoing_edges[i]->node) == false) {
                 stack[++sp] = bufferNode->outgoing_edges[i]->node;
             }
@@ -52,7 +51,7 @@ Graph_Node ** Get_DFS_traversal() {
 }
 
 bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
-    for (size_t i = 0; visited[i] != nullptr; i++ ) {
+    for (int i = 0; visited[i] != nullptr; i++ ) {
         if (visited[i] == toBeSearched) {
             return true;
         }
@@ -78,11 +77,11 @@ Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
 int Remove_Graph_Node(Graph_Node * node) {
     Graph_Node ** firstarr = Get_DFS_traversal();
 
-    for (size_t i = 0; i <= node->incoming_edges_index; i++) {
+    for (int i = 0; i <= node->incoming_edges_index; i++) {
         Graph_Node * parent = node->incoming_edges[i]->node;
-        for (size_t j = 0; j <= parent->outgoing_edges_index; j++) {
+        for (int j = 0; j <= parent->outgoing_edges_index; j++) {
             if (parent->outgoing_edges[i]->node == node) {
-                for (size_t k = j; k < parent->outgoing_edges_index; k++) {
+                for (int k = j; k < parent->outgoing_edges_index; k++) {
                     parent->outgoing_edges[k] = parent->outgoing_edges[k+1];
                 }
                 parent->outgoing_edges_index--;
