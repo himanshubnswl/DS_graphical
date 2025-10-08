@@ -4,6 +4,8 @@
 
 #include "graphGUI.h"
 
+#include <string.h>
+
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Graph_Node * selected_vertex = nullptr;
@@ -177,6 +179,23 @@ int inputElementHandlerGraph() {
     }
 }
 
+void debug_mode() {
+    static char string[256];
+    if (selected_vertex == nullptr) {
+        DrawText("No Selection", 20, 20, 20 ,BLACK);
+    }
+    else {
+        sprintf(string, "Selected Node is: %d", selected_vertex->data);
+        DrawText(string, 10,10,20,BLACK);
+    }
+    if (int_to_chars(V_List_Top) == nullptr) {
+        DrawText("Nullptr", 50, 50, 20, BLACK);
+    }
+    else {
+        sprintf(string, "Value of V_List_Top is: %d", V_List_Top);
+        DrawText(string, 10, 50, 20, BLACK);
+    }
+}
 
 
 int main() {
@@ -190,6 +209,8 @@ int main() {
         ClearBackground(GRAY);
         inputElementHandlerGraph();
         DrawGraph();
+        debug_mode();
         EndDrawing();
     }
 }
+
