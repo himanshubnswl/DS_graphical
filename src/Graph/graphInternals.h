@@ -18,20 +18,20 @@ struct AdList;
 
 struct AdListItem {
     struct graphNode * node;
-    unsigned int weight;
+    int weight;
 };
 
 typedef struct graphNode {
     int index;
     int data;
     int incoming_edges_index;
-    struct AdListItem * incoming_edges[20];
+    struct AdListItem incoming_edges[20];
     int outgoing_edges_index;
-    struct AdListItem * outgoing_edges[20];
+    struct AdListItem outgoing_edges[20];
 }Graph_Node;
 
 bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched);
-Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, size_t weight);
+Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight);
 int Remove_Graph_Node(Graph_Node * node);
 Graph_Node * Get_Graph_Root();
 

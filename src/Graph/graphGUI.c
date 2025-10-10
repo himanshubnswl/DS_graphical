@@ -37,11 +37,11 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
 
 int DrawEdges(Vertex * vertex) {
     for (int i = 0; i <= vertex->node->outgoing_edges_index; i++) {
-        Vertex * dest = L_Search_Node(vertex->node->outgoing_edges[i]->node);
+        Vertex * dest = L_Search_Node(vertex->node->outgoing_edges[i].node);
         DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
     }
     for (int i = 0; i <= vertex->node->incoming_edges_index; i++) {
-        Vertex * dest = L_Search_Node(vertex->node->incoming_edges[i]->node);
+        Vertex * dest = L_Search_Node(vertex->node->incoming_edges[i].node);
         DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
     }
     return SUCCESS;
@@ -97,7 +97,9 @@ int Add_Vertex_Handler(Graph_Node * parent, size_t weight, int data) {
             DEBUG_PRINTF("here at nullptr");
         }
         else {
+            DEBUG_PRINTF("over here");
             new_vertex->node = Add_Graph_Node(data, parent, weight);
+            DEBUG_PRINTF("succesfully added");
         }
         new_vertex->radius = DEFAULT_RADIUS;
         new_vertex->color = DEFAULT_COLOR;
