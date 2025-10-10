@@ -35,14 +35,16 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
     DrawLineEx(end, p2, thick, color);
 }
 
-int DrawEdges(Vertex * vertex) {
-    for (int i = 0; i <= vertex->node->outgoing_edges_index; i++) {
-        Vertex * dest = L_Search_Node(vertex->node->outgoing_edges[i].node);
-        DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
-    }
-    for (int i = 0; i <= vertex->node->incoming_edges_index; i++) {
-        Vertex * dest = L_Search_Node(vertex->node->incoming_edges[i].node);
-        DrawPointyLine(vertex->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
+int DrawEdges() {
+    for (int k = 0; k <= V_List_Top; k++) {
+        for (int i = 0; i <= vertexList[k]->node->outgoing_edges_index; i++) {
+            Vertex * dest = L_Search_Node(vertexList[k]->node->outgoing_edges[i].node);
+            DrawPointyLine(vertexList[k]->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
+        }
+        for (int i = 0; i <= vertexList[k]->node->incoming_edges_index; i++) {
+            Vertex * dest = L_Search_Node(vertexList[k]->node->incoming_edges[i].node);
+            DrawPointyLine(vertexList[k]->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
+        }
     }
     return SUCCESS;
 }
@@ -73,8 +75,8 @@ void Reposition_Vertex(Vertex * vertex) {
 
 int DrawGraph() {
     int i = 0;
+    DrawEdges();
     while (i <= V_List_Top) {
-        DrawEdges(vertexList[i]);
         DrawCircleV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
         DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, BLACK);
         DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, FONT_SIZE, FONT_SPACING, BLACK);
