@@ -67,7 +67,9 @@ void Selection_Graph(Vertex * vertex) {
 void Reposition_Vertex(Vertex * vertex) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         if (CheckCollisionPointCircle(GetMousePosition(), vertex->pos, vertex->radius)) {
-            vertex->pos = GetMousePosition();
+            Vector2 delta = GetMouseDelta();
+            vertex->pos.x = vertex->pos.x + delta.x;
+            vertex->pos.y = vertex->pos.y + delta.y;
             return;
         }
     }
