@@ -10,6 +10,9 @@
 Graph_Node * root = nullptr;
 
 Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
+    if (data <= 0 || weight <= 0) {
+        return nullptr;
+    }
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
     newNode->data = data;
     newNode->incoming_edges_index = -1;
@@ -20,19 +23,10 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
         return newNode;
     }
     else {
-        DEBUG_PRINTF("in function add node");
-        DEBUG_PRINTF(parent->data);
-        DEBUG_PRINTF(newNode->data);
-        DEBUG_PRINTF(data);
-        DEBUG_PRINTF(weight);
         ( parent->outgoing_edges[++(parent->outgoing_edges_index)] ).node = newNode;
-        DEBUG_CHECKPOINT(28);
         ( parent->outgoing_edges[(parent->outgoing_edges_index)] ).weight = weight;
-        DEBUG_CHECKPOINT(30);
         ( newNode->incoming_edges[++(newNode->incoming_edges_index)] ).node = parent;
-        DEBUG_CHECKPOINT(32);
         ( newNode->incoming_edges[(newNode->incoming_edges_index)] ).weight = weight;
-        DEBUG_PRINTF("finished adding");
         return newNode;
     }
 }
@@ -48,7 +42,7 @@ Graph_Node ** Get_DFS_traversal() {
     stack[++sp] = root;
     while (sp != -1) {
         Graph_Node * bufferNode = stack[sp--];
-        for (int i = bufferNode->outgoing_edges_index; i <= 0; i--) {
+        for (int i = bufferNode->outgoing_edges_index; i >= 0; i--) {
             if (visited_array_search(traversal, bufferNode->outgoing_edges[i].node) == false) {
                 stack[++sp] = bufferNode->outgoing_edges[i].node;
             }
@@ -81,6 +75,14 @@ Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
 
     return missingarr;
 }
+void printARR(Graph_Node ** arr) {
+    int i = 0;
+    while (arr[i] != nullptr) {
+        printf(" %d ", arr[i]->data);
+        i++;
+    }
+    printf("\n");
+}
 
 int Remove_Graph_Node(Graph_Node * node) {
     Graph_Node ** firstarr = Get_DFS_traversal();
@@ -99,15 +101,19 @@ int Remove_Graph_Node(Graph_Node * node) {
 
     Graph_Node ** secondarr = Get_DFS_traversal();
     Graph_Node ** missingnodes = Get_Diff(firstarr, secondarr);
-
+    printARR(firstarr);
+    printARR(secondarr);
+    printARR(missingnodes);
     size_t i = 0;
     while (missingnodes[i] != nullptr) {
         free(missingnodes[i]);
+        missingnodes[i] = nullptr;
         i++;
     }
     free(firstarr);
     free(secondarr);
     free(missingnodes);
+    DEBUG_PRINTF("exiting remove function");
     return SUCCESS;
 }
 

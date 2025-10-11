@@ -8,7 +8,7 @@
 
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
-Graph_Node * selected_vertex = nullptr;
+Graph_Node * selected_node = nullptr;
 int V_List_Top = -1;
 
 Vertex * L_Search_Node(Graph_Node * node) {
@@ -54,7 +54,7 @@ void Selection_Graph(Vertex * vertex) {
         if (CheckCollisionPointCircle(GetMousePosition() , vertex->pos, vertex->radius)) {
             vertex->radius = SELECTED_VERT_RADIUS;
             vertex->color = SELECTED_VERT_COLOR;
-            selected_vertex = vertex->node;
+            selected_node = vertex->node;
             for (int i = 0; i <= V_List_Top; i++) {
                 if (vertexList[i] == vertex) continue;
                 vertexList[i]->color = DEFAULT_COLOR;
@@ -63,7 +63,7 @@ void Selection_Graph(Vertex * vertex) {
         }
     }
     else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        selected_vertex = nullptr;
+        selected_node = nullptr;
         vertex->color = DEFAULT_COLOR;
         vertex->radius = DEFAULT_RADIUS;
     }
@@ -97,7 +97,7 @@ int DrawGraph() {
     return SUCCESS;
 }
 
-int Add_Vertex_Handler(Graph_Node * parent, size_t weight, int data) {
+int Add_Vertex(Graph_Node * parent, size_t weight, int data) {
     if (parent == nullptr && vertexList[0] != nullptr) {
         return NO_SELECTION;
     }
@@ -112,6 +112,10 @@ int Add_Vertex_Handler(Graph_Node * parent, size_t weight, int data) {
             DEBUG_PRINTF("over here");
             new_vertex->node = Add_Graph_Node(data, parent, weight);
             DEBUG_PRINTF("succesfully added");
+        }
+        if (new_vertex->node == nullptr) {
+            free(new_vertex);
+            return ADD_ERROR;
         }
         new_vertex->radius = DEFAULT_RADIUS;
         new_vertex->color = DEFAULT_COLOR;
@@ -137,7 +141,9 @@ int inputElementHandlerGraph() {
     }
 
     static bool dial_value_show = false;
-    static int butt_value = -2; //magic number intended
+     int butt_value = -2; //magic number intended
+    static bool dial_weight_show = false;
+    static int WRresult = -2;
 
     Rectangle const add_butt = {
         .x = GetScreenWidth() - 129,
@@ -176,30 +182,39 @@ int inputElementHandlerGraph() {
             break;
 
         case 1:
-            dial_value_show = false;
-            int WRresult = GuiTextInputBox(dial_weight, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,nullptr);
-            if (WRresult == 1) {
-                if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
-                if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
-                DEBUG_PRINTF(chars_to_int(weightch));
-                DEBUG_PRINTF(chars_to_int(valueIN));
-                Add_Vertex_Handler(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
-            }
-            else if (WRresult == 0) {
-                butt_value = -2;
-            }
+            dial_weight_show = true;
+
         default:
             break;
+    }
+
+    if (dial_weight_show == true) {
+        dial_value_show = false;
+        WRresult = GuiTextInputBox(dial_weight, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,nullptr);
+        if (WRresult == 1) {
+            if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
+            if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
+            DEBUG_PRINTF(chars_to_int(weightch));
+            DEBUG_PRINTF(chars_to_int(valueIN));
+            Add_Vertex(selected_node, chars_to_int(weightch), chars_to_int(valueIN));
+            *valueIN = '\0';
+            *weightch = '\0';
+            dial_weight_show = false;
+        }
+        else if (WRresult == 0) {
+            dial_weight_show = false;
+            butt_value = -2;
+        }
     }
 }
 
 void debug_mode() {
     static char string[256];
-    if (selected_vertex == nullptr) {
+    if (selected_node == nullptr) {
         DrawText("No Selection", 20, 20, 20 ,BLACK);
     }
     else {
-        sprintf(string, "Selected Node is: %d", selected_vertex->data);
+        sprintf(string, "Selected Node is: %d", selected_node->data);
         DrawText(string, 10,10,20,BLACK);
     }
     if (int_to_chars(V_List_Top) == nullptr) {
@@ -211,6 +226,43 @@ void debug_mode() {
     }
 }
 
+bool Delete_Vertex_From_List(Vertex * vertex) {
+    for (int i = 0 ; i <= V_List_Top; i++) {
+        if (vertexList[i] == vertex) {
+            for (int j = i ; j < V_List_Top; j++) {
+                vertexList[j] = vertexList[j+1];
+            }
+            V_List_Top--;
+            free(vertex);
+        }
+    }
+    return true;
+}
+
+int Remove_Element_Handler() {
+    Rectangle const removeButton = {
+        .x = (GetScreenWidth() - 243),
+        .y = (GetScreenHeight() - 106),
+        .width = 100,
+        .height = 75
+    };
+
+    if (GuiButton(removeButton, "Remove Vertex")) {
+        if (selected_node != nullptr) {
+            DEBUG_CHECKPOINT(251);
+            Remove_Graph_Node(selected_node);
+            DEBUG_CHECKPOINT(253);
+            for (int i = 0 ; i <= V_List_Top ; i++) {
+                DEBUG_PRINTF(i);
+                if (vertexList[i]->node == nullptr) {
+                    Delete_Vertex_From_List(vertexList[i]);
+                    i--;
+                    DEBUG_PRINTF("finished deleting");
+                }
+            }
+        }
+    }
+}
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -222,6 +274,7 @@ int main() {
         BeginDrawing();
         ClearBackground(GRAY);
         inputElementHandlerGraph();
+        Remove_Element_Handler();
         DrawGraph();
         debug_mode();
         EndDrawing();
