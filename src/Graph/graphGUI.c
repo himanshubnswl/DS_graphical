@@ -55,6 +55,11 @@ void Selection_Graph(Vertex * vertex) {
             vertex->radius = SELECTED_VERT_RADIUS;
             vertex->color = SELECTED_VERT_COLOR;
             selected_vertex = vertex->node;
+            for (int i = 0; i <= V_List_Top; i++) {
+                if (vertexList[i] == vertex) continue;
+                vertexList[i]->color = DEFAULT_COLOR;
+                vertexList[i]->radius = DEFAULT_RADIUS;
+            }
         }
     }
     else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
@@ -81,7 +86,10 @@ int DrawGraph() {
     while (i <= V_List_Top) {
         DrawCircleV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
         DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, BLACK);
-        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), vertexList[i]->pos, FONT_SIZE, FONT_SPACING, BLACK);
+        Vector2 text_pos = MeasureTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), FONT_SIZE, FONT_SPACING);
+        text_pos.x = vertexList[i]->pos.x - (text_pos.x/2);
+        text_pos.y = vertexList[i]->pos.y - (text_pos.y/2);
+        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), text_pos, FONT_SIZE, FONT_SPACING, BLACK);
         Selection_Graph(vertexList[i]);
         Reposition_Vertex(vertexList[i]);
         i++;
