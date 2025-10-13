@@ -12,6 +12,7 @@
 
 #define MAX_ELEMENTS_NUM 50
 #define MAX_DELETED_NODES 20
+#define NON_VALID_NODE_VAL -10
 
 struct graphNode;
 struct AdList;
@@ -30,10 +31,10 @@ typedef struct graphNode {
     struct AdListItem outgoing_edges[20];
 }Graph_Node;
 
-bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched);
-Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight);
-int Remove_Graph_Node(Graph_Node * node);
-Graph_Node * Get_Graph_Root();
+bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched); //searches for toBeSearched in given array
+Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight);      //adds a graph node and return it, to set parent pass in nullptr to parent
+int Remove_Graph_Node(Graph_Node * node);                                    //removes a node by setting the node->data to NON_VALID_NODE_VAL
+Graph_Node * Get_Graph_Root();                                               //return the graph's root
 
 
 

@@ -10,19 +10,24 @@
 Graph_Node * root = nullptr;
 
 Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
-    if (data <= 0 || weight <= 0) {
+    if (data <= 0 || weight <= 0) { //no -ve or 0 allowed
         return nullptr;
     }
     Graph_Node * newNode = malloc(sizeof(Graph_Node));
+
+    //data which needs to be given in any case for a new node
     newNode->data = data;
     newNode->incoming_edges_index = -1;
     newNode->outgoing_edges_index = -1;
 
     if (parent == nullptr) {
+        //if parent nullptr then make the root node
         root = newNode;
         return newNode;
     }
     else {
+        //if newNode is not a root then make sure parent has a edge to newNode
+        //and newNode also has a incoming edge to parent
         ( parent->outgoing_edges[++(parent->outgoing_edges_index)] ).node = newNode;
         ( parent->outgoing_edges[(parent->outgoing_edges_index)] ).weight = weight;
         ( newNode->incoming_edges[++(newNode->incoming_edges_index)] ).node = parent;
@@ -32,12 +37,11 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
 }
 
 Graph_Node ** Get_DFS_traversal() {
-    if (root == nullptr) return nullptr;
-
     Graph_Node * stack[MAX_ELEMENTS_NUM] = {nullptr};
     int sp = -1;
     Graph_Node ** traversal = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int traversal_index = -1;
+    if (root == nullptr) return traversal;
 
     stack[++sp] = root;
     while (sp != -1) {
@@ -75,8 +79,9 @@ Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
 
     return missingarr;
 }
-void printARR(Graph_Node ** arr) {
+void printARR(char * id ,Graph_Node ** arr) {
     int i = 0;
+    printf("\n %s is: ", id);
     while (arr[i] != nullptr) {
         printf(" %d ", arr[i]->data);
         i++;
@@ -98,16 +103,19 @@ int Remove_Graph_Node(Graph_Node * node) {
             }
         }
     }
+    if (node->incoming_edges_index < 0) {
+        //node is determined to be the root
+        root = nullptr;
+    }
 
     Graph_Node ** secondarr = Get_DFS_traversal();
     Graph_Node ** missingnodes = Get_Diff(firstarr, secondarr);
-    printARR(firstarr);
-    printARR(secondarr);
-    printARR(missingnodes);
+    printARR("first" , firstarr);
+    printARR("second" , secondarr);
+    printARR("missingarr" , missingnodes);
     size_t i = 0;
     while (missingnodes[i] != nullptr) {
-        free(missingnodes[i]);
-        missingnodes[i] = nullptr;
+        missingnodes[i]->data = NON_VALID_NODE_VAL;
         i++;
     }
     free(firstarr);
@@ -125,69 +133,3 @@ Graph_Node * Get_Graph_Root() {
         return nullptr;
     }
 }
-
-
-
-
-// Graph_Node ** adjacency_matrix = nullptr;
-// int current_max_index = -1;
-// size_t deleted_index_pointer = -1;
-// static int * deleted_indices;
-//
-// void initialize_graph() {
-//     adjacency_matrix = malloc(MAX_ROWS * sizeof(int *));
-//     adjacency_matrix[0] = malloc(MAX_ROWS * MAX_COLUMNS * sizeof(int));
-//     memset(adjacency_matrix[0], INT_MAX, MAX_ROWS * MAX_COLUMNS * sizeof(int));
-//
-//     deleted_indices = malloc(MAX_DELETED_NODES * sizeof(int));
-//
-//
-//     for (size_t i = 1; i < MAX_ROWS; i++) {
-//         adjacency_matrix[i] = adjacency_matrix[0] + i * MAX_COLUMNS;
-//     }
-// }
-//
-// void free_adjacency_matrix() {
-//     if (adjacency_matrix == nullptr) {
-//         printf("\nmatrix hasn't been allocated!");
-//         return;
-//     }
-//     free(adjacency_matrix[0]);
-//     free(adjacency_matrix);
-// }
-//
-// Graph_Node ** get_adjacencymatrix() {
-//     if (adjacency_matrix != nullptr) {
-//         return adjacency_matrix;
-//     }
-//     else {
-//         printf("\ntrying to return a null adjacency matrix!");
-//         return nullptr;
-//     }
-// }
-//
-// int add_deleted_index(int index) {
-//     if (deleted_index_pointer == MAX_DELETED_NODES) {
-//         return FULL;
-//     }
-//     deleted_indices[++deleted_index_pointer] = index;
-// }
-//
-// int get_available_index() {
-//     if (deleted_index_pointer == -1) {
-//         return ++current_max_index;
-//     }
-//     else {
-//         return deleted_indices[deleted_index_pointer--];
-//     }
-// }
-//
-// int add_graph_node(int data, int parent_index) {
-//     Graph_Node * parentNode; //a function to put here which will give selected parent
-//     Graph_Node * newNode = malloc(sizeof(Graph_Node));
-//     newNode->data = data;
-//     newNode->index = get_available_index(); //function here to get a available index
-//
-//     adjacency_matrix[newNode->index][newNode->index] = 0;
-//     adjacency_matrix[parentNode->index][newNode->index] = 1;
-// }

@@ -4,7 +4,6 @@
 
 #include "graphGUI.h"
 
-#include <string.h>
 
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
@@ -174,12 +173,10 @@ int inputElementHandlerGraph() {
     switch(butt_value) {
         case -1:
             return ADD_ERROR;
-            break;
 
         case 0:
             dial_value_show = false;
             return SUCCESS;
-            break;
 
         case 1:
             dial_weight_show = true;
@@ -200,10 +197,12 @@ int inputElementHandlerGraph() {
             *valueIN = '\0';
             *weightch = '\0';
             dial_weight_show = false;
+            return SUCCESS;
         }
         else if (WRresult == 0) {
             dial_weight_show = false;
             butt_value = -2;
+            return SUCCESS;
         }
     }
 }
@@ -233,6 +232,7 @@ bool Delete_Vertex_From_List(Vertex * vertex) {
                 vertexList[j] = vertexList[j+1];
             }
             V_List_Top--;
+            free(vertex->node);
             free(vertex);
         }
     }
@@ -240,6 +240,8 @@ bool Delete_Vertex_From_List(Vertex * vertex) {
 }
 
 int Remove_Element_Handler() {
+    static enum ERROR_HANDLER err = SUCCESS;
+
     Rectangle const removeButton = {
         .x = (GetScreenWidth() - 243),
         .y = (GetScreenHeight() - 106),
@@ -254,14 +256,17 @@ int Remove_Element_Handler() {
             DEBUG_CHECKPOINT(253);
             for (int i = 0 ; i <= V_List_Top ; i++) {
                 DEBUG_PRINTF(i);
-                if (vertexList[i]->node == nullptr) {
+                if (vertexList[i]->node->data == NON_VALID_NODE_VAL) {
                     Delete_Vertex_From_List(vertexList[i]);
                     i--;
+                    err = SUCCESS;
                     DEBUG_PRINTF("finished deleting");
                 }
             }
         }
+        else err = REMOVE_ERROR;
     }
+    return err;
 }
 
 int main() {
