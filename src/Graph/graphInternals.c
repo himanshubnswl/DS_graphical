@@ -9,6 +9,40 @@
 
 Graph_Node * root = nullptr;
 
+void Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
+    if (weight <= 0 ) return;
+    for (int i = 0; i <= parent->outgoing_edges_index; i++) {
+        if (parent->outgoing_edges[i].node == child) return;
+    }
+    parent->outgoing_edges[++(parent->outgoing_edges_index)].node = child;
+    parent->outgoing_edges[(parent->outgoing_edges_index)].weight = weight;
+    child->incoming_edges[++(child->incoming_edges_index)].node = parent;
+    child->incoming_edges[child->incoming_edges_index].weight = weight;
+}
+
+int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child) {
+    if (parent == nullptr || child == nullptr) {
+        return 1;
+    }
+    for (int i = 0; i <= parent->outgoing_edges_index; i++) {
+        if (parent->outgoing_edges[i].node == child) {
+            for (int j = i; j < parent->outgoing_edges_index; j++) {
+                parent->outgoing_edges[j] = parent->outgoing_edges[j+1];
+            }
+            parent->outgoing_edges_index--;
+        }
+    }
+    for (int i = 0; i <= child->incoming_edges_index; i++) {
+        if (child->incoming_edges[i].node == parent) {
+            for (int j = i; j < child->incoming_edges_index; j++) {
+                child->incoming_edges[j] = child->incoming_edges[j+1];
+            }
+            child->incoming_edges_index--;
+        }
+    }
+    return 0;
+}
+
 Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
     if (data <= 0 || weight <= 0) { //no -ve or 0 allowed
         return nullptr;
