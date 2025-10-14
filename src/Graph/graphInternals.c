@@ -9,15 +9,16 @@
 
 Graph_Node * root = nullptr;
 
-void Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
-    if (weight <= 0 ) return;
+int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
+    if (weight <= 0 ) return 1;
     for (int i = 0; i <= parent->outgoing_edges_index; i++) {
-        if (parent->outgoing_edges[i].node == child) return;
+        if (parent->outgoing_edges[i].node == child) return 2;
     }
     parent->outgoing_edges[++(parent->outgoing_edges_index)].node = child;
     parent->outgoing_edges[(parent->outgoing_edges_index)].weight = weight;
     child->incoming_edges[++(child->incoming_edges_index)].node = parent;
     child->incoming_edges[child->incoming_edges_index].weight = weight;
+    return 0;
 }
 
 int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child) {
