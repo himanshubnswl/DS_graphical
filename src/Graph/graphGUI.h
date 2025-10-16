@@ -6,6 +6,8 @@
 #define GRAPHGUI_H
 #include <raylib.h>
 #include <raygui.h>
+#include <raymath.h>
+#include <math.h>
 #include "graphInternals.h"
 #include <stdio.h>
 #include "../helpers/error.h"

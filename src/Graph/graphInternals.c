@@ -57,6 +57,7 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
 
     if (parent == nullptr) {
         //if parent nullptr then make the root node
+        DEBUG_PRINTF("adding root node");
         root = newNode;
         return newNode;
     }
@@ -130,7 +131,7 @@ int Remove_Graph_Node(Graph_Node * node) {
     for (int i = 0; i <= node->incoming_edges_index; i++) {
         Graph_Node * parent = node->incoming_edges[i].node;
         for (int j = 0; j <= parent->outgoing_edges_index; j++) {
-            if (parent->outgoing_edges[i].node == node) {
+            if (parent->outgoing_edges[j].node == node) {
                 for (int k = j; k < parent->outgoing_edges_index; k++) {
                     parent->outgoing_edges[k] = parent->outgoing_edges[k+1];
                 }
@@ -140,6 +141,7 @@ int Remove_Graph_Node(Graph_Node * node) {
     }
     if (node->incoming_edges_index < 0) {
         //node is determined to be the root
+        DEBUG_PRINTF("root is null");
         root = nullptr;
     }
 

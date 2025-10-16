@@ -23,11 +23,14 @@ Vertex * L_Search_Node(Graph_Node * node) {
 
 void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
     Vector2 p1 = {
-        .x = end.x-10,
-        .y = end.y-10};
+        .x = end.x-20,
+        .y = end.y-20};
     Vector2 p2 = {
-        .x = end.x-10,
-        .y = end.y+10};
+        .x = end.x-20,
+        .y = end.y+20};
+    double deg = Vector2Angle(start, end);
+    p2.x = p2.x - (DEFAULT_RADIUS * cos(deg));
+    p2.y = p2.y + (DEFAULT_RADIUS * sin(deg));
 
     DrawLineEx(start, end, thick, color);
     DrawLineEx(end, p1, thick, color);
@@ -38,10 +41,6 @@ int DrawEdges() {
     for (int k = 0; k <= V_List_Top; k++) {
         for (int i = 0; i <= vertexList[k]->node->outgoing_edges_index; i++) {
             Vertex * dest = L_Search_Node(vertexList[k]->node->outgoing_edges[i].node);
-            DrawPointyLine(vertexList[k]->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
-        }
-        for (int i = 0; i <= vertexList[k]->node->incoming_edges_index; i++) {
-            Vertex * dest = L_Search_Node(vertexList[k]->node->incoming_edges[i].node);
             DrawPointyLine(vertexList[k]->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
         }
     }
@@ -68,9 +67,17 @@ void Selection_Graph(Vertex * vertex) {
     }
 }
 
+void Reset_Selected() {
+    selected_node = nullptr;
+    for (int i = 0 ; i <= V_List_Top; i++) {
+        vertexList[i]->color = DEFAULT_COLOR;
+        vertexList[i]->radius = DEFAULT_RADIUS;
+    }
+}
+
 void Reposition_Vertex(Vertex * vertex) {
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        if (CheckCollisionPointCircle(GetMousePosition(), vertex->pos, vertex->radius)) {
+        if (CheckCollisionPointCircle(GetMousePosition(), vertex->pos, (vertex->radius + 20))) {
             Vector2 delta = GetMouseDelta();
             vertex->pos.x = vertex->pos.x + delta.x;
             vertex->pos.y = vertex->pos.y + delta.y;
@@ -105,12 +112,9 @@ int Add_Vertex(Graph_Node * parent, size_t weight, int data) {
 
         if (parent == nullptr) {
             new_vertex->node = Add_Graph_Node(data, nullptr, weight);
-            DEBUG_PRINTF("here at nullptr");
         }
         else {
-            DEBUG_PRINTF("over here");
             new_vertex->node = Add_Graph_Node(data, parent, weight);
-            DEBUG_PRINTF("succesfully added");
         }
         if (new_vertex->node == nullptr) {
             free(new_vertex);
@@ -122,9 +126,6 @@ int Add_Vertex(Graph_Node * parent, size_t weight, int data) {
             .x = GetRandomValue(10, WINDOW_WIDTH),
             .y = GetRandomValue(10, WINDOW_HEIGHT)};
         vertexList[++V_List_Top] = new_vertex;
-        DEBUG_PRINTF(new_vertex->node->data);
-        DEBUG_PRINTF(new_vertex->pos.x);
-        DEBUG_PRINTF(new_vertex->pos.y);
         return SUCCESS;
     }
 }
@@ -191,8 +192,6 @@ int inputElementHandlerGraph() {
         if (WRresult == 1) {
             if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
             if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
-            DEBUG_PRINTF(chars_to_int(weightch));
-            DEBUG_PRINTF(chars_to_int(valueIN));
             Add_Vertex(selected_node, chars_to_int(weightch), chars_to_int(valueIN));
             *valueIN = '\0';
             *weightch = '\0';
@@ -231,6 +230,7 @@ bool Delete_Vertex_From_List(Vertex * vertex) {
             for (int j = i ; j < V_List_Top; j++) {
                 vertexList[j] = vertexList[j+1];
             }
+            vertexList[V_List_Top] = nullptr;
             V_List_Top--;
             free(vertex->node);
             free(vertex);
@@ -251,18 +251,15 @@ int Remove_Element_Handler() {
 
     if (GuiButton(removeButton, "Remove Vertex")) {
         if (selected_node != nullptr) {
-            DEBUG_CHECKPOINT(251);
             Remove_Graph_Node(selected_node);
-            DEBUG_CHECKPOINT(253);
             for (int i = 0 ; i <= V_List_Top ; i++) {
-                DEBUG_PRINTF(i);
                 if (vertexList[i]->node->data == NON_VALID_NODE_VAL) {
                     Delete_Vertex_From_List(vertexList[i]);
                     i--;
                     err = SUCCESS;
-                    DEBUG_PRINTF("finished deleting");
                 }
             }
+            Reset_Selected();
         }
         else err = REMOVE_ERROR;
     }
