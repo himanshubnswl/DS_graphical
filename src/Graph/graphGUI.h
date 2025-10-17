@@ -26,7 +26,7 @@
 #define TEXT_MAX_SIZE 20
 #define SELECTED_VERT_COLOR GREEN
 #define SELECTED_VERT_RADIUS 45
-#define NOTIF_FONT_SIZE 25
+#define NOTIF_FONT_SIZE 55
 
 typedef struct Edge {
     Graph_Node * start;

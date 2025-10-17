@@ -284,10 +284,26 @@ int Remove_Element_Handler() {
     return err;
 }
 
-void show_notif(Rectangle bounds, char * text) {
+void show_selected(Vertex * parent, Vertex * child) {
+    char text[256];
+    Rectangle const bounds_parent = {
+        .x = 27,
+        .y = 131,
+        .width = 200,
+        .height = 100};
+    Rectangle const bounds_child = {
+        .x = 27,
+        .y = 244,
+        .width = 200,
+        .height = 100};
     int prevsize = GuiGetStyle(DEFAULT, TEXT_SIZE);
     GuiSetStyle(DEFAULT, TEXT_SIZE, NOTIF_FONT_SIZE);
-    GuiTextBox(bounds, text, TEXT_SIZE, false);
+    if (parent == nullptr) sprintf(text, "parent: nullptr");
+    else sprintf(text, "parent: %d", parent->node->data);
+    GuiTextBox(bounds_parent, text, TEXT_SIZE, false);
+    if (child == nullptr) sprintf(text, "child: nullptr");
+    else sprintf(text, "child: %d", child->node->data);
+    GuiTextBox(bounds_child, text, TEXT_SIZE, false);
     GuiSetStyle(DEFAULT, TEXT_SIZE, prevsize);
 }
 
@@ -324,6 +340,7 @@ int Add_Edge_Handler() {
                 child->color = BLUE;
             }
         }
+        show_selected(parent, child);
         int result = GuiTextInputBox(input_box, nullptr, nullptr, "Add Edge", edge_val, 20, nullptr);
 
         switch (result) {
@@ -334,6 +351,10 @@ int Add_Edge_Handler() {
             case 1:
                 if (parent != nullptr && child != nullptr) {
                     Add_Graph_Edge(parent->node, child->node, chars_to_int(edge_val));
+                    parent = nullptr;
+                    child = nullptr;
+                    num_selected = 0;
+                    edge_val[0] = '\0';
                 }
                 break;
             case -1:
