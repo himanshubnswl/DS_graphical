@@ -7,7 +7,7 @@
 
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
-Graph_Node * selected_node = nullptr;
+Vertex * selected_vertex = nullptr;
 int V_List_Top = -1;
 
 Vertex * L_Search_Node(Graph_Node * node) {
@@ -65,12 +65,12 @@ int DrawEdges() {
     return SUCCESS;
 }
 
-void Selection_Graph(Vertex * vertex) {
+void Selection_Vertex(Vertex * vertex) {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         if (CheckCollisionPointCircle(GetMousePosition() , vertex->pos, vertex->radius)) {
             vertex->radius = SELECTED_VERT_RADIUS;
             vertex->color = SELECTED_VERT_COLOR;
-            selected_node = vertex->node;
+            selected_vertex = vertex;
             for (int i = 0; i <= V_List_Top; i++) {
                 if (vertexList[i] == vertex) continue;
                 vertexList[i]->color = DEFAULT_COLOR;
@@ -79,14 +79,14 @@ void Selection_Graph(Vertex * vertex) {
         }
     }
     else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        selected_node = nullptr;
+        selected_vertex = nullptr;
         vertex->color = DEFAULT_COLOR;
         vertex->radius = DEFAULT_RADIUS;
     }
 }
 
 void Reset_Selected() {
-    selected_node = nullptr;
+    selected_vertex = nullptr;
     for (int i = 0 ; i <= V_List_Top; i++) {
         vertexList[i]->color = DEFAULT_COLOR;
         vertexList[i]->radius = DEFAULT_RADIUS;
@@ -110,18 +110,18 @@ int DrawGraph() {
     while (i <= V_List_Top) {
         DrawCircleV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
         DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, BLACK);
-        Vector2 text_pos = MeasureTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), FONT_SIZE, FONT_SPACING);
+        Vector2 text_pos = MeasureTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), TEXT_SIZE, TEXT_SPACING);
         text_pos.x = vertexList[i]->pos.x - (text_pos.x/2);
         text_pos.y = vertexList[i]->pos.y - (text_pos.y/2);
-        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), text_pos, FONT_SIZE, FONT_SPACING, BLACK);
-        Selection_Graph(vertexList[i]);
+        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), text_pos, TEXT_SIZE, TEXT_SPACING, BLACK);
+        Selection_Vertex(vertexList[i]);
         Reposition_Vertex(vertexList[i]);
         i++;
     }
     return SUCCESS;
 }
 
-int Add_Vertex(Graph_Node * parent, size_t weight, int data) {
+int Add_Vertex(Vertex * parent, size_t weight, int data) {
     if (parent == nullptr && vertexList[0] != nullptr) {
         return NO_SELECTION;
     }
@@ -132,7 +132,7 @@ int Add_Vertex(Graph_Node * parent, size_t weight, int data) {
             new_vertex->node = Add_Graph_Node(data, nullptr, weight);
         }
         else {
-            new_vertex->node = Add_Graph_Node(data, parent, weight);
+            new_vertex->node = Add_Graph_Node(data, parent->node, weight);
         }
         if (new_vertex->node == nullptr) {
             free(new_vertex);
@@ -148,7 +148,7 @@ int Add_Vertex(Graph_Node * parent, size_t weight, int data) {
     }
 }
 
-int inputElementHandlerGraph() {
+int Input_Element_Handler() {
     static char * valueIN  = nullptr;
     static char * weightch = nullptr;
     if (valueIN == nullptr) {
@@ -210,7 +210,7 @@ int inputElementHandlerGraph() {
         if (WRresult == 1) {
             if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
             if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
-            Add_Vertex(selected_node, chars_to_int(weightch), chars_to_int(valueIN));
+            Add_Vertex(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
             *valueIN = '\0';
             *weightch = '\0';
             dial_weight_show = false;
@@ -226,11 +226,11 @@ int inputElementHandlerGraph() {
 
 void debug_mode() {
     static char string[256];
-    if (selected_node == nullptr) {
+    if (selected_vertex == nullptr) {
         DrawText("No Selection", 20, 20, 20 ,BLACK);
     }
     else {
-        sprintf(string, "Selected Node is: %d", selected_node->data);
+        sprintf(string, "Selected Node is: %d", selected_vertex->node->data);
         DrawText(string, 10,10,20,BLACK);
     }
     if (int_to_chars(V_List_Top) == nullptr) {
@@ -268,8 +268,8 @@ int Remove_Element_Handler() {
     };
 
     if (GuiButton(removeButton, "Remove Vertex")) {
-        if (selected_node != nullptr) {
-            Remove_Graph_Node(selected_node);
+        if (selected_vertex != nullptr) {
+            Remove_Graph_Node(selected_vertex->node);
             for (int i = 0 ; i <= V_List_Top ; i++) {
                 if (vertexList[i]->node->data == NON_VALID_NODE_VAL) {
                     Delete_Vertex_From_List(vertexList[i]);
@@ -284,6 +284,67 @@ int Remove_Element_Handler() {
     return err;
 }
 
+void show_notif(Rectangle bounds, char * text) {
+    int prevsize = GuiGetStyle(DEFAULT, TEXT_SIZE);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, NOTIF_FONT_SIZE);
+    GuiTextBox(bounds, text, TEXT_SIZE, false);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, prevsize);
+}
+
+int Add_Edge(int weight) {
+    Vertex * parent = nullptr;
+    Vertex * child = nullptr;
+    size_t num_selected = 0;
+    while (parent != nullptr && child != nullptr) {
+        if (selected_vertex != nullptr) {
+            if (num_selected == 0) {
+                parent = selected_vertex;
+                parent->color = BLUE;
+                num_selected++;
+            }
+            else {
+                child = selected_vertex;
+                child->color = BLUE;
+            }
+        }
+    }
+    Add_Graph_Edge(parent->node, child->node, weight);
+}
+
+int Add_Edge_Handler() {
+    Rectangle const button = {
+        .x = GetScreenWidth() - 355,
+        .y = GetScreenHeight() - 106,
+        .width = 100,
+        .height = 75};
+    Rectangle const input_box = {
+        .x = GetScreenWidth() - 473,
+        .y = GetScreenHeight() - 250,
+        .width = 200,
+        .height = 127};
+
+    static char edge_val[21] = {'\0'};
+    static bool input_box_show = false;
+    if (GuiButton(button, "Add Edge")) {
+        input_box_show = true;
+    }
+    if (input_box_show) {
+        int result = GuiTextInputBox(input_box, nullptr, nullptr, "Add Edge", edge_val, 20, nullptr);
+
+        switch (result) {
+            case 0:
+                input_box_show = false;
+                return SUCCESS;
+
+            case 1:
+                Add_Edge(chars_to_int(edge_val));
+                break;
+            case -1:
+                return ADD_ERROR;
+        }
+    }
+}
+
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
@@ -293,9 +354,10 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
-        inputElementHandlerGraph();
+        Input_Element_Handler();
         Remove_Element_Handler();
         DrawGraph();
+        Add_Edge_Handler();
         debug_mode();
         EndDrawing();
     }

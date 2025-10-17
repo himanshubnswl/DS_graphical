@@ -35,6 +35,9 @@ bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched); //s
 Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight);      //adds a graph node and return it, to set parent pass in nullptr to parent
 int Remove_Graph_Node(Graph_Node * node);                                    //removes a node by setting the node->data to NON_VALID_NODE_VAL
 Graph_Node * Get_Graph_Root();                                               //return the graph's root
+int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight);
+int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child);
+
 
 
 
