@@ -291,26 +291,6 @@ void show_notif(Rectangle bounds, char * text) {
     GuiSetStyle(DEFAULT, TEXT_SIZE, prevsize);
 }
 
-int Add_Edge(int weight) {
-    Vertex * parent = nullptr;
-    Vertex * child = nullptr;
-    size_t num_selected = 0;
-    while (parent != nullptr && child != nullptr) {
-        if (selected_vertex != nullptr) {
-            if (num_selected == 0) {
-                parent = selected_vertex;
-                parent->color = BLUE;
-                num_selected++;
-            }
-            else {
-                child = selected_vertex;
-                child->color = BLUE;
-            }
-        }
-    }
-    Add_Graph_Edge(parent->node, child->node, weight);
-}
-
 int Add_Edge_Handler() {
     Rectangle const button = {
         .x = GetScreenWidth() - 355,
@@ -325,10 +305,25 @@ int Add_Edge_Handler() {
 
     static char edge_val[21] = {'\0'};
     static bool input_box_show = false;
+
     if (GuiButton(button, "Add Edge")) {
         input_box_show = true;
     }
     if (input_box_show) {
+        static Vertex * parent = nullptr;
+        static Vertex * child = nullptr;
+        static int num_selected = 0;
+        if (selected_vertex != nullptr) {
+            if (num_selected == 0) {
+                parent = selected_vertex;
+                parent->color = BLUE;
+                num_selected++;
+            }
+            else {
+                child = selected_vertex;
+                child->color = BLUE;
+            }
+        }
         int result = GuiTextInputBox(input_box, nullptr, nullptr, "Add Edge", edge_val, 20, nullptr);
 
         switch (result) {
@@ -337,7 +332,9 @@ int Add_Edge_Handler() {
                 return SUCCESS;
 
             case 1:
-                Add_Edge(chars_to_int(edge_val));
+                if (parent != nullptr && child != nullptr) {
+                    Add_Graph_Edge(parent->node, child->node, chars_to_int(edge_val));
+                }
                 break;
             case -1:
                 return ADD_ERROR;
