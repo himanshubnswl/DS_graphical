@@ -26,19 +26,25 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
     end.x = end.x - (DEFAULT_RADIUS * cos(rad));
     end.y = end.y + (DEFAULT_RADIUS * sin(rad));
     DrawLineEx(start, end, thick, color);
+
     double distance = ((end.x - start.x) * (end.x - start.x)) + ((end.y - start.y) * (end.y - start.y));
     distance = sqrt(distance);
+    //get direction of the vector
     Vector2 direction = {
         .x = (start.x - end.x)/(distance),
         .y = (start.y - end.y)/(distance)};
+    //get base of line from where to move
     Vector2 base = Vector2Scale(direction, ARROW_LENGTH);
     base.x = end.x + base.x;
     base.y = end.y + base.y;
+    //get perpendicular vector to the initial vector by rotating dir vector to 90deg
     Vector2 dir_per = Vector2Rotate(direction, PI/2);
     dir_per = Vector2Scale(dir_per, ARROW_LENGTH/2);
+    //move towards per vector from base vector
     Vector2 p1 = {
         .x = base.x + dir_per.x,
         .y = base.y + dir_per.y};
+    //do same but rotate by -90deg
     dir_per = Vector2Rotate(direction, -PI/2);
     dir_per = Vector2Scale(dir_per, ARROW_LENGTH/2);
     Vector2 p2 = {
