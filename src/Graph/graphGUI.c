@@ -22,17 +22,29 @@ Vertex * L_Search_Node(Graph_Node * node) {
 }
 
 void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
-    Vector2 p1 = {
-        .x = end.x-20,
-        .y = end.y-20};
-    Vector2 p2 = {
-        .x = end.x-20,
-        .y = end.y+20};
-    double deg = Vector2Angle(start, end);
-    p2.x = p2.x - (DEFAULT_RADIUS * cos(deg));
-    p2.y = p2.y + (DEFAULT_RADIUS * sin(deg));
-
+    double rad = Vector2LineAngle(start, end);
+    end.x = end.x - (DEFAULT_RADIUS * cos(rad));
+    end.y = end.y + (DEFAULT_RADIUS * sin(rad));
     DrawLineEx(start, end, thick, color);
+    double distance = ((end.x - start.x) * (end.x - start.x)) + ((end.y - start.y) * (end.y - start.y));
+    distance = sqrt(distance);
+    Vector2 direction = {
+        .x = (start.x - end.x)/(distance),
+        .y = (start.y - end.y)/(distance)};
+    Vector2 base = Vector2Scale(direction, ARROW_LENGTH);
+    base.x = end.x + base.x;
+    base.y = end.y + base.y;
+    Vector2 dir_per = Vector2Rotate(direction, PI/2);
+    dir_per = Vector2Scale(dir_per, ARROW_LENGTH/2);
+    Vector2 p1 = {
+        .x = base.x + dir_per.x,
+        .y = base.y + dir_per.y};
+    dir_per = Vector2Rotate(direction, -PI/2);
+    dir_per = Vector2Scale(dir_per, ARROW_LENGTH/2);
+    Vector2 p2 = {
+        .x = base.x + dir_per.x,
+        .y = base.y + dir_per.y};
+
     DrawLineEx(end, p1, thick, color);
     DrawLineEx(end, p2, thick, color);
 }
