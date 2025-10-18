@@ -65,24 +65,28 @@ int DrawEdges() {
     return SUCCESS;
 }
 
-void Selection_Vertex(Vertex * vertex) {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        if (CheckCollisionPointCircle(GetMousePosition() , vertex->pos, vertex->radius)) {
-            vertex->radius = SELECTED_VERT_RADIUS;
-            vertex->color = SELECTED_VERT_COLOR;
-            selected_vertex = vertex;
-            for (int i = 0; i <= V_List_Top; i++) {
-                if (vertexList[i] == vertex) continue;
-                vertexList[i]->color = DEFAULT_COLOR;
-                vertexList[i]->radius = DEFAULT_RADIUS;
+Vertex * Get_Selected_Vertex() {
+    for (int i = 0; i <= V_List_Top; i ++) {
+        Vertex * vertex = vertexList[i];
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            if (CheckCollisionPointCircle(GetMousePosition() , vertex->pos, vertex->radius)) {
+                vertex->radius = SELECTED_VERT_RADIUS;
+                vertex->color = SELECTED_VERT_COLOR;
+                selected_vertex = vertex;
+                for (int i = 0; i <= V_List_Top; i++) {
+                    if (vertexList[i] == vertex || ColorIsEqual(vertexList[i]->color, EDGE_SELECTED_COLOR)) continue;
+                    vertexList[i]->color = DEFAULT_COLOR;
+                    vertexList[i]->radius = DEFAULT_RADIUS;
+                }
             }
         }
+        else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            selected_vertex = nullptr;
+            vertex->color = DEFAULT_COLOR;
+            vertex->radius = DEFAULT_RADIUS;
+        }
     }
-    else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        selected_vertex = nullptr;
-        vertex->color = DEFAULT_COLOR;
-        vertex->radius = DEFAULT_RADIUS;
-    }
+    return selected_vertex;
 }
 
 void Reset_Selected() {
@@ -110,11 +114,10 @@ int DrawGraph() {
     while (i <= V_List_Top) {
         DrawCircleV(vertexList[i]->pos, vertexList[i]->radius, vertexList[i]->color);
         DrawCircleLinesV(vertexList[i]->pos, vertexList[i]->radius, BLACK);
-        Vector2 text_pos = MeasureTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), TEXT_SIZE, TEXT_SPACING);
+        Vector2 text_pos = MeasureTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), TEXT_SIZE_GUI, TEXT_SPACING_GUI);
         text_pos.x = vertexList[i]->pos.x - (text_pos.x/2);
         text_pos.y = vertexList[i]->pos.y - (text_pos.y/2);
-        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), text_pos, TEXT_SIZE, TEXT_SPACING, BLACK);
-        Selection_Vertex(vertexList[i]);
+        DrawTextEx(GetFontDefault(), int_to_chars(vertexList[i]->node->data), text_pos, TEXT_SIZE_GUI, TEXT_SPACING_GUI, BLACK);
         Reposition_Vertex(vertexList[i]);
         i++;
     }
@@ -152,10 +155,10 @@ int Input_Element_Handler() {
     static char * valueIN  = nullptr;
     static char * weightch = nullptr;
     if (valueIN == nullptr) {
-        valueIN = calloc(TEXT_MAX_SIZE, sizeof(char));
+        valueIN = calloc(TEXT_MAX_LENGTH, sizeof(char));
     }
     if (weightch == nullptr) {
-        weightch = calloc(TEXT_MAX_SIZE, sizeof(char));
+        weightch = calloc(TEXT_MAX_LENGTH, sizeof(char));
     }
 
     static bool dial_value_show = false;
@@ -186,7 +189,7 @@ int Input_Element_Handler() {
     }
 
     if (dial_value_show) {
-        butt_value = GuiTextInputBox(dial_value, nullptr, nullptr, "ADD", valueIN , TEXT_MAX_SIZE, nullptr);
+        butt_value = GuiTextInputBox(dial_value, nullptr, nullptr, "ADD", valueIN , TEXT_MAX_LENGTH, nullptr);
     }
 
     switch(butt_value) {
@@ -206,11 +209,11 @@ int Input_Element_Handler() {
 
     if (dial_weight_show == true) {
         dial_value_show = false;
-        WRresult = GuiTextInputBox(dial_weight, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_SIZE,nullptr);
+        WRresult = GuiTextInputBox(dial_weight, nullptr, nullptr, "ENTER WEIGHT", weightch, TEXT_MAX_LENGTH,nullptr);
         if (WRresult == 1) {
             if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
             if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
-            Add_Vertex(selected_vertex, chars_to_int(weightch), chars_to_int(valueIN));
+            Add_Vertex(Get_Selected_Vertex(), chars_to_int(weightch), chars_to_int(valueIN));
             *valueIN = '\0';
             *weightch = '\0';
             dial_weight_show = false;
@@ -268,8 +271,8 @@ int Remove_Element_Handler() {
     };
 
     if (GuiButton(removeButton, "Remove Vertex")) {
-        if (selected_vertex != nullptr) {
-            Remove_Graph_Node(selected_vertex->node);
+        if (Get_Selected_Vertex() != nullptr) {
+            Remove_Graph_Node(Get_Selected_Vertex()->node);
             for (int i = 0 ; i <= V_List_Top ; i++) {
                 if (vertexList[i]->node->data == NON_VALID_NODE_VAL) {
                     Delete_Vertex_From_List(vertexList[i]);
@@ -329,14 +332,15 @@ int Add_Edge_Handler() {
         static Vertex * parent = nullptr;
         static Vertex * child = nullptr;
         static int num_selected = 0;
-        if (selected_vertex != nullptr) {
+        if (Get_Selected_Vertex() != nullptr) {
             if (num_selected == 0) {
-                parent = selected_vertex;
-                parent->color = BLUE;
+                parent = Get_Selected_Vertex();
+                parent->color = EDGE_SELECTED_COLOR;
+                selected_vertex = nullptr;
                 num_selected++;
             }
             else {
-                child = selected_vertex;
+                child = Get_Selected_Vertex();
                 child->color = BLUE;
             }
         }
@@ -355,6 +359,7 @@ int Add_Edge_Handler() {
                     child = nullptr;
                     num_selected = 0;
                     edge_val[0] = '\0';
+                    Reset_Selected();
                 }
                 break;
             case -1:
@@ -375,6 +380,7 @@ int main() {
         Input_Element_Handler();
         Remove_Element_Handler();
         DrawGraph();
+        Get_Selected_Vertex();
         Add_Edge_Handler();
         debug_mode();
         EndDrawing();

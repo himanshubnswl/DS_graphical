@@ -18,15 +18,16 @@
 #define DEBUG
 #define WINDOW_HEIGHT 900
 #define WINDOW_WIDTH 1700
-#define TEXT_SIZE 18
-#define TEXT_SPACING 5
+#define TEXT_SIZE_GUI 18
+#define TEXT_SPACING_GUI 5
 #define DEFAULT_COLOR WHITE
 #define DEFAULT_RADIUS 40
 #define DEFAULT_LINE_THICKNESS 10
-#define TEXT_MAX_SIZE 20
+#define TEXT_MAX_LENGTH 20
 #define SELECTED_VERT_COLOR GREEN
 #define SELECTED_VERT_RADIUS 45
-#define NOTIF_FONT_SIZE 55
+#define NOTIF_FONT_SIZE 25
+#define EDGE_SELECTED_COLOR BLUE
 
 typedef struct Edge {
     Graph_Node * start;
