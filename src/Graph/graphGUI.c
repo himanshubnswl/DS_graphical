@@ -73,10 +73,10 @@ Vertex * Get_Selected_Vertex() {
                 vertex->radius = SELECTED_VERT_RADIUS;
                 vertex->color = SELECTED_VERT_COLOR;
                 selected_vertex = vertex;
-                for (int i = 0; i <= V_List_Top; i++) {
-                    if (vertexList[i] == vertex || ColorIsEqual(vertexList[i]->color, EDGE_SELECTED_COLOR)) continue;
-                    vertexList[i]->color = DEFAULT_COLOR;
-                    vertexList[i]->radius = DEFAULT_RADIUS;
+                for (int j = 0; j <= V_List_Top; j++) {
+                    if (vertexList[j] == vertex || ColorIsEqual(vertexList[j]->color, EDGE_SELECTED_COLOR)) continue;
+                    vertexList[j]->color = DEFAULT_COLOR;
+                    vertexList[j]->radius = DEFAULT_RADIUS;
                 }
             }
         }
@@ -301,11 +301,15 @@ void show_selected(Vertex * parent, Vertex * child) {
         .height = 100};
     int prevsize = GuiGetStyle(DEFAULT, TEXT_SIZE);
     GuiSetStyle(DEFAULT, TEXT_SIZE, NOTIF_FONT_SIZE);
+
     if (parent == nullptr) sprintf(text, "parent: nullptr");
     else sprintf(text, "parent: %d", parent->node->data);
+
     GuiTextBox(bounds_parent, text, TEXT_SIZE, false);
+
     if (child == nullptr) sprintf(text, "child: nullptr");
     else sprintf(text, "child: %d", child->node->data);
+
     GuiTextBox(bounds_child, text, TEXT_SIZE, false);
     GuiSetStyle(DEFAULT, TEXT_SIZE, prevsize);
 }
@@ -341,7 +345,7 @@ int Add_Edge_Handler() {
             }
             else {
                 child = Get_Selected_Vertex();
-                child->color = BLUE;
+                child->color = EDGE_SELECTED_COLOR;
             }
         }
         show_selected(parent, child);
@@ -368,6 +372,48 @@ int Add_Edge_Handler() {
     }
 }
 
+int Remove_Edge_Handler() {
+    static Vertex * parent = nullptr;
+    static Vertex * child = nullptr;
+    Rectangle const button = {
+        .x = GetScreenWidth() - 473,
+        .y = GetScreenHeight() - 106,
+        .width = 100,
+        .height = 75};
+    static int num_selected = 0;
+    static bool selection = false;
+
+    if (GuiButton(button, "Remove Edge")) {
+        selection = true;
+        if (parent != nullptr && child != nullptr) {
+            Remove_Graph_Edge(parent->node, child->node);
+            parent = nullptr;
+            child = nullptr;
+            selection = false;
+            num_selected = 0;
+            Reset_Selected();
+        }
+    }
+
+
+    if (selection) {
+        show_selected(parent, child);
+        if (Get_Selected_Vertex() != nullptr) {
+            if (num_selected == 0) {
+                parent = Get_Selected_Vertex();
+                parent->color = EDGE_SELECTED_COLOR;
+                selected_vertex = nullptr;
+                num_selected++;
+            }
+            else {
+                child = Get_Selected_Vertex();
+                child->color = EDGE_SELECTED_COLOR;
+            }
+        }
+    }
+
+}
+
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
@@ -381,6 +427,7 @@ int main() {
         Remove_Element_Handler();
         DrawGraph();
         Get_Selected_Vertex();
+        Remove_Edge_Handler();
         Add_Edge_Handler();
         debug_mode();
         EndDrawing();
