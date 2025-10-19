@@ -25,6 +25,10 @@ int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child) {
     if (parent == nullptr || child == nullptr) {
         return 1;
     }
+    if (child->incoming_edges_index == 0) {
+        Remove_Graph_Node(child);
+        return 0;
+    }
     for (int i = 0; i <= parent->outgoing_edges_index; i++) {
         if (parent->outgoing_edges[i].node == child) {
             for (int j = i; j < parent->outgoing_edges_index; j++) {
@@ -41,6 +45,7 @@ int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child) {
             child->incoming_edges_index--;
         }
     }
+
     return 0;
 }
 

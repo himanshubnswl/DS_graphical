@@ -387,6 +387,9 @@ int Remove_Edge_Handler() {
         selection = true;
         if (parent != nullptr && child != nullptr) {
             Remove_Graph_Edge(parent->node, child->node);
+            if (child->node->data == NON_VALID_NODE_VAL) {
+                Delete_Vertex_From_List(child);
+            }
             parent = nullptr;
             child = nullptr;
             selection = false;
