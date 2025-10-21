@@ -6,7 +6,7 @@
 Graph_Node * root = nullptr;
 
 int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
-    if (weight <= 0 ) return 1;
+    if (weight <= 0 || parent == nullptr) return 1;
     for (int i = 0; i <= parent->outgoing_edges_index; i++) {
         if (parent->outgoing_edges[i].node == child) return 2;
     }
@@ -25,14 +25,19 @@ int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child) {
         Remove_Graph_Node(child);
         return 0;
     }
+    bool found = false;
     for (int i = 0; i <= parent->outgoing_edges_index; i++) {
         if (parent->outgoing_edges[i].node == child) {
+            found = true;
             for (int j = i; j < parent->outgoing_edges_index; j++) {
                 parent->outgoing_edges[j] = parent->outgoing_edges[j+1];
             }
             parent->outgoing_edges_index--;
         }
     }
+
+    if (found == false) return 2;
+
     for (int i = 0; i <= child->incoming_edges_index; i++) {
         if (child->incoming_edges[i].node == parent) {
             for (int j = i; j < child->incoming_edges_index; j++) {
@@ -41,7 +46,6 @@ int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child) {
             child->incoming_edges_index--;
         }
     }
-
     return 0;
 }
 
@@ -58,7 +62,6 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
 
     if (parent == nullptr) {
         //if parent nullptr then make the root node
-        DEBUG_PRINTF("adding root node");
         root = newNode;
         return newNode;
     }
@@ -127,6 +130,7 @@ void printARR(char * id ,Graph_Node ** arr) {
 }
 
 int Remove_Graph_Node(Graph_Node * node) {
+    if (node == nullptr) return 1;
     Graph_Node ** firstarr = Get_DFS_traversal();
 
     for (int i = 0; i <= node->incoming_edges_index; i++) {
@@ -142,7 +146,6 @@ int Remove_Graph_Node(Graph_Node * node) {
     }
     if (node->incoming_edges_index < 0) {
         //node is determined to be the root
-        DEBUG_PRINTF("root is null");
         root = nullptr;
     }
 
@@ -159,8 +162,7 @@ int Remove_Graph_Node(Graph_Node * node) {
     free(firstarr);
     free(secondarr);
     free(missingnodes);
-    DEBUG_PRINTF("exiting remove function");
-    return SUCCESS;
+    return 0;
 }
 
 Graph_Node * Get_Graph_Root() {

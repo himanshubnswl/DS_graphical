@@ -40,4 +40,6 @@ typedef struct Vertex {
     Color color;
     int radius;
 }Vertex;
+
+
 #endif //GRAPHGUI_H

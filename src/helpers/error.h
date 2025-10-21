@@ -8,7 +8,6 @@
 #include <raygui.h>
 #include <raylib.h>
 #include <debug.h>
-
 enum ERROR_HANDLER {
     ADD_ERROR = -1,
     REMOVE_ERROR = -2,
@@ -21,7 +20,8 @@ enum ERROR_HANDLER {
     FULL = -9,
     BAD_ALLOC = -10,
     NO_SELECTION = -11,
-    ALLOC_FAIL = -12
+    ALREADY_EXISTS = -12,
+    NO_EDGE = -13
 };
 
 #ifdef ERROR_IMPLEMENTATION
@@ -44,10 +44,6 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
             message = "The tree is Empty";
             break;
 
-        case SUCCESS:
-            message = nullptr;
-            break;
-
         case ZERO_DATA:
             message = "Zeros are not allowed";
             break;
@@ -60,6 +56,26 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
             message = "value couldn't be found";
             break;
 
+        case FULL:
+            message = "Something is Full";
+            break;
+
+        case BAD_ALLOC:
+            message = "allocation failed";
+            break;
+
+        case NO_SELECTION:
+            message = "no element selected";
+            break;
+
+        case ALREADY_EXISTS:
+            message = "field already exists";
+            break;
+
+        case NO_EDGE:
+            message = "field doesn't exist";
+            break;
+
         default:
             message = nullptr;
     }
@@ -69,17 +85,28 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
     DEBUG_PRINTF(message);
 #endif
 
-
+    static bool show_error = false;
     if (message != nullptr) {
-        Rectangle errorBox = {
+        show_error = true;
+    }
+    if(show_error) {
+        static char * V_error;
+        if (message != nullptr) V_error = message;
+        Rectangle const errorBox = {
             .x = (GetScreenWidth()/100) * 2,
             .y = (GetScreenHeight()/100) * 80,
-            .width = MeasureText(message, 35) + 100,
+            .width = 600,
             .height = 100
         };
+        Rectangle const remove_button = {
+            .x = errorBox.x + (errorBox.width - 50),
+            .y = errorBox.y + 10,
+            .width = 25,
+            .height = 25};
         int prev = GuiGetStyle(DEFAULT, TEXT_SIZE);
         GuiSetStyle(DEFAULT, TEXT_SIZE, 45);
-        GuiTextBox(errorBox, message, 256, false);
+        GuiTextBox(errorBox, V_error, 256, false);
+        if(GuiButton(remove_button, "X")) show_error = false;
         GuiSetStyle(DEFAULT, TEXT_SIZE, prev);
     }
 }

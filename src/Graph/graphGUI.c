@@ -1,7 +1,7 @@
 //
 // Created by lhbdawn on 03-10-2025.
 //
-
+#define ERROR_IMPLEMENTATION
 #include "graphGUI.h"
 
 
@@ -9,6 +9,8 @@
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Vertex * selected_vertex = nullptr;
 int V_List_Top = -1;
+enum ERROR_HANDLER ERROR;
+
 
 Vertex * L_Search_Node(Graph_Node * node) {
     size_t i = 0;
@@ -55,14 +57,13 @@ void DrawPointyLine(Vector2 start, Vector2 end, float thick, Color color) {
     DrawLineEx(end, p2, thick, color);
 }
 
-int DrawEdges() {
+void DrawEdges() {
     for (int k = 0; k <= V_List_Top; k++) {
         for (int i = 0; i <= vertexList[k]->node->outgoing_edges_index; i++) {
             Vertex * dest = L_Search_Node(vertexList[k]->node->outgoing_edges[i].node);
             DrawPointyLine(vertexList[k]->pos, dest->pos , DEFAULT_LINE_THICKNESS, DEFAULT_COLOR);
         }
     }
-    return SUCCESS;
 }
 
 Vertex * Get_Selected_Vertex() {
@@ -108,7 +109,7 @@ void Reposition_Vertex(Vertex * vertex) {
     }
 }
 
-int DrawGraph() {
+void DrawGraph() {
     int i = 0;
     DrawEdges();
     while (i <= V_List_Top) {
@@ -121,7 +122,6 @@ int DrawGraph() {
         Reposition_Vertex(vertexList[i]);
         i++;
     }
-    return SUCCESS;
 }
 
 int Add_Vertex(Vertex * parent, size_t weight, int data) {
@@ -194,7 +194,7 @@ int Input_Element_Handler() {
 
     switch(butt_value) {
         case -1:
-            return ADD_ERROR;
+            return SUCCESS;
 
         case 0:
             dial_value_show = false;
@@ -213,18 +213,18 @@ int Input_Element_Handler() {
         if (WRresult == 1) {
             if (chars_to_int(weightch) == NOT_INT)  return NOT_INT;
             if (chars_to_int(valueIN) == NOT_INT) return NOT_INT;
-            Add_Vertex(Get_Selected_Vertex(), chars_to_int(weightch), chars_to_int(valueIN));
+            enum ERROR_HANDLER err = Add_Vertex(Get_Selected_Vertex(), chars_to_int(weightch), chars_to_int(valueIN));
             *valueIN = '\0';
             *weightch = '\0';
             dial_weight_show = false;
-            return SUCCESS;
+            return err;
         }
         else if (WRresult == 0) {
             dial_weight_show = false;
             butt_value = -2;
-            return SUCCESS;
         }
     }
+    return SUCCESS;
 }
 
 void debug_mode() {
@@ -261,8 +261,6 @@ bool Delete_Vertex_From_List(Vertex * vertex) {
 }
 
 int Remove_Element_Handler() {
-    static enum ERROR_HANDLER err = SUCCESS;
-
     Rectangle const removeButton = {
         .x = (GetScreenWidth() - 243),
         .y = (GetScreenHeight() - 106),
@@ -277,14 +275,14 @@ int Remove_Element_Handler() {
                 if (vertexList[i]->node->data == NON_VALID_NODE_VAL) {
                     Delete_Vertex_From_List(vertexList[i]);
                     i--;
-                    err = SUCCESS;
+                    return SUCCESS;
                 }
             }
             Reset_Selected();
         }
-        else err = REMOVE_ERROR;
+        return NO_SELECTION;
     }
-    return err;
+    return SUCCESS;
 }
 
 void show_selected(Vertex * parent, Vertex * child) {
@@ -330,7 +328,7 @@ int Add_Edge_Handler() {
     static bool input_box_show = false;
 
     if (GuiButton(button, "Add Edge")) {
-        input_box_show = true;
+        input_box_show == true ? input_box_show = false : input_box_show = true;
     }
     if (input_box_show) {
         static Vertex * parent = nullptr;
@@ -358,18 +356,24 @@ int Add_Edge_Handler() {
 
             case 1:
                 if (parent != nullptr && child != nullptr) {
-                    Add_Graph_Edge(parent->node, child->node, chars_to_int(edge_val));
+                    if (chars_to_int(edge_val) == NOT_INT) return NOT_INT;
+                    int R = Add_Graph_Edge(parent->node, child->node, chars_to_int(edge_val));
                     parent = nullptr;
                     child = nullptr;
                     num_selected = 0;
                     edge_val[0] = '\0';
                     Reset_Selected();
+
+                    if (R == 2) return ALREADY_EXISTS;
+                    else if (R == 1) return ADD_ERROR;
                 }
+                else return NO_SELECTION;
                 break;
-            case -1:
-                return ADD_ERROR;
+            default:
+                return SUCCESS;
         }
     }
+    return SUCCESS;
 }
 
 int Remove_Edge_Handler() {
@@ -382,22 +386,6 @@ int Remove_Edge_Handler() {
         .height = 75};
     static int num_selected = 0;
     static bool selection = false;
-
-    if (GuiButton(button, "Remove Edge")) {
-        selection = true;
-        if (parent != nullptr && child != nullptr) {
-            Remove_Graph_Edge(parent->node, child->node);
-            if (child->node->data == NON_VALID_NODE_VAL) {
-                Delete_Vertex_From_List(child);
-            }
-            parent = nullptr;
-            child = nullptr;
-            selection = false;
-            num_selected = 0;
-            Reset_Selected();
-        }
-    }
-
 
     if (selection) {
         show_selected(parent, child);
@@ -414,7 +402,24 @@ int Remove_Edge_Handler() {
             }
         }
     }
+    if (GuiButton(button, "Remove Edge")) {
+        selection = true;
+        if (parent != nullptr && child != nullptr) {
+            int R = Remove_Graph_Edge(parent->node, child->node);
+            if (child->node->data == NON_VALID_NODE_VAL) {
+                Delete_Vertex_From_List(child);
+            }
+            parent = nullptr;
+            child = nullptr;
+            selection = false;
+            num_selected = 0;
+            Reset_Selected();
 
+            if (R == 2) return NO_EDGE;
+        }
+        else return NO_SELECTION;
+    }
+    return SUCCESS;
 }
 
 int main() {
@@ -426,13 +431,14 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
-        Input_Element_Handler();
-        Remove_Element_Handler();
+        ERROR = Input_Element_Handler();
+        ERROR = Remove_Element_Handler();
         DrawGraph();
         Get_Selected_Vertex();
-        Remove_Edge_Handler();
-        Add_Edge_Handler();
+        ERROR = Remove_Edge_Handler();
+        ERROR = Add_Edge_Handler();
         debug_mode();
+        CheckAndDrawError(ERROR);
         EndDrawing();
     }
 }
