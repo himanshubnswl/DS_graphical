@@ -66,6 +66,7 @@ int addBSTNode(const int data) {
         parentNode->rightptr = newNode;
         return SUCCESS;
     }
+    return 0;
 }
 
 int removeBSTNode(const int valueToRemove) {
@@ -279,3 +280,4 @@ int LoadBSTreeFromFile() { //when i load three times the app crashes, need to lo
     fclose(loadFrom);
     return SUCCESS;
 }
+

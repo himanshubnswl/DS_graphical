@@ -23,7 +23,7 @@ struct AdListItem {
 };
 
 typedef struct graphNode {
-    int index;
+    int unique_id;
     int data;
     int incoming_edges_index;
     struct AdListItem incoming_edges[20];

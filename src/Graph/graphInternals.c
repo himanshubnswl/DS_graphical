@@ -173,3 +173,16 @@ Graph_Node * Get_Graph_Root() {
         return nullptr;
     }
 }
+
+int Save_Graph_To_File() {
+    FILE * save_file = fopen("./save_file.txt", "w");
+    if (save_file == NULL) {
+        return 1;
+    }
+    Graph_Node ** node_list = Get_DFS_traversal();
+    int i = 0;
+    while (node_list[i] != nullptr) {
+        Graph_Node * node_current = node_list[i];
+
+    }
+}
