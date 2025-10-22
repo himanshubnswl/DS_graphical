@@ -174,15 +174,51 @@ Graph_Node * Get_Graph_Root() {
     }
 }
 
+int Generate_Unique_ID(int * generated_ids, int size_arr) {
+    int generated_number = rand();
+    for (int i = 0; i <= size_arr ; i++) {
+        if (generated_ids[i] == generated_number) {
+            i = 0;
+            generated_number = rand();
+        }
+    }
+    return generated_number;
+}
+
+void Set_Nodes_Unique_IDs(Graph_Node ** list) {
+    int i = 0;
+    int * generated_ids =  malloc(MAX_ELEMENTS_NUM * sizeof(int));
+    int generated_ids_size = -1;
+    while (list[i] != nullptr) {
+        list[i]->unique_id = Generate_Unique_ID(generated_ids, generated_ids_size);
+    }
+    free(generated_ids);
+}
+
 int Save_Graph_To_File() {
     FILE * save_file = fopen("./save_file.txt", "w");
     if (save_file == NULL) {
         return 1;
     }
+
     Graph_Node ** node_list = Get_DFS_traversal();
-    int i = 0;
-    while (node_list[i] != nullptr) {
+    Set_Nodes_Unique_IDs(node_list);
+
+    int k = 0;
+    while (node_list[k] != nullptr) {
         Graph_Node * node_current = node_list[i];
+        fprintf(save_file, "id: %d\n", node_current->unique_id);
+        fprintf(save_file, "data: %d\n", node_current->data);
+        fprintf(save_file, "incoming edges: ");
+        for (int i = 0; i <= node_current->incoming_edges_index; i++) {
+            fprintf(save_file, "%d:%d ", node_current->incoming_edges[i].node->unique_id, node_current->incoming_edges[i].weight);
+        }
+        fprintf(save_file, "\n");
+        fprintf(save_file, "outgoing edges: ");
+        for (int i = 0; i <= node_current->outgoing_edges_index; i++) {
+            fprintf(save_file, "%d:%d ", node_current->outgoing_edges[i].node->unique_id, node_current->outgoing_edges[i].weight);
+        }
+        fprintf(save_file, "\n");
 
     }
 }
