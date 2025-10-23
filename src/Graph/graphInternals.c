@@ -5,6 +5,8 @@
 
 #include <string.h>
 
+#include "../helpers/helper.h"
+
 Graph_Node * root = nullptr;
 
 int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
@@ -241,5 +243,40 @@ int Save_Graph_To_File() {
     free(buffer_string);
     free(node_list);
     fclose(save_file);
+    return 0;
+}
+
+int Load_Graph_From_File() {
+    FILE * load_from_file = fopen("./save_file.txt", "r");
+    if (load_from_file == NULL) return 1;
+    char * string_buffer = malloc(sizeof(char) *  1024);
+    char * key = malloc(sizeof(char) * 256);
+    char * value = malloc(sizeof(char) * 256);
+    Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
+    int list_size = -1;
+    while (fgets(string_buffer, 1024, load_from_file) {
+        key = strtok(string_buffer, ":");
+        printf("\n%s", key);
+        switch (key) {
+            case "unique id":
+                value = strtok(NULL, "\n");
+                printf("\n%s", value);
+                Graph_Node * new_node = malloc(sizeof(Graph_Node));
+                new_node->unique_id = chars_to_int(value);
+                break;
+
+            case "data":
+                value = strtok(NULL, "\n");
+                printf("\n%s", value);
+                new_node->data = chars_to_int(value);
+                break;
+
+            case "incoming edges":
+                break;
+
+            default:
+                return 1;
+        }
+    }
     return 0;
 }
