@@ -213,23 +213,23 @@ int Save_Graph_To_File() {
     while (node_list[k] != nullptr) {
         Graph_Node * node_current = node_list[k];
         main_string[0] = '\0';
-        sprintf(buffer_string, "unique id: %d\n", node_current->unique_id);
-        strcat(main_string, buffer_string);
-        sprintf(buffer_string, "data: %d\n", node_current->data);
-        strcat(main_string, buffer_string);
-        sprintf(buffer_string, "incoming edges: ");
+        sprintf(buffer_string, "unique id: %d\n"
+                               "data: %d\n"
+                               "incoming edges: ", node_current->unique_id,
+                                                   node_current->data);
         strcat(main_string, buffer_string);
         for (int i = 0; i <= node_current->incoming_edges_index; i++) {
-            sprintf(buffer_string, "%d:%d ", node_current->incoming_edges[i].node->unique_id, node_current->incoming_edges[i].weight);
+            sprintf(buffer_string, "%d:%d ",
+                node_current->incoming_edges[i].node->unique_id,
+                node_current->incoming_edges[i].weight);
             strcat(main_string, buffer_string);
         }
-        sprintf(buffer_string, "\n");
-        strcat(main_string, buffer_string);
-
-        sprintf(buffer_string, "outgoing edges: ");
+        sprintf(buffer_string, "\noutgoing edges: ");
         strcat(main_string, buffer_string);
         for (int i = 0; i <= node_current->outgoing_edges_index; i++) {
-            sprintf(buffer_string, "%d:%d ", node_current->outgoing_edges[i].node->unique_id, node_current->outgoing_edges[i].weight);
+            sprintf(buffer_string, "%d:%d ",
+                node_current->outgoing_edges[i].node->unique_id,
+                node_current->outgoing_edges[i].weight);
             strcat(main_string, buffer_string);
         }
         sprintf(buffer_string, "\n\n");
@@ -237,7 +237,6 @@ int Save_Graph_To_File() {
         fputs(main_string, save_file);
         k++;
     }
-
     free(main_string);
     free(buffer_string);
     free(node_list);
