@@ -435,6 +435,19 @@ int Save_Graph_Handler() {
     return 0;
 }
 
+int Load_Graph_Handler() {
+    Rectangle box = {
+    .x = GetScreenWidth() - 709,
+    .y = GetScreenHeight() - 106,
+    .width = 100,
+    .height = 75};
+
+    if (GuiButton(box, "Load Graph")) {
+        Load_Graph_From_File();
+    }
+    return 0;
+}
+
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
@@ -452,6 +465,7 @@ int main() {
         ERROR = Add_Edge_Handler();
         debug_mode();
         Save_Graph_Handler();
+        Load_Graph_Handler();
         CheckAndDrawError(ERROR);
         EndDrawing();
     }

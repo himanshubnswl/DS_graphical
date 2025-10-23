@@ -254,7 +254,7 @@ int Load_Graph_From_File() {
     char * value = malloc(sizeof(char) * 256);
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
-    while (fgets(string_buffer, 1024, load_from_file) {
+    while (fgets(string_buffer, 1024, load_from_file)) {
         key = strtok(string_buffer, ":");
         printf("\n%s", key);
         switch (key) {
