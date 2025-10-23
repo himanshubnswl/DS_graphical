@@ -328,7 +328,7 @@ int Add_Edge_Handler() {
     static bool input_box_show = false;
 
     if (GuiButton(button, "Add Edge")) {
-        input_box_show == true ? input_box_show = false : input_box_show = true;
+        input_box_show == true ? (input_box_show = false) : (input_box_show = true);
     }
     if (input_box_show) {
         static Vertex * parent = nullptr;
@@ -422,6 +422,19 @@ int Remove_Edge_Handler() {
     return SUCCESS;
 }
 
+int Save_Graph_Handler() {
+    Rectangle box = {
+        .x = GetScreenWidth() - 591,
+        .y = GetScreenHeight() - 106,
+        .width = 100,
+        .height = 75
+    };
+    if (GuiButton(box, "Save Graph")) {
+        Save_Graph_To_File();
+    }
+    return 0;
+}
+
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
@@ -438,6 +451,7 @@ int main() {
         ERROR = Remove_Edge_Handler();
         ERROR = Add_Edge_Handler();
         debug_mode();
+        Save_Graph_Handler();
         CheckAndDrawError(ERROR);
         EndDrawing();
     }

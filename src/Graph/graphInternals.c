@@ -3,6 +3,8 @@
 //
 #include "graphInternals.h"
 
+#include <string.h>
+
 Graph_Node * root = nullptr;
 
 int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
@@ -191,6 +193,8 @@ void Set_Nodes_Unique_IDs(Graph_Node ** list) {
     int generated_ids_size = -1;
     while (list[i] != nullptr) {
         list[i]->unique_id = Generate_Unique_ID(generated_ids, generated_ids_size);
+        generated_ids_size++;
+        i++;
     }
     free(generated_ids);
 }
@@ -200,25 +204,41 @@ int Save_Graph_To_File() {
     if (save_file == NULL) {
         return 1;
     }
-
+    char * main_string = malloc(1024 * sizeof(char));
+    char * buffer_string = malloc(1024 * sizeof(char));
     Graph_Node ** node_list = Get_DFS_traversal();
     Set_Nodes_Unique_IDs(node_list);
-
+    main_string[0] = '\0';
     int k = 0;
     while (node_list[k] != nullptr) {
-        Graph_Node * node_current = node_list[i];
-        fprintf(save_file, "id: %d\n", node_current->unique_id);
-        fprintf(save_file, "data: %d\n", node_current->data);
-        fprintf(save_file, "incoming edges: ");
+        Graph_Node * node_current = node_list[k];
+        sprintf(buffer_string, "unique id: %d\n", node_current->unique_id);
+        strcat(main_string, buffer_string);
+        sprintf(buffer_string, "data: %d\n", node_current->data);
+        strcat(main_string, buffer_string);
+        sprintf(buffer_string, "incoming edges: ");
+        strcat(main_string, buffer_string);
         for (int i = 0; i <= node_current->incoming_edges_index; i++) {
-            fprintf(save_file, "%d:%d ", node_current->incoming_edges[i].node->unique_id, node_current->incoming_edges[i].weight);
+            sprintf(buffer_string, "%d:%d ", node_current->incoming_edges[i].node->unique_id, node_current->incoming_edges[i].weight);
+            strcat(main_string, buffer_string);
         }
-        fprintf(save_file, "\n");
-        fprintf(save_file, "outgoing edges: ");
-        for (int i = 0; i <= node_current->outgoing_edges_index; i++) {
-            fprintf(save_file, "%d:%d ", node_current->outgoing_edges[i].node->unique_id, node_current->outgoing_edges[i].weight);
-        }
-        fprintf(save_file, "\n");
+        sprintf(buffer_string, "\n");
+        strcat(main_string, buffer_string);
 
+        sprintf(buffer_string, "outgoing edges: ");
+        strcat(main_string, buffer_string);
+        for (int i = 0; i <= node_current->outgoing_edges_index; i++) {
+            sprintf(buffer_string, "%d:%d ", node_current->outgoing_edges[i].node->unique_id, node_current->outgoing_edges[i].weight);
+            strcat(main_string, buffer_string);
+        }
+        sprintf(buffer_string, "\n\n");
+        strcat(main_string, buffer_string);
+        k++;
     }
+    fputs(main_string, save_file);
+    free(main_string);
+    free(buffer_string);
+    free(node_list);
+    fclose(save_file);
+    return 0;
 }

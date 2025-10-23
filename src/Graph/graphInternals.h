@@ -62,6 +62,7 @@ int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight);
 int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child);
 
 
+int Save_Graph_To_File();
 
 
 #endif //GRAPHINTERNALS_H
