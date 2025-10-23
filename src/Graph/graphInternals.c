@@ -208,10 +208,11 @@ int Save_Graph_To_File() {
     char * buffer_string = malloc(1024 * sizeof(char));
     Graph_Node ** node_list = Get_DFS_traversal();
     Set_Nodes_Unique_IDs(node_list);
-    main_string[0] = '\0';
+
     int k = 0;
     while (node_list[k] != nullptr) {
         Graph_Node * node_current = node_list[k];
+        main_string[0] = '\0';
         sprintf(buffer_string, "unique id: %d\n", node_current->unique_id);
         strcat(main_string, buffer_string);
         sprintf(buffer_string, "data: %d\n", node_current->data);
@@ -233,9 +234,10 @@ int Save_Graph_To_File() {
         }
         sprintf(buffer_string, "\n\n");
         strcat(main_string, buffer_string);
+        fputs(main_string, save_file);
         k++;
     }
-    fputs(main_string, save_file);
+
     free(main_string);
     free(buffer_string);
     free(node_list);
