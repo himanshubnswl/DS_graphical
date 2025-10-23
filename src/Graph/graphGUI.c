@@ -352,6 +352,10 @@ int Add_Edge_Handler() {
         switch (result) {
             case 0:
                 input_box_show = false;
+                parent = nullptr;
+                child = nullptr;
+                edge_val[0] = '\0';
+                Reset_Selected();
                 return SUCCESS;
 
             case 1:
