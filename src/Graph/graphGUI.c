@@ -470,6 +470,7 @@ int main() {
         debug_mode();
         Save_Graph_Handler();
         Load_Graph_Handler();
+        printf("\nwe returned!");
         CheckAndDrawError(ERROR);
         EndDrawing();
     }

@@ -250,11 +250,11 @@ int Load_Graph_From_File() {
     FILE * load_from_file = fopen("./save_file.txt", "r");
     if (load_from_file == NULL) return 1;
     char * string_buffer = malloc(sizeof(char) *  1024);
-    char * key = malloc(sizeof(char) * 256);
+    char * key;
     char * value = malloc(sizeof(char) * 256);
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
-    while (fgets(string_buffer, 1024, load_from_file)) {
+    while (fgets(string_buffer, 1024, load_from_file) != nullptr) {
         key = strtok(string_buffer, ":");
         printf("\n%s", key);
         uint32_t hashed_string = Hash_String_FNV(key);
@@ -281,7 +281,6 @@ int Load_Graph_From_File() {
                 break;
         }
     }
-    free(key);
     free(value);
     free(list);
     free(string_buffer);
