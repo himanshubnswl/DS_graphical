@@ -9,10 +9,16 @@
 #include <stdlib.h>
 #include <limits.h>
 #include "../helpers/error.h"
+#include <stdint.h>
 
 #define MAX_ELEMENTS_NUM 50
 #define MAX_DELETED_NODES 20
 #define NON_VALID_NODE_VAL -10
+
+#define UNIQUE_ID 767618207
+#define DATA 1541062733
+#define INCOMING_EDGES 2797541343
+#define OUTGOING_EDGES 3023561681
 
 struct graphNode;
 struct AdList;

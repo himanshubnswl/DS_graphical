@@ -1,6 +1,8 @@
 
 #include "helper.h"
 
+#include <stdint.h>
+
 #include "raygui.h"
 
 
@@ -49,6 +51,17 @@ int chars_to_int(char * text) {
         i++;
     }
     return value;
+}
+
+uint32_t Hash_String_FNV(char const * string_to_hash) {
+    uint32_t hash = HASH_FNV_OFFSET;
+    int i = 0;
+    while (string_to_hash[i] != '\0') {
+        hash = hash ^ string_to_hash[i];
+        hash = hash * FNV_PRIME;
+        i++;
+    }
+    return hash;
 }
 
 int removeElementHandler(int (*removeElementInDS)(int)) {

@@ -256,27 +256,33 @@ int Load_Graph_From_File() {
     int list_size = -1;
     while (fgets(string_buffer, 1024, load_from_file)) {
         key = strtok(string_buffer, ":");
-        printf("\n%s", key);
-        switch (key) {
-            case "unique id":
-                value = strtok(NULL, "\n");
-                printf("\n%s", value);
-                Graph_Node * new_node = malloc(sizeof(Graph_Node));
-                new_node->unique_id = chars_to_int(value);
+        uint32_t hashed_string = Hash_String_FNV(key);
+        switch (hashed_string) {
+            case UNIQUE_ID:
+                printf("\nhit on unique id");
                 break;
 
-            case "data":
-                value = strtok(NULL, "\n");
-                printf("\n%s", value);
-                new_node->data = chars_to_int(value);
+            case DATA:
+                printf("\ndata hit");
                 break;
 
-            case "incoming edges":
+            case INCOMING_EDGES:
+                printf("\nhit on incoming edges");
+                break;
+
+            case OUTGOING_EDGES:
+                printf("\nhit on outgoing edges");
                 break;
 
             default:
-                return 1;
+                printf("\nno hit");
+                break;
         }
     }
+    free(key);
+    free(value);
+    free(list);
+    free(string_buffer);
+    fclose(load_from_file);
     return 0;
 }
