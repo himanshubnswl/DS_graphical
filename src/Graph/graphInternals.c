@@ -256,7 +256,9 @@ int Load_Graph_From_File() {
     int list_size = -1;
     while (fgets(string_buffer, 1024, load_from_file)) {
         key = strtok(string_buffer, ":");
+        printf("\n%s", key);
         uint32_t hashed_string = Hash_String_FNV(key);
+        printf("\nhashed string value : %lu", hashed_string);
         switch (hashed_string) {
             case UNIQUE_ID:
                 printf("\nhit on unique id");
