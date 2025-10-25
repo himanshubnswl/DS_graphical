@@ -23,6 +23,11 @@
 struct graphNode;
 struct AdList;
 
+typedef struct edgelink {
+    int unique_id;
+    int weight;
+}edge_link;
+
 struct AdListItem {
     struct graphNode * node;
     int weight;

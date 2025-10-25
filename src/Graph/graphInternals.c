@@ -246,12 +246,57 @@ int Save_Graph_To_File() {
     return 0;
 }
 
+int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end) {
+    char sub_string[20];
+    int sub_string_size = 0;
+    for (int i = start; i < end; i++) {
+        sub_string[sub_string_size] = string[i];
+        sub_string_size++;
+    }
+    return chars_to_int(sub_string);
+}
+
+edge_link * Add_Edge_From_String(char * string) {
+    edge_link * edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_list));
+    int edge_list_size = -1;
+
+    int i = 0;
+    unsigned int start = 0;
+    unsigned int end = 0;
+    bool set_start = false;
+    bool set_weight_flag = false;
+    while (string[i] != '\n') {
+        if (string[i] <= '9' && string[i] >= '0') {
+            if (set_start == false) {
+                start = i;
+                set_start = true;
+            }
+        }
+        else if (string[i] == ':') {
+            end = i;
+            edge_list[++edge_list_size].unique_id = Get_Value_From_Substring(string, start, end);
+            printf("\nedge_list_unique_id: %lu", edge_list[edge_list_size].unique_id);
+            set_weight_flag = true;
+            set_start = false;
+        }
+        else if (string[i] == ' ') {
+            if (set_weight_flag == true) {
+                end = i;
+                edge_list[edge_list_size].weight = Get_Value_From_Substring(string, start, end);
+                printf("\nedge_list_weight: %lu", edge_list[edge_list_size].weight);
+                set_weight_flag = false;
+                set_start = false;
+            }
+        }
+        i++;
+    }
+}
+
 int Load_Graph_From_File() {
     FILE * load_from_file = fopen("./save_file.txt", "r");
     if (load_from_file == NULL) return 1;
 
     char * string_buffer = malloc(sizeof(char) *  1024);
-    char * value = malloc(sizeof(char) * 256);
 
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
@@ -261,22 +306,36 @@ int Load_Graph_From_File() {
         printf("\n%s", key);
         uint32_t hashed_string = Hash_String_FNV(key);
         printf("\nhashed string value : %lu", hashed_string);
+        char * value;
 
         switch (hashed_string) {
             case UNIQUE_ID:
-                printf("\nhit on unique id");
+                value = strtok(nullptr, "\n");
+                printf("\n uniqe vlaue: %s", value);
+                // Graph_Node * newNode = malloc(sizeof(malloc));
+                // if (root == nullptr) root = newNode;
+                // newNode->unique_id = chars_to_int(value);
+                // list[++list_size] = newNode;
                 break;
 
             case DATA:
-                printf("\ndata hit");
+                value = strtok(nullptr, "\n");
+                printf("\n data vlaue: %s", value);
+                // newNode->data = chars_to_int(value);
+                // printf("\ndata hit");
                 break;
 
             case INCOMING_EDGES:
-                printf("\nhit on incoming edges");
+                value = strtok(nullptr, "\n");
+                printf("\n incoming edge vlaue: %s", value);
+                // Add_Edge_From_String(value);
+                // printf("\nhit on incoming edges");
                 break;
 
             case OUTGOING_EDGES:
-                printf("\nhit on outgoing edges");
+                value = strtok(NULL, "\n");
+                printf("\n outoign edge vlaue: %s", value);
+                // printf("\nhit on outgoing edges");
                 break;
 
             default:
@@ -284,7 +343,6 @@ int Load_Graph_From_File() {
                 break;
         }
     }
-    free(value);
     free(list);
     free(string_buffer);
     fclose(load_from_file);
