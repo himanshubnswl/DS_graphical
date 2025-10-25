@@ -380,11 +380,15 @@ int Load_Graph_From_File() {
     for (int i = 0; i <= list_size; i++) {
 
     }
-    int i = 0;
-    while (list[i] != nullptr) {
+
+    for (int i = 0; i <= list_size; i++) {
         Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
+        free(incoming_link_list[i]);
+        free(outgoing_link_list[i]);
     }
 
+    free(incoming_link_list);
+    free(outgoing_link_list);
     free(list);
     free(string_buffer);
     fclose(load_from_file);
