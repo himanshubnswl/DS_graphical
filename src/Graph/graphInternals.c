@@ -215,10 +215,10 @@ int Save_Graph_To_File() {
     while (node_list[k] != nullptr) {
         Graph_Node * node_current = node_list[k];
         main_string[0] = '\0';
-        sprintf(buffer_string, "unique id: %d\n"
-                               "data: %d\n"
-                               "incoming edges: ", node_current->unique_id,
-                                                   node_current->data);
+        sprintf(buffer_string, "unique id:%d\n"
+                               "data:%d\n"
+                               "incoming edges:", node_current->unique_id,
+                                                  node_current->data);
         strcat(main_string, buffer_string);
         for (int i = 0; i <= node_current->incoming_edges_index; i++) {
             sprintf(buffer_string, "%d:%d ",
@@ -226,7 +226,7 @@ int Save_Graph_To_File() {
                 node_current->incoming_edges[i].weight);
             strcat(main_string, buffer_string);
         }
-        sprintf(buffer_string, "\noutgoing edges: ");
+        sprintf(buffer_string, "\noutgoing edges:");
         strcat(main_string, buffer_string);
         for (int i = 0; i <= node_current->outgoing_edges_index; i++) {
             sprintf(buffer_string, "%d:%d ",
@@ -257,7 +257,7 @@ int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end
 }
 
 edge_link * Add_Edge_From_String(char * string) {
-    edge_link * edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_list));
+    edge_link * edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link));
     int edge_list_size = -1;
 
     int i = 0;
@@ -265,6 +265,7 @@ edge_link * Add_Edge_From_String(char * string) {
     unsigned int end = 0;
     bool set_start = false;
     bool set_weight_flag = false;
+
     while (string[i] != '\n') {
         if (string[i] <= '9' && string[i] >= '0') {
             if (set_start == false) {
@@ -290,6 +291,35 @@ edge_link * Add_Edge_From_String(char * string) {
         }
         i++;
     }
+    return edge_list;
+}
+
+Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
+    int i = 0;
+    while (list[i] != nullptr) {
+        if (list[i]->unique_id == unique_key) {
+            return list[i];
+        }
+    }
+    return nullptr;
+}
+
+int Attach_Links_To_Node(Graph_Node * node, edge_link * incoming_links, edge_link * outgoing_links, Graph_Node ** list) {
+    node->outgoing_edges_index = -1;
+    node->incoming_edges_index = -1;
+    int i = 0;
+    while (&incoming_links[i] != nullptr) {
+        node->incoming_edges[++(node->incoming_edges_index)].node = Search_And_Return_Node(list , incoming_links[i].unique_id);
+        node->incoming_edges[node->incoming_edges_index].weight = incoming_links[i].weight;
+        i++;
+    }
+    i = 0
+    while (&outgoing_links[i] != nullptr) {
+        node->outgoing_edges[++(node->outgoing_edges_index)].node = Search_And_Return_Node(list , outgoing_links[i].unique_id);
+        node->outgoing_edges[node->outgoing_edges_index].weight = outgoing_links[i].weight;
+        i++;
+    }
+    return 0;
 }
 
 int Load_Graph_From_File() {
@@ -300,6 +330,9 @@ int Load_Graph_From_File() {
 
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
+    edge_link ** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
+    edge_link ** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
+
 
     while (fgets(string_buffer, 1024, load_from_file) != nullptr) {
         char * key = strtok(string_buffer, ":");
@@ -312,30 +345,31 @@ int Load_Graph_From_File() {
             case UNIQUE_ID:
                 value = strtok(nullptr, "\n");
                 printf("\n uniqe vlaue: %s", value);
-                // Graph_Node * newNode = malloc(sizeof(malloc));
-                // if (root == nullptr) root = newNode;
-                // newNode->unique_id = chars_to_int(value);
-                // list[++list_size] = newNode;
+                Graph_Node * newNode = malloc(sizeof(malloc));
+                if (root == nullptr) root = newNode;
+                newNode->unique_id = chars_to_int(value);
+                list[++list_size] = newNode;
                 break;
 
             case DATA:
                 value = strtok(nullptr, "\n");
                 printf("\n data vlaue: %s", value);
-                // newNode->data = chars_to_int(value);
-                // printf("\ndata hit");
+                newNode->data = chars_to_int(value);
+                printf("\ndata hit");
                 break;
 
             case INCOMING_EDGES:
                 value = strtok(nullptr, "\n");
                 printf("\n incoming edge vlaue: %s", value);
-                // Add_Edge_From_String(value);
-                // printf("\nhit on incoming edges");
+                incoming_link_list[list_size] = Add_Edge_From_String(value);
+                printf("\nhit on incoming edges");
                 break;
 
             case OUTGOING_EDGES:
                 value = strtok(NULL, "\n");
                 printf("\n outoign edge vlaue: %s", value);
-                // printf("\nhit on outgoing edges");
+                outgoing_link_list[list_size] = Add_Edge_From_String(value);
+                printf("\nhit on outgoing edges");
                 break;
 
             default:
@@ -343,6 +377,14 @@ int Load_Graph_From_File() {
                 break;
         }
     }
+    for (int i = 0; i <= list_size; i++) {
+
+    }
+    int i = 0;
+    while (list[i] != nullptr) {
+        Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
+    }
+
     free(list);
     free(string_buffer);
     fclose(load_from_file);
