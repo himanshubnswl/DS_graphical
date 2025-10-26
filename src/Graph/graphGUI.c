@@ -447,7 +447,18 @@ int Load_Graph_Handler() {
     .height = 75};
 
     if (GuiButton(box, "Load Graph")) {
-        Load_Graph_From_File();
+        Graph_Node ** node_list = Load_Graph_From_File();
+        int i = 0;
+        while (node_list[i] != nullptr) {
+            Vertex * new_vertex = malloc(sizeof(Vertex));
+            vertexList[++V_List_Top] = new_vertex;
+            new_vertex->node = node_list[i];
+            new_vertex->color = DEFAULT_COLOR;
+            new_vertex->pos.x = GetRandomValue(1, GetScreenWidth());
+            new_vertex->pos.y = GetRandomValue(1, GetScreenHeight());
+            i++;
+        }
+        free(node_list);
     }
     return 0;
 }

@@ -249,24 +249,28 @@ int Save_Graph_To_File() {
 int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end) {
     char sub_string[20];
     int sub_string_size = 0;
+
     for (int i = start; i < end; i++) {
         sub_string[sub_string_size] = string[i];
         sub_string_size++;
     }
+
+    sub_string[sub_string_size] = '\0';
     return chars_to_int(sub_string);
 }
 
-edge_link * Add_Edge_From_String(char * string) {
-    edge_link * edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link));
-    int edge_list_size = -1;
+edge_link ** Add_Edge_From_String(char * string) {
+    edge_link ** edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link*));
+    if (string == nullptr) return edge_list;
 
-    int i = 0;
+    int edge_list_size = -1;
     unsigned int start = 0;
     unsigned int end = 0;
     bool set_start = false;
     bool set_weight_flag = false;
 
-    while (string[i] != '\n') {
+    int i = 0;
+    while (string[i] != '\0') {
         if (string[i] <= '9' && string[i] >= '0') {
             if (set_start == false) {
                 start = i;
@@ -274,17 +278,21 @@ edge_link * Add_Edge_From_String(char * string) {
             }
         }
         else if (string[i] == ':') {
+            edge_link * new_link = malloc(sizeof(edge_link));
+            edge_list[++edge_list_size] = new_link;
             end = i;
-            edge_list[++edge_list_size].unique_id = Get_Value_From_Substring(string, start, end);
-            printf("\nedge_list_unique_id: %lu", edge_list[edge_list_size].unique_id);
+            printf("\nend is: %d, start is: %d", end, start);
+            edge_list[edge_list_size]->unique_id = Get_Value_From_Substring(string, start, end);
+            printf("\nedge_list_unique_id: %lu", edge_list[edge_list_size]->unique_id);
             set_weight_flag = true;
             set_start = false;
         }
         else if (string[i] == ' ') {
             if (set_weight_flag == true) {
                 end = i;
-                edge_list[edge_list_size].weight = Get_Value_From_Substring(string, start, end);
-                printf("\nedge_list_weight: %lu", edge_list[edge_list_size].weight);
+                printf("\nend is: %d, start is: %d", end, start);
+                edge_list[edge_list_size]->weight = Get_Value_From_Substring(string, start, end);
+                printf("\nedge_list_weight: %lu", edge_list[edge_list_size]->weight);
                 set_weight_flag = false;
                 set_start = false;
             }
@@ -299,39 +307,41 @@ Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
     while (list[i] != nullptr) {
         if (list[i]->unique_id == unique_key) {
             return list[i];
+            i++;
         }
     }
     return nullptr;
 }
 
-int Attach_Links_To_Node(Graph_Node * node, edge_link * incoming_links, edge_link * outgoing_links, Graph_Node ** list) {
+int Attach_Links_To_Node(Graph_Node * node, edge_link ** incoming_links, edge_link ** outgoing_links, Graph_Node ** list) {
     node->outgoing_edges_index = -1;
     node->incoming_edges_index = -1;
+
     int i = 0;
-    while (&incoming_links[i] != nullptr) {
-        node->incoming_edges[++(node->incoming_edges_index)].node = Search_And_Return_Node(list , incoming_links[i].unique_id);
-        node->incoming_edges[node->incoming_edges_index].weight = incoming_links[i].weight;
+    while (incoming_links[i] != nullptr) {
+        node->incoming_edges[++(node->incoming_edges_index)].node = Search_And_Return_Node(list , incoming_links[i]->unique_id);
+        node->incoming_edges[node->incoming_edges_index].weight = incoming_links[i]->weight;
         i++;
     }
-    i = 0
-    while (&outgoing_links[i] != nullptr) {
-        node->outgoing_edges[++(node->outgoing_edges_index)].node = Search_And_Return_Node(list , outgoing_links[i].unique_id);
-        node->outgoing_edges[node->outgoing_edges_index].weight = outgoing_links[i].weight;
+    i = 0;
+    while (outgoing_links[i] != nullptr) {
+        node->outgoing_edges[++(node->outgoing_edges_index)].node = Search_And_Return_Node(list , outgoing_links[i]->unique_id);
+        node->outgoing_edges[node->outgoing_edges_index].weight = outgoing_links[i]->weight;
         i++;
     }
     return 0;
 }
 
-int Load_Graph_From_File() {
+Graph_Node ** Load_Graph_From_File() {
     FILE * load_from_file = fopen("./save_file.txt", "r");
-    if (load_from_file == NULL) return 1;
+    if (load_from_file == NULL) return nullptr;
 
     char * string_buffer = malloc(sizeof(char) *  1024);
 
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
-    edge_link ** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
-    edge_link ** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
+    edge_link *** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link***));
+    edge_link *** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link***));
 
 
     while (fgets(string_buffer, 1024, load_from_file) != nullptr) {
@@ -345,9 +355,10 @@ int Load_Graph_From_File() {
             case UNIQUE_ID:
                 value = strtok(nullptr, "\n");
                 printf("\n uniqe vlaue: %s", value);
-                Graph_Node * newNode = malloc(sizeof(malloc));
+                Graph_Node * newNode = malloc(sizeof(Graph_Node));
                 if (root == nullptr) root = newNode;
                 newNode->unique_id = chars_to_int(value);
+                DEBUG_PRINTF(newNode->unique_id);
                 list[++list_size] = newNode;
                 break;
 
@@ -355,6 +366,7 @@ int Load_Graph_From_File() {
                 value = strtok(nullptr, "\n");
                 printf("\n data vlaue: %s", value);
                 newNode->data = chars_to_int(value);
+                DEBUG_PRINTF(newNode->data);
                 printf("\ndata hit");
                 break;
 
@@ -377,20 +389,15 @@ int Load_Graph_From_File() {
                 break;
         }
     }
-    for (int i = 0; i <= list_size; i++) {
-
-    }
-
+    DEBUG_PRINTF("line 383 made it across");
     for (int i = 0; i <= list_size; i++) {
         Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
-        free(incoming_link_list[i]);
-        free(outgoing_link_list[i]);
+        DEBUG_PRINTF("do we return?");
     }
 
     free(incoming_link_list);
     free(outgoing_link_list);
-    free(list);
     free(string_buffer);
     fclose(load_from_file);
-    return 0;
+    return list;
 }

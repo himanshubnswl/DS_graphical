@@ -75,7 +75,7 @@ int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child);
 
 int Save_Graph_To_File();
 
-int Load_Graph_From_File();
+Graph_Node ** Load_Graph_From_File();
 
 
 
