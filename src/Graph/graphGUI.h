@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <debug.h>
 
-#define ARROW_LENGTH 50
+#define ARROW_LENGTH 25
 #define DEBUG
 #define WINDOW_HEIGHT 900
 #define WINDOW_WIDTH 1700

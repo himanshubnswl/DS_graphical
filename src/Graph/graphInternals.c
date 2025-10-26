@@ -307,8 +307,8 @@ Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
     while (list[i] != nullptr) {
         if (list[i]->unique_id == unique_key) {
             return list[i];
-            i++;
         }
+        i++;
     }
     return nullptr;
 }
@@ -340,8 +340,8 @@ Graph_Node ** Load_Graph_From_File() {
 
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
-    edge_link *** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link***));
-    edge_link *** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link***));
+    edge_link *** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
+    edge_link *** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
 
 
     while (fgets(string_buffer, 1024, load_from_file) != nullptr) {

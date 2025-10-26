@@ -454,6 +454,7 @@ int Load_Graph_Handler() {
             vertexList[++V_List_Top] = new_vertex;
             new_vertex->node = node_list[i];
             new_vertex->color = DEFAULT_COLOR;
+            new_vertex->radius = DEFAULT_RADIUS;
             new_vertex->pos.x = GetRandomValue(1, GetScreenWidth());
             new_vertex->pos.y = GetRandomValue(1, GetScreenHeight());
             i++;
