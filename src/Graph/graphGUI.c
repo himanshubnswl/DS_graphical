@@ -436,6 +436,7 @@ int Save_Graph_Handler() {
     if (GuiButton(box, "Save Graph")) {
         Save_Graph_To_File();
     }
+
     return 0;
 }
 

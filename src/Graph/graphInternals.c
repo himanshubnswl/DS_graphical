@@ -177,7 +177,8 @@ Graph_Node * Get_Graph_Root() {
         return nullptr;
     }
 }
-
+/*generates unique id , keeps track of previoudly generated ids and makes sure that no previously used value is used */
+//returns the generated unique id
 int Generate_Unique_ID(int * generated_ids, int size_arr) {
     int generated_number = rand();
     for (int i = 0; i <= size_arr ; i++) {
@@ -189,6 +190,8 @@ int Generate_Unique_ID(int * generated_ids, int size_arr) {
     return generated_number;
 }
 
+//sets the unique ids for all Graph_Nodes in a array of graph_node
+//keeps track of generated ids to make sure no values are repeated
 void Set_Nodes_Unique_IDs(Graph_Node ** list) {
     int i = 0;
     int * generated_ids =  malloc(MAX_ELEMENTS_NUM * sizeof(int));
@@ -201,6 +204,10 @@ void Set_Nodes_Unique_IDs(Graph_Node ** list) {
     free(generated_ids);
 }
 
+/*saves the graph with a very particular format in save_file
+ *any changes to the format are volatile and not recommended
+ * 0 on success, 1 on failing
+ */
 int Save_Graph_To_File() {
     FILE * save_file = fopen("./save_file.txt", "w");
     if (save_file == NULL) {
@@ -246,6 +253,9 @@ int Save_Graph_To_File() {
     return 0;
 }
 
+/*get integer value from a substring start <= bounds < end
+ * return the integer value from the string
+ */
 int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end) {
     char sub_string[20];
     int sub_string_size = 0;
@@ -259,6 +269,11 @@ int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end
     return chars_to_int(sub_string);
 }
 
+/*takes a formatted string and makes a list of edge_link containing
+ *individual links for a particular node
+ * the returned list needs to be free
+ * and the elements inside the list need to individually freed as well
+ */
 edge_link ** Add_Edge_From_String(char * string) {
     edge_link ** edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link*));
     if (string == nullptr) return edge_list;
@@ -312,6 +327,8 @@ edge_link ** Add_Edge_From_String(char * string) {
     return edge_list;
 }
 
+//searches for a node in a list of graph_nodes
+//returns the node if found or retuns nullptr if fails
 Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
     int i = 0;
     while (list[i] != nullptr) {
@@ -323,6 +340,9 @@ Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
     return nullptr;
 }
 
+//takes in a node and attaches the adjacent nodes to the parent node by using their unique ids
+//searches the unique id in the list and then returns the associated node which links to the parent
+//return 0 on success
 int Attach_Links_To_Node(Graph_Node * node, edge_link ** incoming_links, edge_link ** outgoing_links, Graph_Node ** list) {
     node->outgoing_edges_index = -1;
     node->incoming_edges_index = -1;
@@ -342,6 +362,7 @@ int Attach_Links_To_Node(Graph_Node * node, edge_link ** incoming_links, edge_li
     return 0;
 }
 
+//frees the edge link, freeing the list and the elements of the list
 void Free_Edge_Link_List(edge_link ** list) {
     int i = 0;
     while (list[i] != nullptr) {
@@ -351,6 +372,7 @@ void Free_Edge_Link_List(edge_link ** list) {
     free(list);
 }
 
+/*gracefully fails the Load_Graph function by freeing up all allocated resources so no memory is leaked */
 void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_link *** outgoing_link_list, char * string_buffer, FILE * file) {
     int i = 0;
     while (list[i] != nullptr) {
@@ -377,6 +399,11 @@ void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_lin
     fclose(file);
 }
 
+/*loads the graph from the saved file, returns nullptr if operation fails
+ *else return a list to newly created graph_nodes
+ * the list needs to freed by the caller
+ * uses hasing of strings for better performance
+ * has hashes of few strings stored as defines, again for performance*/
 Graph_Node ** Load_Graph_From_File() {
     FILE * load_from_file = fopen("./save_file.txt", "r");
     if (load_from_file == NULL) return nullptr;
