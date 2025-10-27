@@ -268,16 +268,21 @@ edge_link ** Add_Edge_From_String(char * string) {
     unsigned int end = 0;
     bool set_start = false;
     bool set_weight_flag = false;
+    bool value_is_valid;
 
     int i = 0;
     while (string[i] != '\0') {
+        value_is_valid = false;
+
         if (string[i] <= '9' && string[i] >= '0') {
+            value_is_valid = true;
             if (set_start == false) {
                 start = i;
                 set_start = true;
             }
         }
         else if (string[i] == ':') {
+            value_is_valid = true;
             edge_link * new_link = malloc(sizeof(edge_link));
             edge_list[++edge_list_size] = new_link;
             end = i;
@@ -288,6 +293,7 @@ edge_link ** Add_Edge_From_String(char * string) {
             set_start = false;
         }
         else if (string[i] == ' ') {
+            value_is_valid = true;
             if (set_weight_flag == true) {
                 end = i;
                 printf("\nend is: %d, start is: %d", end, start);
@@ -296,6 +302,10 @@ edge_link ** Add_Edge_From_String(char * string) {
                 set_weight_flag = false;
                 set_start = false;
             }
+        }
+        if (value_is_valid == false) {
+            Free_Edge_Link_List(edge_list);
+            return nullptr;
         }
         i++;
     }
@@ -330,6 +340,41 @@ int Attach_Links_To_Node(Graph_Node * node, edge_link ** incoming_links, edge_li
         i++;
     }
     return 0;
+}
+
+void Free_Edge_Link_List(edge_link ** list) {
+    int i = 0;
+    while (list[i] != nullptr) {
+        free(list[i]);
+        i++;
+    }
+    free(list);
+}
+
+void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_link *** outgoing_link_list, char * string_buffer, FILE * file) {
+    int i = 0;
+    while (list[i] != nullptr) {
+        free(list[i]);
+        i++;
+    }
+    free(list);
+
+    i = 0;
+    while (incoming_link_list[i] != nullptr) {
+        Free_Edge_Link_List(incoming_link_list[i]);
+        i++;
+    }
+    free(incoming_link_list);
+
+    i = 0;
+    while (outgoing_link_list[i] != nullptr) {
+        Free_Edge_Link_List(outgoing_link_list[i]);
+        i++;
+    }
+    free(outgoing_link_list);
+
+    free(string_buffer);
+    fclose(file);
 }
 
 Graph_Node ** Load_Graph_From_File() {
@@ -374,6 +419,10 @@ Graph_Node ** Load_Graph_From_File() {
                 value = strtok(nullptr, "\n");
                 printf("\n incoming edge vlaue: %s", value);
                 incoming_link_list[list_size] = Add_Edge_From_String(value);
+                if (incoming_link_list[list_size] == nullptr) {
+                    Fail_Load_OP(list, incoming_link_list, outgoing_link_list, string_buffer, load_from_file);
+                    return nullptr;
+                }
                 printf("\nhit on incoming edges");
                 break;
 
@@ -381,6 +430,10 @@ Graph_Node ** Load_Graph_From_File() {
                 value = strtok(NULL, "\n");
                 printf("\n outoign edge vlaue: %s", value);
                 outgoing_link_list[list_size] = Add_Edge_From_String(value);
+                if (outgoing_link_list[list_size] == nullptr) {
+                    Fail_Load_OP(list, incoming_link_list, outgoing_link_list, string_buffer, load_from_file);
+                    return nullptr;
+                }
                 printf("\nhit on outgoing edges");
                 break;
 
@@ -392,6 +445,8 @@ Graph_Node ** Load_Graph_From_File() {
     DEBUG_PRINTF("line 383 made it across");
     for (int i = 0; i <= list_size; i++) {
         Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
+        Free_Edge_Link_List(incoming_link_list[i]);
+        Free_Edge_Link_List(outgoing_link_list[i]);
         DEBUG_PRINTF("do we return?");
     }
 
