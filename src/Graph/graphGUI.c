@@ -4,6 +4,8 @@
 #define ERROR_IMPLEMENTATION
 #include "graphGUI.h"
 
+#include <string.h>
+
 
 #include "../helpers/helper.h"
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
@@ -436,7 +438,19 @@ int Save_Graph_Handler() {
     if (GuiButton(box, "Save Graph")) {
         Save_Graph_To_File();
     }
+    FILE * file = fopen("save_file_graph_gui.txt", "w");
+    if (file == NULL) return 1;
 
+    for (int i = 0; i <= V_List_Top; i++) {
+        fprintf(file, "unique id:%d\n"
+                      "pos x:%f\n"
+                      "pos y:%f\n",
+                      vertexList[i]->node->unique_id,
+                      vertexList[i]->pos.x,
+                      vertexList[i]->pos.y);
+    }
+
+    fclose(file);
     return 0;
 }
 
@@ -461,6 +475,18 @@ int Load_Graph_Handler() {
             i++;
         }
         free(node_list);
+
+        FILE * file = fopen("save_file_graph_gui.txt", "r");
+        if (file == NULL) return 1;
+        char buffer[256];
+        while (fgets(buffer,256,file) != nullptr) {
+            char * key = strtok(buffer, ";");
+            uint32_t hashed_key = Hash_String_FNV(key);
+
+            switch (hashed_key) {
+                case
+            }
+        }
     }
     return 0;
 }
