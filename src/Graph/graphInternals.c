@@ -80,6 +80,13 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
     }
 }
 
+bool Search_Stack(Graph_Node ** stack, Graph_Node * key_node, int sp) {
+    for (int i = 0; i <= sp; i++) {
+        if (stack[i] == key_node) return true;
+    }
+    return false;
+}
+
 Graph_Node ** Get_DFS_traversal() {
     Graph_Node * stack[MAX_ELEMENTS_NUM] = {nullptr};
     int sp = -1;
@@ -91,7 +98,7 @@ Graph_Node ** Get_DFS_traversal() {
     while (sp != -1) {
         Graph_Node * bufferNode = stack[sp--];
         for (int i = bufferNode->outgoing_edges_index; i >= 0; i--) {
-            if (visited_array_search(traversal, bufferNode->outgoing_edges[i].node) == false) {
+            if (visited_array_search(traversal, bufferNode->outgoing_edges[i].node) == false && Search_Stack(stack, bufferNode->outgoing_edges[i].node, sp) == false) {
                 stack[++sp] = bufferNode->outgoing_edges[i].node;
             }
         }
