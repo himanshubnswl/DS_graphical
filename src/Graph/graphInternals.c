@@ -416,6 +416,17 @@ void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_lin
     fclose(file);
 }
 
+void Destroy_Graph() {
+    Graph_Node ** list = Get_DFS_traversal();
+    int i = 0;
+    while (list[i] != nullptr) {
+        free(list[i]);
+        i++;
+    }
+    root = nullptr;
+    free(list);
+}
+
 /*loads the graph from the saved file, returns nullptr if operation fails
  *else return a list to newly created graph_nodes
  * the list needs to freed by the caller
@@ -425,25 +436,20 @@ Graph_Node ** Load_Graph_From_File() {
     FILE * load_from_file = fopen("./save_file.txt", "r");
     if (load_from_file == NULL) return nullptr;
 
+    Destroy_Graph();
     char * string_buffer = malloc(sizeof(char) *  1024);
-
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int list_size = -1;
     edge_link *** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
     edge_link *** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
-
-
     while (fgets(string_buffer, 1024, load_from_file) != nullptr) {
         char * key = strtok(string_buffer, ":");
-        printf("\n%s", key);
         uint32_t hashed_string = Hash_String_FNV(key);
-        printf("\nhashed string value : %lu", hashed_string);
         char * value;
 
         switch (hashed_string) {
             case UNIQUE_ID:
                 value = strtok(nullptr, "\n");
-                printf("\n uniqe vlaue: %s", value);
                 Graph_Node * newNode = malloc(sizeof(Graph_Node));
                 if (root == nullptr) root = newNode;
                 newNode->unique_id = chars_to_int(value);
@@ -453,45 +459,36 @@ Graph_Node ** Load_Graph_From_File() {
 
             case DATA:
                 value = strtok(nullptr, "\n");
-                printf("\n data vlaue: %s", value);
                 newNode->data = chars_to_int(value);
                 DEBUG_PRINTF(newNode->data);
-                printf("\ndata hit");
                 break;
 
             case INCOMING_EDGES:
                 value = strtok(nullptr, "\n");
-                printf("\n incoming edge vlaue: %s", value);
                 incoming_link_list[list_size] = Add_Edge_From_String(value);
                 if (incoming_link_list[list_size] == nullptr) {
                     Fail_Load_OP(list, incoming_link_list, outgoing_link_list, string_buffer, load_from_file);
                     return nullptr;
                 }
-                printf("\nhit on incoming edges");
                 break;
 
             case OUTGOING_EDGES:
                 value = strtok(NULL, "\n");
-                printf("\n outoign edge vlaue: %s", value);
                 outgoing_link_list[list_size] = Add_Edge_From_String(value);
                 if (outgoing_link_list[list_size] == nullptr) {
                     Fail_Load_OP(list, incoming_link_list, outgoing_link_list, string_buffer, load_from_file);
                     return nullptr;
                 }
-                printf("\nhit on outgoing edges");
                 break;
 
             default:
-                printf("\nno hit");
                 break;
         }
     }
-    DEBUG_PRINTF("line 383 made it across");
     for (int i = 0; i <= list_size; i++) {
         Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
         Free_Edge_Link_List(incoming_link_list[i]);
         Free_Edge_Link_List(outgoing_link_list[i]);
-        DEBUG_PRINTF("do we return?");
     }
 
     free(incoming_link_list);

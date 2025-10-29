@@ -473,7 +473,7 @@ int Load_Graph_Handler() {
     if (GuiButton(box, "Load Graph")) {
         Graph_Node ** node_list = Load_Graph_From_File();
         if (node_list == nullptr) return LOAD_FAIL;
-
+        V_List_Top = -1;
         int i = 0;
         while (node_list[i] != nullptr) {
             Vertex * new_vertex = malloc(sizeof(Vertex));
@@ -493,8 +493,6 @@ int Load_Graph_Handler() {
         while (fgets(buffer,256,file) != nullptr) {
             char * key = strtok(buffer, ":");
             uint32_t hashed_key = Hash_String_FNV(key);
-            printf("\nkey is:%s", key);
-            printf("\nthe hashed value of key is:%u", hashed_key);
             char * value;
 
             switch (hashed_key) {
