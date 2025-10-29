@@ -220,9 +220,16 @@ int Save_Graph_To_File() {
     if (save_file == NULL) {
         return 1;
     }
+
+    Graph_Node ** node_list = Get_DFS_traversal();
+    if (node_list[0] == nullptr) {
+        fclose(save_file);
+        return 1;
+    }
+
+
     char * main_string = malloc(1024 * sizeof(char));
     char * buffer_string = malloc(1024 * sizeof(char));
-    Graph_Node ** node_list = Get_DFS_traversal();
     Set_Nodes_Unique_IDs(node_list);
 
 

@@ -436,9 +436,10 @@ int Save_Graph_Handler() {
         .height = 75
     };
     if (GuiButton(box, "Save Graph")) {
-        Save_Graph_To_File();
+        if (Save_Graph_To_File() != 0) return SAVE_FAIL;
+
         FILE * file = fopen("save_file_graph_gui.txt", "w");
-        if (file == NULL) return 1;
+        if (file == NULL) return SAVE_FAIL;
 
         for (int i = 0; i <= V_List_Top; i++) {
             fprintf(file, "unique id:%d\n"
@@ -471,6 +472,8 @@ int Load_Graph_Handler() {
 
     if (GuiButton(box, "Load Graph")) {
         Graph_Node ** node_list = Load_Graph_From_File();
+        if (node_list == nullptr) return LOAD_FAIL;
+
         int i = 0;
         while (node_list[i] != nullptr) {
             Vertex * new_vertex = malloc(sizeof(Vertex));
@@ -498,18 +501,32 @@ int Load_Graph_Handler() {
                 case UNIQUE_ID_HASH:
                     value = strtok(nullptr, "\n");
                     int unique_from_file = chars_to_int(value);
+                    if (unique_from_file == NOT_INT) {
+                        fclose(file);
+                        return LOAD_FAIL;
+                    }
+
                     Vertex * vertex_from_file = Get_Vertex_By_Unique_ID(unique_from_file);
                     break;
 
                 case POS_X_HASH:
                     value = strtok(nullptr, "\n");
                     int x_pos_from_file = chars_to_int(value);
+                    if (x_pos_from_file == NOT_INT) {
+                        fclose(file);
+                        return LOAD_FAIL;
+                    }
+
                     vertex_from_file->pos.x = x_pos_from_file;
                     break;
 
                 case POS_Y_HASH:
                     value = strtok(nullptr, "\n");
                     int y_pos_from_file = chars_to_int(value);
+                    if (y_pos_from_file == NOT_INT) {
+                        fclose(file);
+                        return LOAD_FAIL;
+                    }
                     vertex_from_file->pos.y = y_pos_from_file;
                     break;
 

@@ -21,7 +21,9 @@ enum ERROR_HANDLER {
     BAD_ALLOC = -10,
     NO_SELECTION = -11,
     ALREADY_EXISTS = -12,
-    NO_EDGE = -13
+    NO_EDGE = -13,
+    SAVE_FAIL = -14,
+    LOAD_FAIL = -15
 };
 
 #ifdef ERROR_IMPLEMENTATION
@@ -74,6 +76,14 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
 
         case NO_EDGE:
             message = "field doesn't exist";
+            break;
+
+        case LOAD_FAIL:
+            message = "loading the file failed";
+            break;
+
+        case SAVE_FAIL:
+            message = "saving the file failed";
             break;
 
         default:
