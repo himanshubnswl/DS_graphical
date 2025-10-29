@@ -218,9 +218,12 @@ int Save_Graph_To_File() {
     Graph_Node ** node_list = Get_DFS_traversal();
     Set_Nodes_Unique_IDs(node_list);
 
+
     int k = 0;
     while (node_list[k] != nullptr) {
         Graph_Node * node_current = node_list[k];
+        DEBUG_PRINTF(node_current->unique_id);
+        DEBUG_PRINTF(node_current->data);
         main_string[0] = '\0';
         sprintf(buffer_string, "unique id:%d\n"
                                "data:%d\n"
