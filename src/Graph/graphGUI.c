@@ -442,11 +442,11 @@ int Save_Graph_Handler() {
 
         for (int i = 0; i <= V_List_Top; i++) {
             fprintf(file, "unique id:%d\n"
-                          "pos x:%f\n"
-                          "pos y:%f\n\n",
+                          "pos x:%d\n"
+                          "pos y:%d\n\n",
                           vertexList[i]->node->unique_id,
-                          vertexList[i]->pos.x,
-                          vertexList[i]->pos.y);
+                          (int)vertexList[i]->pos.x,
+                          (int)vertexList[i]->pos.y);
         }
 
         fclose(file);
