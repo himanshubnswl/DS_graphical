@@ -437,21 +437,29 @@ int Save_Graph_Handler() {
     };
     if (GuiButton(box, "Save Graph")) {
         Save_Graph_To_File();
-    }
-    FILE * file = fopen("save_file_graph_gui.txt", "w");
-    if (file == NULL) return 1;
+        FILE * file = fopen("save_file_graph_gui.txt", "w");
+        if (file == NULL) return 1;
 
-    for (int i = 0; i <= V_List_Top; i++) {
-        fprintf(file, "unique id:%d\n"
-                      "pos x:%f\n"
-                      "pos y:%f\n",
-                      vertexList[i]->node->unique_id,
-                      vertexList[i]->pos.x,
-                      vertexList[i]->pos.y);
+        for (int i = 0; i <= V_List_Top; i++) {
+            fprintf(file, "unique id:%d\n"
+                          "pos x:%f\n"
+                          "pos y:%f\n\n",
+                          vertexList[i]->node->unique_id,
+                          vertexList[i]->pos.x,
+                          vertexList[i]->pos.y);
+        }
+
+        fclose(file);
     }
 
-    fclose(file);
     return 0;
+}
+
+Vertex * Get_Vertex_By_Unique_ID(int id) {
+    for (int i = 0 ; i <= V_List_Top; i++) {
+        if (vertexList[i]->node->unique_id == id) return vertexList[i];
+    }
+    return nullptr;
 }
 
 int Load_Graph_Handler() {
@@ -480,13 +488,36 @@ int Load_Graph_Handler() {
         if (file == NULL) return 1;
         char buffer[256];
         while (fgets(buffer,256,file) != nullptr) {
-            char * key = strtok(buffer, ";");
+            char * key = strtok(buffer, ":");
             uint32_t hashed_key = Hash_String_FNV(key);
+            printf("\nkey is:%s", key);
+            printf("\nthe hashed value of key is:%u", hashed_key);
+            char * value;
 
             switch (hashed_key) {
-                case
+                case UNIQUE_ID_HASH:
+                    value = strtok(nullptr, "\n");
+                    int unique_from_file = chars_to_int(value);
+                    Vertex * vertex_from_file = Get_Vertex_By_Unique_ID(unique_from_file);
+                    break;
+
+                case POS_X_HASH:
+                    value = strtok(nullptr, "\n");
+                    int x_pos_from_file = chars_to_int(value);
+                    vertex_from_file->pos.x = x_pos_from_file;
+                    break;
+
+                case POS_Y_HASH:
+                    value = strtok(nullptr, "\n");
+                    int y_pos_from_file = chars_to_int(value);
+                    vertex_from_file->pos.y = y_pos_from_file;
+                    break;
+
+                default:
+                    break;
             }
         }
+        fclose(file);
     }
     return 0;
 }
@@ -509,7 +540,6 @@ int main() {
         debug_mode();
         Save_Graph_Handler();
         Load_Graph_Handler();
-        printf("\nwe returned!");
         CheckAndDrawError(ERROR);
         EndDrawing();
     }

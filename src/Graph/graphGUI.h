@@ -29,6 +29,10 @@
 #define NOTIF_FONT_SIZE 25
 #define EDGE_SELECTED_COLOR BLUE
 
+#define POS_X_HASH 1314879241
+#define POS_Y_HASH 1298101622
+#define UNIQUE_ID_HASH 244154495
+
 typedef struct Edge {
     Graph_Node * start;
     Graph_Node * end;
