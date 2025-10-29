@@ -555,8 +555,8 @@ int main() {
         ERROR = Remove_Edge_Handler();
         ERROR = Add_Edge_Handler();
         debug_mode();
-        Save_Graph_Handler();
-        Load_Graph_Handler();
+        ERROR = Save_Graph_Handler();
+        ERROR = Load_Graph_Handler();
         CheckAndDrawError(ERROR);
         EndDrawing();
     }
