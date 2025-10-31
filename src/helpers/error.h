@@ -23,7 +23,9 @@ enum ERROR_HANDLER {
     ALREADY_EXISTS = -12,
     NO_EDGE = -13,
     SAVE_FAIL = -14,
-    LOAD_FAIL = -15
+    LOAD_FAIL = -15,
+    SAVE_SUCCESS = -16,
+    LOAD_SUCCESS = -17
 };
 
 #ifdef ERROR_IMPLEMENTATION
@@ -86,6 +88,14 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
             message = "saving the file failed";
             break;
 
+        case SAVE_SUCCESS:
+            message = "file saved!";
+            break;
+
+        case LOAD_SUCCESS:
+            message = "file loaded!";
+            break;
+
         default:
             message = nullptr;
     }
@@ -116,8 +126,8 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
         int prev = GuiGetStyle(DEFAULT, TEXT_SIZE);
         GuiSetStyle(DEFAULT, TEXT_SIZE, 45);
         GuiTextBox(errorBox, V_error, 256, false);
-        if(GuiButton(remove_button, "X")) show_error = false;
         GuiSetStyle(DEFAULT, TEXT_SIZE, prev);
+        if(GuiButton(remove_button, "X")) show_error = false;
     }
 }
 #endif

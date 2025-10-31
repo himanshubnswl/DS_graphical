@@ -451,6 +451,7 @@ int Save_Graph_Handler() {
         }
 
         fclose(file);
+        return SAVE_SUCCESS;
     }
 
     return 0;
@@ -463,6 +464,13 @@ Vertex * Get_Vertex_By_Unique_ID(int id) {
     return nullptr;
 }
 
+void Destroy_Vertex_List() {
+    for (int i = 0; i <= V_List_Top; i++) {
+        free(vertexList[i]);
+    }
+    V_List_Top = -1;
+}
+
 int Load_Graph_Handler() {
     Rectangle box = {
     .x = GetScreenWidth() - 709,
@@ -472,9 +480,13 @@ int Load_Graph_Handler() {
 
     if (GuiButton(box, "Load Graph")) {
         Graph_Node ** node_list = Load_Graph_From_File();
+        Destroy_Vertex_List();
+        DEBUG_CHECKPOINT(476);
+        DEBUG_PRINTF("returned from inner function");
         if (node_list == nullptr) return LOAD_FAIL;
         V_List_Top = -1;
         int i = 0;
+        DEBUG_PRINTF("went wrong here");
         while (node_list[i] != nullptr) {
             Vertex * new_vertex = malloc(sizeof(Vertex));
             vertexList[++V_List_Top] = new_vertex;
@@ -533,6 +545,7 @@ int Load_Graph_Handler() {
             }
         }
         fclose(file);
+        return LOAD_SUCCESS;
     }
     return 0;
 }
