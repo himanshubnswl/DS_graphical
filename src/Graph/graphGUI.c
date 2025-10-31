@@ -480,13 +480,10 @@ int Load_Graph_Handler() {
 
     if (GuiButton(box, "Load Graph")) {
         Graph_Node ** node_list = Load_Graph_From_File();
-        Destroy_Vertex_List();
-        DEBUG_CHECKPOINT(476);
-        DEBUG_PRINTF("returned from inner function");
+
         if (node_list == nullptr) return LOAD_FAIL;
-        V_List_Top = -1;
+        Destroy_Vertex_List();
         int i = 0;
-        DEBUG_PRINTF("went wrong here");
         while (node_list[i] != nullptr) {
             Vertex * new_vertex = malloc(sizeof(Vertex));
             vertexList[++V_List_Top] = new_vertex;

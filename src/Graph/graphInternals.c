@@ -94,7 +94,6 @@ Graph_Node ** Get_DFS_traversal() {
     Graph_Node ** traversal = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
     int traversal_index = -1;
     if (root == nullptr) return traversal;
-    DEBUG_CHECKPOINT(97);
 
     stack[++sp] = root;
     while (sp != -1) {
@@ -238,8 +237,6 @@ int Save_Graph_To_File() {
     int k = 0;
     while (node_list[k] != nullptr) {
         Graph_Node * node_current = node_list[k];
-        DEBUG_PRINTF(node_current->unique_id);
-        DEBUG_PRINTF(node_current->data);
         main_string[0] = '\0';
         sprintf(buffer_string, "unique id:%d\n"
                                "data:%d\n"
@@ -416,19 +413,14 @@ void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_lin
 }
 
 void Destroy_Graph() {
-    DEBUG_CHECKPOINT(418);
     if (root == nullptr) return;
-    DEBUG_CHECKPOINT(420);
     Graph_Node ** list = Get_DFS_traversal();
-    DEBUG_CHECKPOINT(422);
     int i = 0;
     while (list[i] != nullptr) {
         free(list[i]);
         i++;
     }
-    DEBUG_CHECKPOINT(428);
     root = nullptr;
-    DEBUG_CHECKPOINT(430);
     free(list);
 }
 
@@ -438,16 +430,9 @@ void Destroy_Graph() {
  * uses hasing of strings for better performance
  * has hashes of few strings stored as defines, again for performance*/
 Graph_Node ** Load_Graph_From_File() {
-    DEBUG_CHECKPOINT(432);
-
     FILE * load_from_file = fopen("./save_file.txt", "r");
-    DEBUG_CHECKPOINT(435);
-
     if (load_from_file == NULL) return nullptr;
-    DEBUG_CHECKPOINT(438);
-
     Destroy_Graph();
-    DEBUG_CHECKPOINT(441);
 
     char * string_buffer = malloc(sizeof(char) *  1024);
     Graph_Node ** list = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node *));
@@ -465,23 +450,19 @@ Graph_Node ** Load_Graph_From_File() {
                 Graph_Node * newNode = malloc(sizeof(Graph_Node));
                 if (root == nullptr) root = newNode;
                 newNode->unique_id = chars_to_int(value);
-                DEBUG_PRINTF(newNode->unique_id);
                 list[++list_size] = newNode;
                 break;
 
             case DATA:
                 value = strtok(nullptr, "\n");
                 newNode->data = chars_to_int(value);
-                DEBUG_PRINTF(newNode->data);
                 break;
 
             case INCOMING_EDGES:
                 value = strtok(nullptr, "\n");
                 incoming_link_list[list_size] = Add_Edge_From_String(value);
                 if (incoming_link_list[list_size] == nullptr) {
-                    DEBUG_CHECKPOINT(466);
                     Fail_Load_OP(list, incoming_link_list, outgoing_link_list, string_buffer, load_from_file);
-                    DEBUG_CHECKPOINT(468);
                     return nullptr;
                 }
                 break;
