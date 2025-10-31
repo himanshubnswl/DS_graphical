@@ -439,6 +439,7 @@ Graph_Node ** Load_Graph_From_File() {
     int list_size = -1;
     edge_link *** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
     edge_link *** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
+    DEBUG_CHECKPOINT(442);
     while (fgets(string_buffer, 1024, load_from_file) != nullptr) {
         char * key = strtok(string_buffer, ":");
         uint32_t hashed_string = Hash_String_FNV(key);
@@ -480,15 +481,17 @@ Graph_Node ** Load_Graph_From_File() {
                 break;
         }
     }
+    DEBUG_CHECKPOINT(484);
     for (int i = 0; i <= list_size; i++) {
         Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
         Free_Edge_Link_List(incoming_link_list[i]);
         Free_Edge_Link_List(outgoing_link_list[i]);
     }
-
     free(incoming_link_list);
     free(outgoing_link_list);
     free(string_buffer);
     fclose(load_from_file);
+
+    if (list[0] == nullptr) return nullptr;
     return list;
 }
