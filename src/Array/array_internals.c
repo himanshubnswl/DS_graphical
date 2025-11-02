@@ -13,7 +13,7 @@ int Array_Initialize() {
 
 int Array_Add_Ele(int data, int position) {
     if (position >= MAX_NUM_ELEMENTS - 1) return 1;
-    for (int i = position ; i < size ; i++) {
+    for (int i = size - 1 ; i > position ; i--) {
         arr[i + 1] = arr[i];
     }
     arr[position] = data;
