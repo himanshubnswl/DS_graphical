@@ -59,6 +59,33 @@ int Remove_Element_Handler() {
     return SUCCESS;
 }
 
+void Calculate_Shape() {
+    for (size_t i = 0; i < gui_elements_size; i++) {
+        size_t row = 1;
+        if (i == 0) {
+            gui_elements[i].shape = (Rectangle) {
+                .x = STARTING_X,
+                .y = STARTING_Y,
+                .width = DEFAULT_REC_ELE_WIDTH,
+                .height = DEFAULT_REC_ELE_HEIGHT
+            };
+        }
+        else {
+            gui_elements[i].shape = (Rectangle) {
+                .x = gui_elements[i-1].shape.x + DEFAULT_REC_ELE_WIDTH,
+                .y = gui_elements[i-1].shape.y,
+                .width = DEFAULT_REC_ELE_WIDTH,
+                .height = DEFAULT_REC_ELE_HEIGHT
+            };
+
+            if (gui_elements[i].shape.x + DEFAULT_REC_ELE_WIDTH >= GetScreenWidth()) {
+                row++;
+                gui_elements[i].shape.x = STARTING_X;
+                gui_elements[i].shape.y = STARTING_Y * row;
+            }
+        }
+    }
+}
 int Add_Element(int data) {
     if (gui_elements_size+1 == MAX_NUM_ELEMENTS) return ADD_ERROR;
 
@@ -77,6 +104,10 @@ int Add_Element(int data) {
         for (int i = gui_elements_size - 1; i >= selected_ele; i++) {
             gui_elements[i + 1].data = gui_elements[i].data;
         }
+
+        gui_elements[selected_ele].data = data;
+        gui_elements_size++;
+        Calculate_Shape();
     }
 }
 
