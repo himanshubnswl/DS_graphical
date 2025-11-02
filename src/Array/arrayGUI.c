@@ -134,7 +134,8 @@ int Add_Element_Handler() {
 
         switch(result) {
             case 1:
-
+                if (chars_to_int(text) == NOT_INT) return NOT_INT;
+                else Add_Element(chars_to_int(text));
                 break;
 
             case 0:
