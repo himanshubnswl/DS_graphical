@@ -41,6 +41,7 @@ int Get_Selected_Element() {
 int Draw_Array() {
     for (int i = 0; i < gui_elements_size; i++) {
         DrawRectangleRec(gui_elements[i].shape, DEFAULT_ELE_COLOR);
+        DrawText(int_to_chars(gui_elements[i].data), gui_elements[i].shape.x + 50, gui_elements[i].shape.y + 25, 20, BLACK);
     }
     return 0;
 }
