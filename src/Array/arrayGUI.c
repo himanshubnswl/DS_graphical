@@ -45,6 +45,36 @@ int Draw_Array() {
     return 0;
 }
 
+int Print_Ele_Array() {
+    printf("\n--------------------------------------------------------\n");
+
+    for (int i = 0; i < gui_elements_size; i++) {
+        printf("%d ", gui_elements[i].data);
+    }
+
+    printf("\n---------------------------------------------------------\n");
+}
+
+int Remove_Element() {
+    if (gui_elements_size == 0) return 1;
+
+    int selected_ele = Get_Selected_Element();
+    if (selected_ele == SELECTION_INVALID) {
+        gui_elements_size--;
+        Calculate_Shape();
+        return 0;
+    }
+    else {
+        for (int i = selected_ele; i < gui_elements_size - 1; i++) {
+            gui_elements[i] = gui_elements[i+1];
+        }
+        gui_elements_size--;
+        Calculate_Shape();
+        return 0;
+    }
+    return 0;
+}
+
 int Remove_Element_Handler() {
     Rectangle const button = {
         .x = (GetScreenWidth() - 243),
@@ -54,7 +84,7 @@ int Remove_Element_Handler() {
     };
 
     if (GuiButton(button, "Remove")) {
-
+        Remove_Element();
     }
     return SUCCESS;
 }
@@ -86,8 +116,9 @@ void Calculate_Shape() {
         }
     }
 }
+
 int Add_Element(int data) {
-    if (gui_elements_size+1 == MAX_NUM_ELEMENTS) return ADD_ERROR;
+    if (gui_elements_size + 1 == MAX_NUM_ELEMENTS) return ADD_ERROR;
 
     int selected_ele = Get_Selected_Element();
     if (selected_ele == SELECTION_INVALID) {
@@ -99,6 +130,8 @@ int Add_Element(int data) {
             .height = DEFAULT_REC_ELE_HEIGHT};
         gui_elements[gui_elements_size].color = DEFAULT_ELE_COLOR;
         gui_elements_size++;
+        Calculate_Shape();
+        return 0;
     }
     else {
         for (int i = gui_elements_size - 1; i >= selected_ele; i++) {
@@ -108,7 +141,9 @@ int Add_Element(int data) {
         gui_elements[selected_ele].data = data;
         gui_elements_size++;
         Calculate_Shape();
+        return 0;
     }
+    return 0;
 }
 
 int Add_Element_Handler() {
@@ -123,7 +158,7 @@ int Add_Element_Handler() {
         .width = 200,
         .height = 127};
 
-    bool input_dial_show = false;
+    static bool input_dial_show = false;
     static char text[50];
 
     if (GuiButton(button, "Add Element")) {
@@ -150,12 +185,18 @@ int Add_Element_Handler() {
 }
 
 int main() {
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+
     InitWindow(1700, 900, "arrayGUI");
-    Array_Initialize();
 
     while (!WindowShouldClose()) {
         BeginDrawing();
-
+        ClearBackground(GRAY);
+        Draw_Array();
+        Add_Element_Handler();
+        Remove_Element_Handler();
+        Print_Ele_Array();
+        Get_Selected_Element();
         EndDrawing();
     }
 }

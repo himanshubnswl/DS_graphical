@@ -18,3 +18,5 @@
 #define MAX_NUM_ELEMENTS 50
 #define STARTING_X 50
 #define STARTING_Y 75
+
+void Calculate_Shape();
