@@ -11,7 +11,6 @@
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Vertex * selected_vertex = nullptr;
 int V_List_Top = -1;
-enum ERROR_HANDLER ERROR;
 
 
 Vertex * L_Search_Node(Graph_Node * node) {
@@ -549,6 +548,7 @@ int Load_Graph_Handler() {
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+    enum ERROR_HANDLER ERROR;
 
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "graphGUI");
     SetTargetFPS(60);

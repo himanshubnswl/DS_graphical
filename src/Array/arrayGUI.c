@@ -5,6 +5,7 @@
 #include "../Graph/graphInternals.h"
 #include "../helpers/helper.h"
 
+enum ERROR_HANDLER ERROR;
 typedef struct gui_element {
     int data;
     Rectangle shape;
@@ -35,18 +36,19 @@ int Get_Selected_Element() {
         }
         i = SELECTION_INVALID;
     }
+    DEBUG_PRINTF(i);
     return i;
 }
 
-int Draw_Array() {
+void Draw_Array() {
     for (int i = 0; i < gui_elements_size; i++) {
         DrawRectangleRec(gui_elements[i].shape, DEFAULT_ELE_COLOR);
-        DrawText(int_to_chars(gui_elements[i].data), gui_elements[i].shape.x + 50, gui_elements[i].shape.y + 25, 20, BLACK);
+        DrawRectangleLinesEx(gui_elements[i].shape, DEFAULT_REC_ELE_BORDER_LINE_THICKNESS, BLACK);
+        DrawText(int_to_chars(gui_elements[i].data), gui_elements[i].shape.x + REC_TEXT_OFFSET_X, gui_elements[i].shape.y + REC_TEXT_OFFSET_Y, 20, BLACK);
     }
-    return 0;
 }
 
-int Print_Ele_Array() {
+void Print_Ele_Array() {
     printf("\n--------------------------------------------------------\n");
 
     for (int i = 0; i < gui_elements_size; i++) {
@@ -85,7 +87,7 @@ int Remove_Element_Handler() {
     };
 
     if (GuiButton(button, "Remove")) {
-        Remove_Element();
+        if (Remove_Element() != 0) return REMOVE_ERROR;
     }
     return SUCCESS;
 }
@@ -112,14 +114,14 @@ void Calculate_Shape() {
             if (gui_elements[i].shape.x + DEFAULT_REC_ELE_WIDTH >= GetScreenWidth()) {
                 row++;
                 gui_elements[i].shape.x = STARTING_X;
-                gui_elements[i].shape.y = STARTING_Y * row;
+                gui_elements[i].shape.y = (STARTING_Y * (row)) + ROW_GAP;
             }
         }
     }
 }
 
 int Add_Element(int data) {
-    if (gui_elements_size + 1 == MAX_NUM_ELEMENTS) return ADD_ERROR;
+    if (gui_elements_size + 1 == MAX_NUM_ELEMENTS) return 1;
 
     int selected_ele = Get_Selected_Element();
     if (selected_ele == SELECTION_INVALID) {
@@ -171,7 +173,7 @@ int Add_Element_Handler() {
         switch(result) {
             case 1:
                 if (chars_to_int(text) == NOT_INT) return NOT_INT;
-                else Add_Element(chars_to_int(text));
+                else if (Add_Element(chars_to_int(text)) != 0) return ADD_ERROR;
                 break;
 
             case 0:
@@ -187,17 +189,19 @@ int Add_Element_Handler() {
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-
     InitWindow(1700, 900, "arrayGUI");
 
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
         Draw_Array();
-        Add_Element_Handler();
-        Remove_Element_Handler();
+        ERROR = Add_Element_Handler();
+        printf("\n%d", ERROR);
+        ERROR = Remove_Element_Handler();
+        printf("\n%d", ERROR);
         Print_Ele_Array();
         Get_Selected_Element();
+        CheckAndDrawError(ERROR);
         EndDrawing();
     }
 }
