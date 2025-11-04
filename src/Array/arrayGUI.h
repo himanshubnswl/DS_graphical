@@ -1,10 +1,12 @@
 #pragma once
 
 #define ERROR_IMPLEMENTATION
+#define DEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <raylib.h>
+#include <debug.h>
 #include <raygui.h>
 #include "array_internals.h"
 #include "../helpers/error.h"

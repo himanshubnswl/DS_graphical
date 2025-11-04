@@ -18,6 +18,7 @@ size_t gui_elements_size = 0;
 
 int Get_Selected_Element() {
     static int i = SELECTION_INVALID;
+
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         for (i = 0; i < gui_elements_size; i++) {
             if (CheckCollisionPointRec(GetMousePosition(), gui_elements[i].shape)) {
@@ -187,6 +188,32 @@ int Add_Element_Handler() {
     return SUCCESS;
 }
 
+void Debug_Mode() {
+    Rectangle box = {
+        .x = 100,
+        .y = GetScreenHeight()/4,
+        .width = 250,
+        .height = 100
+    };
+    Rectangle box_2 = {
+        .x = 100,
+        .y = GetScreenHeight()/2,
+        .width = 250,
+        .height = 100
+    };
+
+    int prevstyle = GuiGetStyle(DEFAULT, TEXT_SIZE);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 25);
+
+    if (Get_Selected_Element() == SELECTION_INVALID)
+        GuiTextBox(box, "SELECTION INVALID", 20, false);
+
+    GuiTextBox(box, int_to_chars(Get_Selected_Element()), 20, false);
+    GuiTextBox(box, int_to_chars(gui_elements_size), 20, false);
+
+    GuiSetStyle(DEFAULT, TEXT_SIZE, prevstyle);
+}
+
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1700, 900, "arrayGUI");
@@ -195,10 +222,11 @@ int main() {
         BeginDrawing();
         ClearBackground(GRAY);
         Draw_Array();
+        Debug_Mode();
         ERROR = Add_Element_Handler();
-        printf("\n%d", ERROR);
+        DEBUG_PRINTF(ERROR);
         ERROR = Remove_Element_Handler();
-        printf("\n%d", ERROR);
+        DEBUG_PRINTF(ERROR);
         Print_Ele_Array();
         Get_Selected_Element();
         CheckAndDrawError(ERROR);
