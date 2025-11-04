@@ -557,13 +557,18 @@ int main() {
         BeginDrawing();
         ClearBackground(GRAY);
         ERROR = Input_Element_Handler();
+        CheckAndDrawError(ERROR);
         ERROR = Remove_Element_Handler();
+        CheckAndDrawError(ERROR);
         DrawGraph();
         Get_Selected_Vertex();
         ERROR = Remove_Edge_Handler();
+        CheckAndDrawError(ERROR);
         ERROR = Add_Edge_Handler();
+        CheckAndDrawError(ERROR);
         debug_mode();
         ERROR = Save_Graph_Handler();
+        CheckAndDrawError(ERROR);
         ERROR = Load_Graph_Handler();
         CheckAndDrawError(ERROR);
         EndDrawing();

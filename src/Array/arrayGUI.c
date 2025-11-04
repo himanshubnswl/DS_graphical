@@ -224,12 +224,14 @@ int main() {
         Draw_Array();
         Debug_Mode();
         ERROR = Add_Element_Handler();
+        CheckAndDrawError(ERROR);
         DEBUG_PRINTF(ERROR);
         ERROR = Remove_Element_Handler();
+        CheckAndDrawError(ERROR);
         DEBUG_PRINTF(ERROR);
         Print_Ele_Array();
         Get_Selected_Element();
-        CheckAndDrawError(ERROR);
+
         EndDrawing();
     }
 }

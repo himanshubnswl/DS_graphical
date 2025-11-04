@@ -10,6 +10,7 @@
 #include <raygui.h>
 #include "array_internals.h"
 #include "../helpers/error.h"
+
 #define DEFAULT_REC_ELE_WIDTH 100
 #define DEFAULT_REC_ELE_HEIGHT 75
 #define DEFAULT_ELE_COLOR WHITE
