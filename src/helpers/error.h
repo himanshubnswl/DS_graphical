@@ -33,11 +33,11 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
     static char * message;
     switch (error) {
         case ADD_ERROR:
-            message = "Check value, only Integers allowed";
+            message = "adding element not possible";
             break;
 
         case REMOVE_ERROR:
-            message = "Enter valid number to remove";
+            message = "removing element not possible";
             break;
 
         case NOT_INT:
@@ -100,11 +100,6 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
             message = nullptr;
     }
 
-
-#ifdef DEBUG
-    DEBUG_PRINTF(message);
-#endif
-
     static bool show_error = false;
     if (message != nullptr) {
         show_error = true;
@@ -112,6 +107,9 @@ void CheckAndDrawError(enum ERROR_HANDLER error) {
     if(show_error) {
         static char * V_error;
         if (message != nullptr) V_error = message;
+#ifdef DEBUG
+        DEBUG_PRINTF(V_error);
+#endif
         Rectangle const errorBox = {
             .x = (GetScreenWidth()/100) * 2,
             .y = (GetScreenHeight()/100) * 80,
