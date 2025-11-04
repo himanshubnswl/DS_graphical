@@ -138,7 +138,7 @@ int Add_Element(int data) {
         return 0;
     }
     else {
-        for (int i = gui_elements_size - 1; i >= selected_ele; i++) {
+        for (int i = gui_elements_size - 1; i >= selected_ele; i--) {
             gui_elements[i + 1].data = gui_elements[i].data;
         }
 
