@@ -17,28 +17,28 @@ gui_element gui_elements[MAX_ELEMENTS_NUM];
 size_t gui_elements_size = 0;
 
 int Get_Selected_Element() {
-    static int i = SELECTION_INVALID;
+    static int selected_index = SELECTION_INVALID;
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        for (i = 0; i < gui_elements_size; i++) {
+        for (int i = 0; i < gui_elements_size; i++) {
             if (CheckCollisionPointRec(GetMousePosition(), gui_elements[i].shape)) {
                 gui_elements[i].color = SELECTED_ELE_COLOR;
                 gui_elements[i].shape.width = SELECTED_ELE_WIDTH;
                 gui_elements[i].shape.height = SELECTED_ELE_HEIGHT;
-                return i;
+                selected_index = i;
             }
         }
     }
     else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        for (i = 0; i < gui_elements_size; i++) {
+        for (int i = 0; i < gui_elements_size; i++) {
             gui_elements[i].color = DEFAULT_ELE_COLOR;
             gui_elements[i].shape.width = DEFAULT_REC_ELE_WIDTH;
             gui_elements[i].shape.height = DEFAULT_REC_ELE_HEIGHT;
         }
-        i = SELECTION_INVALID;
+        selected_index = SELECTION_INVALID;
     }
-    DEBUG_PRINTF(i);
-    return i;
+    DEBUG_PRINTF(selected_index);
+    return selected_index;
 }
 
 void Draw_Array() {
@@ -209,7 +209,7 @@ void Debug_Mode() {
         GuiTextBox(box, "SELECTION INVALID", 20, false);
 
     GuiTextBox(box, int_to_chars(Get_Selected_Element()), 20, false);
-    GuiTextBox(box, int_to_chars(gui_elements_size), 20, false);
+    GuiTextBox(box_2, int_to_chars(gui_elements_size), 20, false);
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, prevstyle);
 }
