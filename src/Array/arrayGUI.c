@@ -13,7 +13,7 @@ typedef struct gui_element {
 }gui_element;
 
 
-gui_element gui_elements[MAX_ELEMENTS_NUM];
+gui_element gui_elements[MAX_NUM_ELEMENTS];
 size_t gui_elements_size = 0;
 
 int Get_Selected_Element() {
