@@ -38,6 +38,24 @@ int Get_Selected_Element() {
     return selected_index;
 }
 
+void Draw_Lines() {
+    for (int i = 0; i < gui_elements_size; i++) {
+        if (i == 0) {
+            continue;
+        }
+        else {
+            Vector2 startpoint;
+            Vector2 endpoint;
+
+            startpoint.x = gui_elements[i-1].shape.x + gui_elements[i-1].shape.width;
+            startpoint.y = gui_elements[i-1].shape.y;
+
+            endpoint.x = gui_elements[i].shape.x;
+            endpoint.y = gui_elements[i].shape.y;
+        }
+    }
+}
+
 void Draw_Array() {
     for (int i = 0; i < gui_elements_size; i++) {
         DrawRectangleRec(gui_elements[i].shape, DEFAULT_ELE_COLOR);
@@ -103,7 +121,7 @@ void Calculate_Shape() {
         }
         else {
             gui_elements[i].shape = (Rectangle) {
-                .x = gui_elements[i-1].shape.x + DEFAULT_REC_ELE_WIDTH,
+                .x = gui_elements[i-1].shape.x + DEFAULT_REC_ELE_WIDTH + INTER_ELEMENT_GAP,
                 .y = gui_elements[i-1].shape.y,
                 .width = DEFAULT_REC_ELE_WIDTH,
                 .height = DEFAULT_REC_ELE_HEIGHT

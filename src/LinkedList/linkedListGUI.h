@@ -26,6 +26,6 @@
 #define STARTING_X 50
 #define STARTING_Y 75
 #define ROW_GAP 50
-
+#define INTER_ELEMENT_GAP 25
 
 void Calculate_Shape();
