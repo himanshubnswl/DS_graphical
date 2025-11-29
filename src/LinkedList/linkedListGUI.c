@@ -43,6 +43,9 @@ void Draw_Lines() {
         if (i == 0) {
             continue;
         }
+        else if (gui_elements[i-1].shape.y != gui_elements[i].shape.y) {
+
+        }
         else {
             Vector2 startpoint;
             Vector2 endpoint;
