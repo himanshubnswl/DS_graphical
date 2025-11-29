@@ -1,11 +1,9 @@
 #pragma once
 
-#define RAYGUI_IMPLEMENTATION
-
 #include <raylib.h>
 #include <raygui.h>
-#include <helper.h>
-#include <linkedListInternals.h>
+#include "../helpers/helper.h"
+#include "linkedListInternals.h"
 #include <error.h>
 
 #define GAP_X 50
