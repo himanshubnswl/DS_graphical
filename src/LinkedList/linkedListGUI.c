@@ -39,11 +39,8 @@ int Get_Selected_Element() {
 }
 
 void Draw_Lines() {
-    for (int i = 0; i < gui_elements_size; i++) {
-        if (i == 0) {
-            continue;
-        }
-        else if (gui_elements[i-1].shape.y != gui_elements[i].shape.y) {
+    for (int i = 1; i < gui_elements_size; i++) {
+        if (gui_elements[i-1].shape.y != gui_elements[i].shape.y) {
 
         }
         else {
