@@ -46,12 +46,19 @@ void Draw_Lines() {
                 .y = gui_elements[i-1].shape.y + (gui_elements[i-1].shape.height/2)};
             Vector2 line1_ep = {
                 .x = gui_elements[i-1].shape.x + ((GetScreenWidth()-(gui_elements[i-1].shape.x + gui_elements[i-1].shape.width))/2),
-                .y = gui_elements[i-1].shape.y + (gui_elements[i-1].shape.height/2)};
-            Vector2 line2_ed = {
-                .x = gui_elements[i-1].shape.x + ((GetScreenWidth()-(gui_elements[i-1].shape.x + gui_elements[i-1].shape.width))/2,
+                .y = line1_sp.y};
+            Vector2 line2_ep = {
+                .x = line1_ep.x,
                 .y = (gui_elements[i-1].shape.y + gui_elements[i-1].shape.height) + ((gui_elements[i].shape.y - (gui_elements[i-1].shape.y + gui_elements[i-1].shape.height))/2)};
-            Vector2 line3_ed = {
-                .x = };
+            Vector2 line3_ep = {
+                .x = gui_elements[i].shape.x/2,
+                .y = line2_ep.y};
+            Vector2 line4_ep = {
+                .x = line3_ep.x,
+                .y = gui_elements[i].shape.y + (gui_elements[i].shape.height/2)};
+            Vector2 line5_ep = {
+                .x = gui_elements[i].shape.x,
+                .y = line4_ep.y};
         }
         else {
             Vector2 startpoint;
