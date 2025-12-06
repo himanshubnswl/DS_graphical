@@ -27,5 +27,7 @@
 #define STARTING_Y 75
 #define ROW_GAP 50
 #define INTER_ELEMENT_GAP 25
+#define LINES_THICKNESS 10
+#define LINES_COLOR RED
 
 void Calculate_Shape();

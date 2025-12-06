@@ -59,16 +59,22 @@ void Draw_Lines() {
             Vector2 line5_ep = {
                 .x = gui_elements[i].shape.x,
                 .y = line4_ep.y};
+
+            DrawLineEx(line1_sp, line1_ep, LINES_THICKNESS, LINES_COLOR);
+            DrawLineEx(line1_ep, line2_ep, LINES_THICKNESS, LINES_COLOR);
+            DrawLineEx(line2_ep, line3_ep, LINES_THICKNESS, LINES_COLOR);
+            DrawLineEx(line3_ep, line4_ep, LINES_THICKNESS, LINES_COLOR);
+            DrawLineEx(line4_ep, line5_ep, LINES_THICKNESS, LINES_COLOR);
         }
         else {
-            Vector2 startpoint;
-            Vector2 endpoint;
+            Vector2 startpoint = {
+                .x = gui_elements[i-1].shape.x + gui_elements[i-1].shape.width,
+                .y = gui_elements[i-1].shape.y + (gui_elements[i-1].shape.height/2)};
+            Vector2 endpoint = {
+                .x = gui_elements[i].shape.x,
+                .y = gui_elements[i].shape.y + (gui_elements[i].shape.height/2)};
 
-            startpoint.x = gui_elements[i-1].shape.x + gui_elements[i-1].shape.width;
-            startpoint.y = gui_elements[i-1].shape.y;
-
-            endpoint.x = gui_elements[i].shape.x;
-            endpoint.y = gui_elements[i].shape.y;
+            DrawLineEx(startpoint, endpoint, LINES_THICKNESS, LINES_COLOR);
         }
     }
 }
