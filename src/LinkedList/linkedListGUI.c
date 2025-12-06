@@ -41,7 +41,17 @@ int Get_Selected_Element() {
 void Draw_Lines() {
     for (int i = 1; i < gui_elements_size; i++) {
         if (gui_elements[i-1].shape.y != gui_elements[i].shape.y) {
-
+            Vector2 line1_sp = {
+                .x = gui_elements[i-1].shape.x,
+                .y = gui_elements[i-1].shape.y + (gui_elements[i-1].shape.height/2)};
+            Vector2 line1_ep = {
+                .x = gui_elements[i-1].shape.x + ((GetScreenWidth()-(gui_elements[i-1].shape.x + gui_elements[i-1].shape.width))/2),
+                .y = gui_elements[i-1].shape.y + (gui_elements[i-1].shape.height/2)};
+            Vector2 line2_ed = {
+                .x = gui_elements[i-1].shape.x + ((GetScreenWidth()-(gui_elements[i-1].shape.x + gui_elements[i-1].shape.width))/2,
+                .y = (gui_elements[i-1].shape.y + gui_elements[i-1].shape.height) + ((gui_elements[i].shape.y - (gui_elements[i-1].shape.y + gui_elements[i-1].shape.height))/2)};
+            Vector2 line3_ed = {
+                .x = };
         }
         else {
             Vector2 startpoint;
