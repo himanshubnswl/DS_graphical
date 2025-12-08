@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-#include "../helpers/helper.h"
+
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Vertex * selected_vertex = nullptr;
 int V_List_Top = -1;

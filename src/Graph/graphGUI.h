@@ -13,6 +13,7 @@
 #include "../helpers/error.h"
 #include <stdlib.h>
 #include <debug.h>
+#include "../helpers/helper.h"
 
 #define ARROW_LENGTH 25
 #define DEBUG
