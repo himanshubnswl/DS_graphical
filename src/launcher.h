@@ -8,4 +8,6 @@
 #include <windows.h>
 #include <stdio.h>
 #include <raylib.h>
+
+#define BUTTON_GAP 50
 // #endif //LAUNCHER_H
