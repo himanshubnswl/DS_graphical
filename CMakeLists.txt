@@ -4,7 +4,7 @@ project(array_gui)
 set(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libs")
 set(CMAKE_BINARY_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/bin")
-set(CMAKE_CURRENT_BINARY_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 add_executable(array src/Array/arrayGUI.c)
 add_executable(LinkedList src/LinkedList/linkedlistGUI.c)

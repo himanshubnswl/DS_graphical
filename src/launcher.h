@@ -5,4 +5,7 @@
 #ifndef LAUNCHER_H
 #define LAUNCHER_H
 
-#endif //LAUNCHER_H
+#include <windows.h>
+#include <stdio.h>
+#include <raylib.h>
+// #endif //LAUNCHER_H
