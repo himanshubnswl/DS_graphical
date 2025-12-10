@@ -10,6 +10,7 @@ add_executable(array src/Array/arrayGUI.c)
 add_executable(LinkedList src/LinkedList/linkedlistGUI.c)
 add_executable(tree src/BSTree/BinarySearchTreeGUI.c)
 add_executable(graph src/Graph/graphGUI.c)
+add_executable(launcher src/launcher.c)
 
 target_include_directories(array PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_directories(array PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libs")
@@ -22,6 +23,10 @@ target_link_directories(tree PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libs")
 
 target_include_directories(graph PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_directories(graph PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libs")
+
+target_include_directories(launcher PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_directories(launcher PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/libs")
+
 
 add_library(support STATIC  "${CMAKE_SOURCE_DIR}/helpers/helper.c")
 add_library(BSTree STATIC "${CMAKE_SOURCE_DIR}/BSTree/TreeInternals.c")
@@ -44,9 +49,11 @@ target_link_libraries(array PUBLIC raylib opengl32 gdi32 winmm support)
 target_link_libraries(LinkedList PUBLIC raylib opengl32 gdi32 winmm support)
 target_link_libraries(tree PUBLIC raylib opengl32 gdi32 winmm support BSTree)
 target_link_libraries(graph PUBLIC raylib opengl32 gdi32 winmm support GraphS)
+target_link_libraries(launcher PUBLIC raylib opengl32 gdi32 winmm kernel32)
 
 target_compile_options(array PUBLIC -Wall)
 target_compile_options(LinkedList PUBLIC -Wall)
 target_compile_options(tree PUBLIC -Wall)
 target_compile_options(graph PUBLIC -Wall)
+target_compile_options(launcher PUBLIC -Wall)
 

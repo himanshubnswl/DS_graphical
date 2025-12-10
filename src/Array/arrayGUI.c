@@ -37,7 +37,6 @@ int Get_Selected_Element() {
         }
         selected_index = SELECTION_INVALID;
     }
-    DEBUG_PRINTF(selected_index);
     return selected_index;
 }
 
@@ -225,11 +224,8 @@ int main() {
         Debug_Mode();
         ERROR = Add_Element_Handler();
         CheckAndDrawError(ERROR);
-        DEBUG_PRINTF(ERROR);
         ERROR = Remove_Element_Handler();
         CheckAndDrawError(ERROR);
-        DEBUG_PRINTF(ERROR);
-        Print_Ele_Array();
         Get_Selected_Element();
 
         EndDrawing();
