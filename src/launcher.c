@@ -1,10 +1,8 @@
 //
 // Created by lhbdawn on 06-12-2025.
 //
-
+#define RAYGUI_IMPLEMENTATION
 #include "launcher.h"
-
-
 
 int DrawShapes() {
     const int margin_vertical = 100;
@@ -33,7 +31,9 @@ int DrawShapes() {
         .height = array_button.height};
 
     if (GuiButton(array_button, "ARRAY")) {
-        CreateProcessA();
+        if (!CreateProcessA("./bin/array.exe", nullptr,nullptr,nullptr,TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, nullptr, nullptr)) {
+            printf("\nprocess creation failed");
+        }
     }
     if (GuiButton(ll_button, "LINKED LIST")) {
 
@@ -57,6 +57,9 @@ int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(900, 900, "launcher.exe");
     while (!WindowShouldClose()) {
-
+        BeginDrawing();
+        ClearBackground(WHITE);
+        DrawShapes();
+        EndDrawing();
     }
 }
