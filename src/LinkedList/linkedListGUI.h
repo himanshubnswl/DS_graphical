@@ -1,7 +1,6 @@
 #pragma once
 
 #define ERROR_IMPLEMENTATION
-#define DEBUG
 
 #include <stdio.h>
 #include <stdlib.h>

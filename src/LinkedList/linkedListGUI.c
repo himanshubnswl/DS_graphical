@@ -34,7 +34,6 @@ int Get_Selected_Element() {
         }
         selected_index = SELECTION_INVALID;
     }
-    DEBUG_PRINTF(selected_index);
     return selected_index;
 }
 
@@ -80,6 +79,7 @@ void Draw_Lines() {
 }
 
 void Draw_Array() {
+    Draw_Lines();
     for (int i = 0; i < gui_elements_size; i++) {
         DrawRectangleRec(gui_elements[i].shape, DEFAULT_ELE_COLOR);
         DrawRectangleLinesEx(gui_elements[i].shape, DEFAULT_REC_ELE_BORDER_LINE_THICKNESS, BLACK);
@@ -132,8 +132,8 @@ int Remove_Element_Handler() {
 }
 
 void Calculate_Shape() {
-    for (size_t i = 0; i < gui_elements_size; i++) {
-        size_t row = 1;
+    int row = 1;
+    for (int i = 0; i < gui_elements_size; i++) {
         if (i == 0) {
             gui_elements[i].shape = (Rectangle) {
                 .x = STARTING_X,
@@ -153,7 +153,7 @@ void Calculate_Shape() {
             if (gui_elements[i].shape.x + DEFAULT_REC_ELE_WIDTH >= GetScreenWidth()) {
                 row++;
                 gui_elements[i].shape.x = STARTING_X;
-                gui_elements[i].shape.y = (STARTING_Y * (row)) + ROW_GAP;
+                gui_elements[i].shape.y = (STARTING_Y * (row)) + (ROW_GAP * row);
             }
         }
     }
@@ -263,11 +263,8 @@ int main() {
         Debug_Mode();
         ERROR = Add_Element_Handler();
         CheckAndDrawError(ERROR);
-        DEBUG_PRINTF(ERROR);
         ERROR = Remove_Element_Handler();
         CheckAndDrawError(ERROR);
-        DEBUG_PRINTF(ERROR);
-        Print_Ele_Array();
         Get_Selected_Element();
 
         EndDrawing();

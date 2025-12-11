@@ -7,7 +7,11 @@
 #define NOUSER              // Excludes USER (User Interface) macros, like CloseWindow, ShowCursor, etc.
 
 #include "launcher.h"
-
+/* things to do
+ * new cmake, current one is shite
+ * compile and run for linux
+ * animations (maybe not)
+ */
 int DrawShapes() {
     const int margin_vertical = 100;
     const int margin_horizontal = 100;
