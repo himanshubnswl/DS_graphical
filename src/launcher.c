@@ -11,7 +11,7 @@
 int DrawShapes() {
     const int margin_vertical = 100;
     const int margin_horizontal = 100;
-    const int gap_bw_buttons = GetScreenHeight()/3;
+    const int gap_bw_buttons = GetScreenHeight()/5;
 
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -53,14 +53,36 @@ int DrawShapes() {
         }
     }
     if (GuiButton(ll_button, "LINKED LIST")) {
-        printf("hello to meself");
+        if (!CreateProcessA("LinkedList.exe", nullptr, nullptr, nullptr,TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si, &pi)) {
+            printf("\nprocess creation failed!");
+        }
+        else {
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            exit(0);
+        }
     }
     if (GuiButton(BST_button, "BINARY SEARCH TREE")) {
-
+        if (!CreateProcessA("tree.exe", nullptr, nullptr, nullptr, TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si,&pi)) {
+            printf("\nprocess creation failed");
+        }
+        else {
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            exit(0);
+        }
     }
     if (GuiButton(graph_button, "GRAPH")) {
-
+        if (!CreateProcessA("graph.exe", nullptr, nullptr, nullptr, TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si,&pi)) {
+            printf("\nprocess creation failed");
+        }
+        else {
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+            exit(0);
+        }
     }
+
     return 0;
 }
 
