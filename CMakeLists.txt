@@ -1,10 +1,22 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
-project(array_gui)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.70)
+project(array_gui LANGUAGES C)
 
 set(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/libs")
-set(CMAKE_BINARY_DIR  "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+
+include(FetchContent)
+
+set(RAYLIB_VERSION 5.5.0)
+
+FetchContent_Declare(
+        raylib
+        URl https://github.com/raysan5/raylib/archive/refs/tags/${RAYLIB_VERSION}.tar.gz
+        FIND_PACKAGE_ARGS ${RAYLIB_VERSION}
+)
+
+set(BUILD_EXAMPLES OFF CACHE INTERNAL "")
+FetchContent_MakeAvailable(raylib)
 
 add_executable(array src/Array/arrayGUI.c)
 add_executable(LinkedList src/LinkedList/linkedlistGUI.c)
