@@ -1,17 +1,9 @@
 //
-// Created by lhbdawn on 06-12-2025.
+// Created by lhbdawn on 15-12-2025.
 //
-#define RAYGUI_IMPLEMENTATION
-#define WIN32_LEAN_AND_MEAN // Excludes most headers from windows.h
-#define NOGDI               // Excludes GDI (Graphics Device Interface) macros, like Rectangle
-#define NOUSER              // Excludes USER (User Interface) macros, like CloseWindow, ShowCursor, etc.
 
-#include "launcher.h"
-/* things to do
- * new cmake, current one is shite
- * compile and run for linux
- * animations (maybe not)
- */
+#include "launcher_unix.h"
+
 int DrawShapes() {
     const int margin_vertical = 100;
     const int margin_horizontal = 100;
@@ -92,7 +84,7 @@ int DrawShapes() {
 
 int main() {
     const char* save_dir_path = "./saves";
-    if (CreateDirectory(save_dir_path, nullptr)) {
+    if (CreateDirectory(save_dir_path, NULL)) {
         printf("\ndirectory creation successfull");
     }
     else {
