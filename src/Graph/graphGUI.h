@@ -10,11 +10,11 @@
 #include <math.h>
 #include "graphInternals.h"
 #include <stdio.h>
-#include "../helpers/error.h"
 #include <stdlib.h>
 #include <debug.h>
-#include "../helpers/helper.h"
 #include <string.h>
+#include "../helpers/error.h"
+#include "../helpers/helper.h"
 
 #define ARROW_LENGTH 25
 #define DEBUG

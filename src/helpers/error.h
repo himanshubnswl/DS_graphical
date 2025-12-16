@@ -4,8 +4,6 @@
 #ifndef  ERROR_H
 #define ERROR_H
 
-#include <raygui.h>
-#include <raylib.h>
 #include <debug.h>
 
 enum ERROR_HANDLER {
