@@ -4,8 +4,6 @@
 #ifndef  ERROR_H
 #define ERROR_H
 
-#define RAYGUI_IMPLEMENTATION
-
 #include <raygui.h>
 #include <raylib.h>
 #include <debug.h>

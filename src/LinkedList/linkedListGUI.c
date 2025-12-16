@@ -1,4 +1,4 @@
-
+#define RAYGUI_IMPLEMENTATION
 
 #include "linkedListGUI.h"
 
