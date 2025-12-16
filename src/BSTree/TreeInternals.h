@@ -8,8 +8,6 @@
 #include <stdlib.h>
 #include <direct.h>
 #include <string.h>
-#include <raylib.h>
-#include <raygui.h>
 #include "../helpers/helper.h"
 #include "../helpers/error.h"
 #ifdef DEBUG

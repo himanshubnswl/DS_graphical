@@ -1,4 +1,3 @@
-#define RAYGUI_IMPLEMENTATION
 #include "helper.h"
 
 

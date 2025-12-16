@@ -3,11 +3,6 @@
 //
 #include "graphInternals.h"
 
-#include <string.h>
-
-#include "graphGUI.h"
-#include "../helpers/helper.h"
-
 Graph_Node * root = nullptr;
 
 int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
