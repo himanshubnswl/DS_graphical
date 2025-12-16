@@ -1,5 +1,5 @@
-#define RAYGUI_IMPLEMENTATION
 
+#define RAYGUI_IMPLEMENTATION
 #include "arrayGUI.h"
 
 

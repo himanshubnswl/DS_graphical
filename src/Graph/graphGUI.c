@@ -2,8 +2,8 @@
 // Created by lhbdawn on 03-10-2025.
 //
 #define ERROR_IMPLEMENTATION
-#define RAYGUI_IMPLEMENTATION
 #include "graphGUI.h"
+#define RAYGUI_IMPLEMENTATION
 
 
 

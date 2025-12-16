@@ -6,7 +6,6 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "error.h"
 #include <debug.h>
 #include <stdint.h>
 
@@ -17,8 +16,6 @@ typedef int (*getInput)(char *);
 
 char * int_to_chars(int number);
 int chars_to_int(char * text);
-int inputElementHandler(char * input_text, getInput getvalue);
-int removeElementHandler(int (*removeElementInDS)(int));
 uint32_t Hash_String_FNV(char const * string_to_hash);
 
 

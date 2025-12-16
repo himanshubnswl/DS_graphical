@@ -3,8 +3,8 @@
 //
 
 #define ERROR_IMPLEMENTATION
-#define RAYGUI_IMPLEMENTATION
 #include "BinarySearchTreeGUI.h"
+#define RAYGUI_IMPLEMENTATION
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
 
