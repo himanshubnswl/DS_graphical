@@ -1,6 +1,6 @@
+#define RAYGUI_IMPLEMENTATION
 #include "linkedListGUI.h"
 
-#define RAYGUI_IMPLEMENTATION
 
 enum ERROR_HANDLER ERROR;
 typedef struct gui_element {

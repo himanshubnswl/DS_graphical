@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <debug.h>
 #include <stdint.h>
+#include "error.h"
 
 
 #define HASH_FNV_OFFSET 0x811c9dc5
