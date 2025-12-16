@@ -2,8 +2,6 @@
 
 #include "arrayGUI.h"
 
-#include "../Graph/graphInternals.h"
-#include "../helpers/helper.h"
 
 enum ERROR_HANDLER ERROR;
 typedef struct gui_element {

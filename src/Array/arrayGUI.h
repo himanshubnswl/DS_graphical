@@ -2,14 +2,13 @@
 
 #define ERROR_IMPLEMENTATION
 
-
+#include "../helpers/error.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <raylib.h>
 #include <debug.h>
 #include <raygui.h>
-#include "array_internals.h"
-#include "../helpers/error.h"
+#include "../helpers/helper.h"
 
 #define DEFAULT_REC_ELE_WIDTH 100
 #define DEFAULT_REC_ELE_HEIGHT 75

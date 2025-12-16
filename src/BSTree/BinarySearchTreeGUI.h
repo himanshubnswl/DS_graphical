@@ -11,7 +11,6 @@
 #include "../helpers/helper.h"
 #include "../helpers/error.h"
 #include "TreeInternals.h"
-#define RAYGUI_IMPLEMENTATION
 
 #ifdef DEBUG
 #include <debug.h>

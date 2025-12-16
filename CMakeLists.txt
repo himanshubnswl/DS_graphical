@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.70)
+CMAKE_MINIMUM_REQUIRED(VERSION 4.00)
 project(array_gui LANGUAGES C)
 
 
@@ -17,6 +17,6 @@ FetchContent_Declare(
 set(BUILD_EXAMPLES OFF CACHE INTERNAL "")
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(raylib)
-
+message(top level dir: ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -4,7 +4,6 @@
 #define ERROR_IMPLEMENTATION
 #include "graphGUI.h"
 
-#include <string.h>
 
 
 

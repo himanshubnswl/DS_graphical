@@ -7,13 +7,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "error.h"
-#include <raygui.h>
-#include <raylib.h>
 #include <debug.h>
 #include <stdint.h>
 
 
-#define RAYGUI_IMPLEMENTATION
 #define HASH_FNV_OFFSET 0x811c9dc5
 #define FNV_PRIME 0x01000193
 typedef int (*getInput)(char *);
