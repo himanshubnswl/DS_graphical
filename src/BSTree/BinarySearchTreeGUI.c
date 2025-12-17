@@ -3,8 +3,8 @@
 //
 
 #define ERROR_IMPLEMENTATION
-#include "BinarySearchTreeGUI.h"
 #define RAYGUI_IMPLEMENTATION
+#include "BinarySearchTreeGUI.h"
 #define SCREEN_HEIGHT 900
 #define SCREEN_WIDTH  1700
 
@@ -118,7 +118,7 @@ int Add_Gui_Node_Handler() {
         switch(result) {
             case 1:
                 if (chars_to_int(text) != NOT_INT) {
-                    return addGuiNode(text);    //propogate error from addGuiNode to the caller
+                    return addGuiNode(chars_to_int(text));    //propogate error from addGuiNode to the caller
                 }
                 else {
                     return NOT_INT; //handle the not integer case here
@@ -216,8 +216,8 @@ int main() {
         BeginDrawing();
         ClearBackground(GRAY);
         DrawBSTree();
-        ERROR1 = inputElementHandler(inputText, addGuiNode);
-        ERROR2 = removeElementHandler(removeBSTNode);
+        ERROR1 = Add_Gui_Node_Handler();
+        ERROR2 = Remove_Gui_Node_Handler();
 
 #ifdef DEBUG
         getPreOrderTraversal();

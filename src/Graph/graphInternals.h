@@ -7,8 +7,10 @@
 #include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <limits.h>
 #include "../helpers/error.h"
+#include "../helpers/helper.h"
 #include <stdint.h>
 
 #define MAX_ELEMENTS_NUM 50

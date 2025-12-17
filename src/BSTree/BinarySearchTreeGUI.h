@@ -19,7 +19,7 @@
 #endif
 
 void DrawBSTree();
-int addGuiNode(char * input);
+int addGuiNode(int input);
 int load_file();
 int save_file();
 
