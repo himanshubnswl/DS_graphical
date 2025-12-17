@@ -47,7 +47,7 @@ int addBSTNode(const int data) {
     while (iterateNode != nullptr) {
         if (iterateNode->data == data) {
             free(newNode);
-            return SUCCESS;
+            return ADD_ERROR;
         }
         parentNode = iterateNode;
 
@@ -64,9 +64,8 @@ int addBSTNode(const int data) {
     }
     else {
         parentNode->rightptr = newNode;
-        return SUCCESS;
     }
-    return 0;
+    return SUCCESS;
 }
 
 int removeBSTNode(const int valueToRemove) {
@@ -96,7 +95,7 @@ int removeBSTNode(const int valueToRemove) {
             free(currentNode);
             return SUCCESS;
         }
-        if (parentNode->leftptr == currentNode) {
+        else if (parentNode->leftptr == currentNode) {
             parentNode->leftptr = nullptr;
             checkSetRootToNP(currentNode);
             free(currentNode);

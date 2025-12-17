@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 4.00)
-project(array_gui LANGUAGES C)
+project(DSA_graphical LANGUAGES C)
 
 
 include(FetchContent)

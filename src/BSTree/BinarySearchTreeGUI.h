@@ -12,6 +12,8 @@
 #include "../helpers/error.h"
 #include "TreeInternals.h"
 
+#define INPUT_TEXT_MAX_SIZE 256
+
 #ifdef DEBUG
 #include <debug.h>
 #endif

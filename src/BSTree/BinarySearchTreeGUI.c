@@ -82,25 +82,59 @@ void DrawBSTree() {
     }
 }
 
-int addGuiNode(char * input) {
+int addGuiNode(int value) {
 #ifdef DEBUG
     DEBUG_PRINTF(input);
 #endif
 
-    int value = chars_to_int(input);
 #ifdef DEBUG
     DEBUG_CHECKPOINT(value);
 #endif
 
-    if (value == NOT_INT) {
-        return ADD_ERROR;
-    }
-    else {
-        ERROR = addBSTNode(value);
-        return ERROR;
-    }
+    ERROR = addBSTNode(value);
+    return ERROR;
 }
 
+int Add_Gui_Node_Handler() {
+    Rectangle button = {
+        .x = GetScreenWidth() - 129,
+        .y = GetScreenHeight() - 106,
+        .width = 100,
+        .height = 75};
+    Rectangle input_dial_box = {
+        .x = GetScreenWidth() - 230,
+        .y = GetScreenHeight() - 250,
+        .width = 200,
+        .height = 127};
+    static bool input_dial_show = false;
+    static char text[INPUT_TEXT_MAX_SIZE];
+
+    if (GuiButton(button, "Add Element")) {
+        input_dial_show = true;
+    }
+    if (input_dial_show) {
+        int const result = GuiTextInputBox(input_dial_box, nullptr, nullptr, "Add", text , INPUT_TEXT_MAX_SIZE, nullptr);
+
+        switch(result) {
+            case 1:
+                if (chars_to_int(text) != NOT_INT) {
+                    return addGuiNode(text);    //propogate error from addGuiNode to the caller
+                }
+                else {
+                    return NOT_INT; //handle the not integer case here
+                }
+                break;
+
+            case 0:
+                text[0] = '\0';
+                input_dial_show = false;
+                break;
+            default:
+                return SUCCESS;
+        }
+    }
+    return SUCCESS;
+}
 
 int load_file() {
     Rectangle loadBox = {.x = GetScreenWidth()-600,
@@ -126,6 +160,45 @@ int save_file() {
         return ERROR;
     }
     return ERROR;
+}
+
+int Remove_Gui_Node_Handler() {
+    Rectangle const button = {
+        .x = (GetScreenWidth() - 243),
+        .y = (GetScreenHeight() - 106),
+        .width = 100,
+        .height = 75
+    };
+    Rectangle input_dial_box = {
+        .x = GetScreenWidth() - 230,
+        .y = GetScreenHeight() - 250,
+        .width = 200,
+        .height = 127};
+    static char text[INPUT_TEXT_MAX_SIZE];
+    static bool input_dial_show = false;
+    if (GuiButton(button, text)) {
+        input_dial_show = true;
+    }
+    if (input_dial_show) {
+        int result = GuiTextInputBox(input_dial_box, nullptr, nullptr, "add", text, INPUT_TEXT_MAX_SIZE, nullptr);
+        switch (result) {
+            case 0:
+                text[0] = '\0';
+                input_dial_show = false;
+                break;
+
+            case 1:
+                if (chars_to_int(text) != NOT_INT) {
+                    return removeBSTNode(chars_to_int(text)); //propogate error from function to caller
+                }
+                else {
+                    return NOT_INT;
+                }
+
+            default:
+                return SUCCESS;
+        }
+    }
 }
 
 int main() {
