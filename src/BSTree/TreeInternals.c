@@ -6,22 +6,45 @@
 
 Node * root = nullptr;
 
-void SetRootToNP() {
+static void SetRootToNP() {
     root = nullptr;
 }
 
-void checkSetRootToNP(Node * nodeToCheck) {
+static void checkSetRootToNP(Node * nodeToCheck) {
     if (nodeToCheck == root) {
         SetRootToNP();
     }
 }
 
-void initialize(int data) {
+static void initialize(int data) {
     root = (Node *)malloc(sizeof(Node));
     root->data = data;
     root->leftptr = nullptr;
     root->rightptr = nullptr;
 }
+
+static void deleteBSTree() {
+    Node * iterateNode = GetBSTroot();
+    if (iterateNode == nullptr) {
+        return;
+    }
+
+    Node * stack[50];
+    int stack_pointer = -1;
+    stack[++stack_pointer] = iterateNode;
+    while (stack_pointer != -1) {
+        iterateNode = stack[stack_pointer--];
+        if (iterateNode->rightptr != nullptr) {
+            stack[++stack_pointer] = iterateNode->rightptr;
+        }
+        if (iterateNode->leftptr != nullptr) {
+            stack[++stack_pointer] = iterateNode->leftptr;
+        }
+        free(iterateNode);
+        root = nullptr;
+    }
+}
+
 
 int addBSTNode(const int data) {
 
@@ -230,27 +253,6 @@ int SaveBSTreeToFile() { //multiple saving breaks
     return SUCCESS;
 }
 
-void deleteBSTree() {
-    Node * iterateNode = GetBSTroot();
-    if (iterateNode == nullptr) {
-        return;
-    }
-
-    Node * stack[50];
-    int stack_pointer = -1;
-    stack[++stack_pointer] = iterateNode;
-    while (stack_pointer != -1) {
-        iterateNode = stack[stack_pointer--];
-        if (iterateNode->rightptr != nullptr) {
-            stack[++stack_pointer] = iterateNode->rightptr;
-        }
-        if (iterateNode->leftptr != nullptr) {
-            stack[++stack_pointer] = iterateNode->leftptr;
-        }
-        free(iterateNode);
-        root = nullptr;
-    }
-}
 
 int LoadBSTreeFromFile() { //when i load three times the app crashes, need to look into it
     deleteBSTree();

@@ -20,16 +20,13 @@ typedef struct Node {
     struct Node * rightptr;
 }Node;
 
-void initialize(int data); //initialize a function, is called internally by addBSTNode()
 int addBSTNode(int data); //add a node to the tree
 int removeBSTNode(int valueToRemove);//remove the node from the tree by the value specified
 int * getPreOrderTraversal(); //returns an array with preOrder values of tree
 Node * GetBSTroot(); //to get the root of the tree
 int SaveBSTreeToFile(); //to save the tree to a file
 int LoadBSTreeFromFile();//to load a tree from the file
-void deleteBSTree(); //to delete the entire tree
-void SetRootToNP();
-void checkSetRootToNP(Node * nodeToCheck);
+
 
 
 

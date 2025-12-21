@@ -44,7 +44,7 @@ typedef struct graphNode {
     struct AdListItem outgoing_edges[20];
 }Graph_Node;
 
-bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched); //searches for toBeSearched in given array
+//bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched); //searches for toBeSearched in given array
 
 //adds a node to the graph, makes root node if parent passed as nullptr
 //accepts only positive values for weight
@@ -78,8 +78,8 @@ int Remove_Graph_Edge(Graph_Node * parent, Graph_Node * child);
 int Save_Graph_To_File();
 
 Graph_Node ** Load_Graph_From_File();
-void Free_Edge_Link_List(edge_link ** list);
-
+//void Free_Edge_Link_List(edge_link ** list);
+Graph_Node ** Get_DFS_traversal();
 
 
 #endif //GRAPHINTERNALS_H

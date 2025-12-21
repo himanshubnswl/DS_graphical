@@ -5,6 +5,203 @@
 
 Graph_Node * root = nullptr;
 
+static bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
+    for (int i = 0; visited[i] != nullptr; i++ ) {
+        if (visited[i] == toBeSearched) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
+    Graph_Node ** missingarr = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node*));
+    size_t i = 0;
+    size_t m = 0;
+
+    while (first[i] != nullptr) {
+        if (visited_array_search(second, first[i]) == false) {
+            missingarr[m++] = first[i];
+        }
+        i++;
+    }
+
+    return missingarr;
+}
+static void printARR(char * id ,Graph_Node ** arr) {
+    int i = 0;
+    printf("\n %s is: ", id);
+    while (arr[i] != nullptr) {
+        printf(" %d ", arr[i]->data);
+        i++;
+    }
+    printf("\n");
+}
+
+//frees the edge link, freeing the list and the elements of the list
+static void Free_Edge_Link_List(edge_link ** list) {
+    int i = 0;
+    while (list[i] != nullptr) {
+        free(list[i]);
+        i++;
+    }
+    free(list);
+}
+
+
+/*get integer value from a substring start <= bounds < end
+ * return the integer value from the string
+ */
+static int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end) {
+    char sub_string[20];
+    int sub_string_size = 0;
+
+    for (int i = start; i < end; i++) {
+        sub_string[sub_string_size] = string[i];
+        sub_string_size++;
+    }
+
+    sub_string[sub_string_size] = '\0';
+    return chars_to_int(sub_string);
+}
+
+/*takes a formatted string and makes a list of edge_link containing
+ *individual links for a particular node
+ * the returned list needs to be free
+ * and the elements inside the list need to individually freed as well
+ */
+static edge_link ** Add_Edge_From_String(char * string) {
+    edge_link ** edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link*));
+    if (string == nullptr) return edge_list;
+
+    int edge_list_size = -1;
+    unsigned int start = 0;
+    unsigned int end = 0;
+    bool set_start = false;
+    bool set_weight_flag = false;
+    bool value_is_valid;
+
+    int i = 0;
+    while (string[i] != '\0') {
+        value_is_valid = false;
+
+        if (string[i] <= '9' && string[i] >= '0') {
+            value_is_valid = true;
+            if (set_start == false) {
+                start = i;
+                set_start = true;
+            }
+        }
+        else if (string[i] == ':') {
+            value_is_valid = true;
+            edge_link * new_link = malloc(sizeof(edge_link));
+            edge_list[++edge_list_size] = new_link;
+            end = i;
+            edge_list[edge_list_size]->unique_id = Get_Value_From_Substring(string, start, end);
+            set_weight_flag = true;
+            set_start = false;
+        }
+        else if (string[i] == ' ') {
+            value_is_valid = true;
+            if (set_weight_flag == true) {
+                end = i;
+                edge_list[edge_list_size]->weight = Get_Value_From_Substring(string, start, end);
+                set_weight_flag = false;
+                set_start = false;
+            }
+        }
+        if (value_is_valid == false) {
+            Free_Edge_Link_List(edge_list);
+            return nullptr;
+        }
+        i++;
+    }
+    return edge_list;
+}
+
+//searches for a node in a list of graph_nodes
+//returns the node if found or retuns nullptr if fails
+static Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
+    int i = 0;
+    while (list[i] != nullptr) {
+        if (list[i]->unique_id == unique_key) {
+            return list[i];
+        }
+        i++;
+    }
+    return nullptr;
+}
+
+//takes in a node and attaches the adjacent nodes to the parent node by using their unique ids
+//searches the unique id in the list and then returns the associated node which links to the parent
+//return 0 on success
+static int Attach_Links_To_Node(Graph_Node * node, edge_link ** incoming_links, edge_link ** outgoing_links, Graph_Node ** list) {
+    node->outgoing_edges_index = -1;
+    node->incoming_edges_index = -1;
+
+    int i = 0;
+    while (incoming_links[i] != nullptr) {
+        node->incoming_edges[++(node->incoming_edges_index)].node = Search_And_Return_Node(list , incoming_links[i]->unique_id);
+        node->incoming_edges[node->incoming_edges_index].weight = incoming_links[i]->weight;
+        i++;
+    }
+    i = 0;
+    while (outgoing_links[i] != nullptr) {
+        node->outgoing_edges[++(node->outgoing_edges_index)].node = Search_And_Return_Node(list , outgoing_links[i]->unique_id);
+        node->outgoing_edges[node->outgoing_edges_index].weight = outgoing_links[i]->weight;
+        i++;
+    }
+    return 0;
+}
+
+/*gracefully fails the Load_Graph function by freeing up all allocated resources so no memory is leaked */
+static void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_link *** outgoing_link_list, char * string_buffer, FILE * file) {
+    int i = 0;
+    while (list[i] != nullptr) {
+        free(list[i]);
+        i++;
+    }
+    free(list);
+    root = nullptr;
+
+    i = 0;
+    while (incoming_link_list[i] != nullptr) {
+        Free_Edge_Link_List(incoming_link_list[i]);
+        i++;
+    }
+    free(incoming_link_list);
+
+    i = 0;
+    while (outgoing_link_list[i] != nullptr) {
+        Free_Edge_Link_List(outgoing_link_list[i]);
+        i++;
+    }
+    free(outgoing_link_list);
+
+    free(string_buffer);
+    fclose(file);
+}
+
+static void Destroy_Graph() {
+    if (root == nullptr) return;
+    Graph_Node ** list = Get_DFS_traversal();
+    int i = 0;
+    while (list[i] != nullptr) {
+        free(list[i]);
+        i++;
+    }
+    root = nullptr;
+    free(list);
+}
+
+static bool Search_Stack(Graph_Node ** stack, Graph_Node * key_node, int sp) {
+    for (int i = 0; i <= sp; i++) {
+        if (stack[i] == key_node) return true;
+    }
+    return false;
+}
+
+
 int Add_Graph_Edge(Graph_Node * parent, Graph_Node * child, int weight) {
     if (weight <= 0 || parent == nullptr) return 1;
     for (int i = 0; i <= parent->outgoing_edges_index; i++) {
@@ -76,12 +273,7 @@ Graph_Node * Add_Graph_Node(int data, Graph_Node * parent, int weight) {
     }
 }
 
-bool Search_Stack(Graph_Node ** stack, Graph_Node * key_node, int sp) {
-    for (int i = 0; i <= sp; i++) {
-        if (stack[i] == key_node) return true;
-    }
-    return false;
-}
+
 
 Graph_Node ** Get_DFS_traversal() {
     Graph_Node * stack[MAX_ELEMENTS_NUM] = {nullptr};
@@ -103,38 +295,7 @@ Graph_Node ** Get_DFS_traversal() {
     return traversal;
 }
 
-bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
-    for (int i = 0; visited[i] != nullptr; i++ ) {
-        if (visited[i] == toBeSearched) {
-            return true;
-        }
-    }
-    return false;
-}
 
-Graph_Node ** Get_Diff(Graph_Node ** first, Graph_Node ** second) {
-    Graph_Node ** missingarr = calloc(MAX_ELEMENTS_NUM, sizeof(Graph_Node*));
-    size_t i = 0;
-    size_t m = 0;
-
-    while (first[i] != nullptr) {
-        if (visited_array_search(second, first[i]) == false) {
-            missingarr[m++] = first[i];
-        }
-        i++;
-    }
-
-    return missingarr;
-}
-void printARR(char * id ,Graph_Node ** arr) {
-    int i = 0;
-    printf("\n %s is: ", id);
-    while (arr[i] != nullptr) {
-        printf(" %d ", arr[i]->data);
-        i++;
-    }
-    printf("\n");
-}
 
 int Remove_Graph_Node(Graph_Node * node) {
     if (node == nullptr) return 1;
@@ -182,7 +343,7 @@ Graph_Node * Get_Graph_Root() {
 }
 /*generates unique id , keeps track of previoudly generated ids and makes sure that no previously used value is used */
 //returns the generated unique id
-int Generate_Unique_ID(int * generated_ids, int size_arr) {
+static int Generate_Unique_ID(int * generated_ids, int size_arr) {
     int generated_number = rand();
     for (int i = 0; i <= size_arr ; i++) {
         if (generated_ids[i] == generated_number) {
@@ -195,7 +356,7 @@ int Generate_Unique_ID(int * generated_ids, int size_arr) {
 
 //sets the unique ids for all Graph_Nodes in a array of graph_node
 //keeps track of generated ids to make sure no values are repeated
-void Set_Nodes_Unique_IDs(Graph_Node ** list) {
+static void Set_Nodes_Unique_IDs(Graph_Node ** list) {
     int i = 0;
     int * generated_ids =  malloc(MAX_ELEMENTS_NUM * sizeof(int));
     int generated_ids_size = -1;
@@ -264,160 +425,6 @@ int Save_Graph_To_File() {
     return 0;
 }
 
-/*get integer value from a substring start <= bounds < end
- * return the integer value from the string
- */
-int Get_Value_From_Substring(char * string, unsigned int start, unsigned int end) {
-    char sub_string[20];
-    int sub_string_size = 0;
-
-    for (int i = start; i < end; i++) {
-        sub_string[sub_string_size] = string[i];
-        sub_string_size++;
-    }
-
-    sub_string[sub_string_size] = '\0';
-    return chars_to_int(sub_string);
-}
-
-/*takes a formatted string and makes a list of edge_link containing
- *individual links for a particular node
- * the returned list needs to be free
- * and the elements inside the list need to individually freed as well
- */
-edge_link ** Add_Edge_From_String(char * string) {
-    edge_link ** edge_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link*));
-    if (string == nullptr) return edge_list;
-
-    int edge_list_size = -1;
-    unsigned int start = 0;
-    unsigned int end = 0;
-    bool set_start = false;
-    bool set_weight_flag = false;
-    bool value_is_valid;
-
-    int i = 0;
-    while (string[i] != '\0') {
-        value_is_valid = false;
-
-        if (string[i] <= '9' && string[i] >= '0') {
-            value_is_valid = true;
-            if (set_start == false) {
-                start = i;
-                set_start = true;
-            }
-        }
-        else if (string[i] == ':') {
-            value_is_valid = true;
-            edge_link * new_link = malloc(sizeof(edge_link));
-            edge_list[++edge_list_size] = new_link;
-            end = i;
-            edge_list[edge_list_size]->unique_id = Get_Value_From_Substring(string, start, end);
-            set_weight_flag = true;
-            set_start = false;
-        }
-        else if (string[i] == ' ') {
-            value_is_valid = true;
-            if (set_weight_flag == true) {
-                end = i;
-                edge_list[edge_list_size]->weight = Get_Value_From_Substring(string, start, end);
-                set_weight_flag = false;
-                set_start = false;
-            }
-        }
-        if (value_is_valid == false) {
-            Free_Edge_Link_List(edge_list);
-            return nullptr;
-        }
-        i++;
-    }
-    return edge_list;
-}
-
-//searches for a node in a list of graph_nodes
-//returns the node if found or retuns nullptr if fails
-Graph_Node * Search_And_Return_Node(Graph_Node ** list, int unique_key) {
-    int i = 0;
-    while (list[i] != nullptr) {
-        if (list[i]->unique_id == unique_key) {
-            return list[i];
-        }
-        i++;
-    }
-    return nullptr;
-}
-
-//takes in a node and attaches the adjacent nodes to the parent node by using their unique ids
-//searches the unique id in the list and then returns the associated node which links to the parent
-//return 0 on success
-int Attach_Links_To_Node(Graph_Node * node, edge_link ** incoming_links, edge_link ** outgoing_links, Graph_Node ** list) {
-    node->outgoing_edges_index = -1;
-    node->incoming_edges_index = -1;
-
-    int i = 0;
-    while (incoming_links[i] != nullptr) {
-        node->incoming_edges[++(node->incoming_edges_index)].node = Search_And_Return_Node(list , incoming_links[i]->unique_id);
-        node->incoming_edges[node->incoming_edges_index].weight = incoming_links[i]->weight;
-        i++;
-    }
-    i = 0;
-    while (outgoing_links[i] != nullptr) {
-        node->outgoing_edges[++(node->outgoing_edges_index)].node = Search_And_Return_Node(list , outgoing_links[i]->unique_id);
-        node->outgoing_edges[node->outgoing_edges_index].weight = outgoing_links[i]->weight;
-        i++;
-    }
-    return 0;
-}
-
-//frees the edge link, freeing the list and the elements of the list
-void Free_Edge_Link_List(edge_link ** list) {
-    int i = 0;
-    while (list[i] != nullptr) {
-        free(list[i]);
-        i++;
-    }
-    free(list);
-}
-
-/*gracefully fails the Load_Graph function by freeing up all allocated resources so no memory is leaked */
-void Fail_Load_OP(Graph_Node ** list, edge_link *** incoming_link_list, edge_link *** outgoing_link_list, char * string_buffer, FILE * file) {
-    int i = 0;
-    while (list[i] != nullptr) {
-        free(list[i]);
-        i++;
-    }
-    free(list);
-    root = nullptr;
-
-    i = 0;
-    while (incoming_link_list[i] != nullptr) {
-        Free_Edge_Link_List(incoming_link_list[i]);
-        i++;
-    }
-    free(incoming_link_list);
-
-    i = 0;
-    while (outgoing_link_list[i] != nullptr) {
-        Free_Edge_Link_List(outgoing_link_list[i]);
-        i++;
-    }
-    free(outgoing_link_list);
-
-    free(string_buffer);
-    fclose(file);
-}
-
-void Destroy_Graph() {
-    if (root == nullptr) return;
-    Graph_Node ** list = Get_DFS_traversal();
-    int i = 0;
-    while (list[i] != nullptr) {
-        free(list[i]);
-        i++;
-    }
-    root = nullptr;
-    free(list);
-}
 
 /*loads the graph from the saved file, returns nullptr if operation fails
  *else return a list to newly created graph_nodes
