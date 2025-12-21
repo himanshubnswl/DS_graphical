@@ -46,7 +46,7 @@ int DrawShapes() {
 
     if (GuiButton(array_button, "ARRAY")) {
         printf("hello to myself");
-        if (!CreateProcessA("array.exe", nullptr,nullptr,nullptr,TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si, &pi)) {
+        if (!CreateProcessA("./Array/array.exe", nullptr,nullptr,nullptr,TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si, &pi)) {
             printf("\nprocess creation failed");
         }
         else {
@@ -57,7 +57,7 @@ int DrawShapes() {
         }
     }
     if (GuiButton(ll_button, "LINKED LIST")) {
-        if (!CreateProcessA("LinkedList.exe", nullptr, nullptr, nullptr,TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si, &pi)) {
+        if (!CreateProcessA("./LinkedList/LinkedList.exe", nullptr, nullptr, nullptr,TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si, &pi)) {
             printf("\nprocess creation failed!");
         }
         else {
@@ -67,7 +67,7 @@ int DrawShapes() {
         }
     }
     if (GuiButton(BST_button, "BINARY SEARCH TREE")) {
-        if (!CreateProcessA("tree.exe", nullptr, nullptr, nullptr, TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si,&pi)) {
+        if (!CreateProcessA("./BSTree/tree.exe", nullptr, nullptr, nullptr, TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si,&pi)) {
             printf("\nprocess creation failed");
         }
         else {
@@ -77,7 +77,7 @@ int DrawShapes() {
         }
     }
     if (GuiButton(graph_button, "GRAPH")) {
-        if (!CreateProcessA("graph.exe", nullptr, nullptr, nullptr, TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si,&pi)) {
+        if (!CreateProcessA("./Graph/graph.exe", nullptr, nullptr, nullptr, TRUE, CREATE_DEFAULT_ERROR_MODE, nullptr, nullptr, &si,&pi)) {
             printf("\nprocess creation failed");
         }
         else {
