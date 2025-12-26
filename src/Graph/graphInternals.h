@@ -13,14 +13,14 @@
 #include "../helpers/helper.h"
 #include <stdint.h>
 
-#define MAX_ELEMENTS_NUM 50
-#define MAX_DELETED_NODES 20
-#define NON_VALID_NODE_VAL -10
-
-#define UNIQUE_ID 244154495
-#define DATA 3631407781
-#define INCOMING_EDGES 1861136447
-#define OUTGOING_EDGES 246838193
+// #define MAX_ELEMENTS_NUM 50
+// #define MAX_DELETED_NODES 20
+// #define NON_VALID_NODE_VAL -10
+//
+// #define UNIQUE_ID 244154495
+// #define DATA 3631407781
+// #define INCOMING_EDGES 1861136447
+// #define OUTGOING_EDGES 246838193
 
 struct graphNode;
 struct AdList;

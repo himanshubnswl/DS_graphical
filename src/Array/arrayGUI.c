@@ -10,6 +10,22 @@ typedef struct gui_element {
     Color color;
 }gui_element;
 
+constexpr int DEFAULT_REC_ELE_WIDTH = 100;
+constexpr int DEFAULT_REC_ELE_HEIGHT = 75;
+constexpr Color DEFAULT_ELE_COLOR = WHITE;
+constexpr int DEFAULT_REC_ELE_BORDER_LINE_THICKNESS = 5;
+constexpr int REC_TEXT_OFFSET_X = 35;
+constexpr int REC_TEXT_OFFSET_Y = 25;
+constexpr int SELECTED_ELE_WIDTH = 125;
+constexpr int SELECTED_ELE_HEIGHT = 100;
+constexpr Color SELECTED_ELE_COLOR = GREEN;
+constexpr int SELECTION_INVALID = -1;
+constexpr int INPUT_TEXT_MAX_SIZE = 50;
+constexpr int MAX_NUM_ELEMENTS = 50;
+constexpr int STARTING_X = 50;
+constexpr int STARTING_Y = 75;
+constexpr int ROW_GAP = 50;
+
 
 gui_element gui_elements[MAX_NUM_ELEMENTS];
 size_t gui_elements_size = 0;

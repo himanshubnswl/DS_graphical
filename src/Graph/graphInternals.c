@@ -3,6 +3,11 @@
 //
 #include "graphInternals.h"
 
+
+constexpr int MAX_ELEMENTS_NUM = 50;
+constexpr int MAX_DELETED_NODES = 20;
+constexpr int NON_VALID_NODE_VAL = -10;
+
 Graph_Node * root = nullptr;
 
 static bool visited_array_search(Graph_Node ** visited, Graph_Node * toBeSearched) {
@@ -432,6 +437,12 @@ int Save_Graph_To_File() {
  * uses hasing of strings for better performance
  * has hashes of few strings stored as defines, again for performance*/
 Graph_Node ** Load_Graph_From_File() {
+    constexpr uint32_t UNIQUE_ID = 244154495;
+    constexpr uint32_t DATA = 3631407781;
+    constexpr uint32_t INCOMING_EDGES = 1861136447;
+    constexpr uint32_t OUTGOING_EDGES = 246838193;
+
+
     FILE * load_from_file = fopen("./save_file.txt", "r");
     if (load_from_file == NULL) return nullptr;
     Destroy_Graph();
@@ -441,7 +452,6 @@ Graph_Node ** Load_Graph_From_File() {
     int list_size = -1;
     edge_link *** incoming_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
     edge_link *** outgoing_link_list = calloc(MAX_ELEMENTS_NUM, sizeof(edge_link**));
-    DEBUG_CHECKPOINT(442);
     while (fgets(string_buffer, 1024, load_from_file) != nullptr) {
         char * key = strtok(string_buffer, ":");
         uint32_t hashed_string = Hash_String_FNV(key);
@@ -483,7 +493,6 @@ Graph_Node ** Load_Graph_From_File() {
                 break;
         }
     }
-    DEBUG_CHECKPOINT(484);
     for (int i = 0; i <= list_size; i++) {
         Attach_Links_To_Node(list[i], incoming_link_list[i], outgoing_link_list[i], list);
         Free_Edge_Link_List(incoming_link_list[i]);

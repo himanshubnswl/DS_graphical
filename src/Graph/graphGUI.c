@@ -6,6 +6,21 @@
 #include "graphGUI.h"
 
 
+constexpr int ARROW_LENGTH = 25;
+constexpr int WINDOW_HEIGHT = 900;
+constexpr int WINDOW_WIDTH = 1700;
+constexpr int TEXT_SIZE_GUI = 18;
+constexpr int TEXT_SPACING_GUI = 5;
+constexpr Color DEFAULT_COLOR = WHITE;
+constexpr int DEFAULT_RADIUS = 40;
+constexpr int DEFAULT_LINE_THICKNESS = 10;
+constexpr int TEXT_MAX_LENGTH = 20;
+constexpr Color SELECTED_VERT_COLOR = GREEN;
+constexpr int SELECTED_VERT_RADIUS = 45;
+constexpr int NOTIF_FONT_SIZE = 25;
+constexpr Color EDGE_SELECTED_COLOR = BLUE;
+
+
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
 Vertex * selected_vertex = nullptr;
 int V_List_Top = -1;
@@ -469,6 +484,10 @@ void Destroy_Vertex_List() {
 }
 
 int Load_Graph_Handler() {
+    constexpr int POS_X_HASH = 1314879241;
+    constexpr int POS_Y_HASH = 1298101622;
+    constexpr int UNIQUE_ID_HASH = 244154495;
+
     Rectangle box = {
     .x = GetScreenWidth() - 709,
     .y = GetScreenHeight() - 106,

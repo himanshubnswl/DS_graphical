@@ -9,6 +9,7 @@
 #define SCREEN_WIDTH  1700
 
 enum ERROR_HANDLER ERROR,ERROR1, ERROR2, ERROR3,ERROR4;
+constexpr int INPUT_TEXT_MAX_SIZE = 256;
 
 struct Stack {
     Node * BSTNode;
