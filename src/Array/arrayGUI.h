@@ -25,4 +25,41 @@
 // #define STARTING_X 50
 // #define STARTING_Y 75
 // #define ROW_GAP 50
+typedef struct gui_element {
+    int data = 0;
+    Rectangle shape;
+    Color color;
+}gui_element;
 
+
+constexpr int DEFAULT_REC_ELE_WIDTH = 100;
+constexpr int DEFAULT_REC_ELE_HEIGHT = 75;
+constexpr Color DEFAULT_ELE_COLOR = WHITE;
+constexpr int DEFAULT_REC_ELE_BORDER_LINE_THICKNESS = 5;
+constexpr int REC_TEXT_OFFSET_X = 35;
+constexpr int REC_TEXT_OFFSET_Y = 25;
+constexpr int SELECTED_ELE_WIDTH = 125;
+constexpr int SELECTED_ELE_HEIGHT = 100;
+constexpr Color SELECTED_ELE_COLOR = GREEN;
+constexpr int SELECTION_INVALID = -1;
+constexpr int INPUT_TEXT_MAX_SIZE = 50;
+constexpr int MAX_NUM_ELEMENTS = 50;
+constexpr int STARTING_X = 50;
+constexpr int STARTING_Y = 75;
+constexpr int ROW_GAP = 50;
+
+//calculate shape for an array
+void Calculate_Shape(gui_element* gui_elements, size_t gui_elements_size);
+//selection logic for an element
+int Get_Selected_Element(gui_element* gui_elements, size_t gui_elements_size);
+//draws the final array
+void Draw_Array(gui_element* gui_elements, size_t gui_elements_size);
+// prints the array
+void Print_Ele_Array(gui_element* gui_elements, size_t gui_elements_size);
+//remove button and logic
+int Remove_Element_Handler(gui_element* gui_elements, size_t gui_elements_size);
+//logic to add element given a data
+int Add_Element(int data, gui_element* gui_elements, size_t gui_elements_size);
+//add button handler and logic
+int Add_Element_Handler(gui_element* gui_elements, size_t gui_elements_size);
+void Debug_Mode();
