@@ -26,7 +26,7 @@
 // #define STARTING_Y 75
 // #define ROW_GAP 50
 typedef struct gui_element {
-    int data = 0;
+    int data;
     Rectangle shape;
     Color color;
 }gui_element;
@@ -53,13 +53,11 @@ void Calculate_Shape(gui_element* gui_elements, size_t gui_elements_size);
 //selection logic for an element
 int Get_Selected_Element(gui_element* gui_elements, size_t gui_elements_size);
 //draws the final array
-void Draw_Array(gui_element* gui_elements, size_t gui_elements_size);
+void Draw_Array(const gui_element* const gui_elements, size_t gui_elements_size);
 // prints the array
-void Print_Ele_Array(gui_element* gui_elements, size_t gui_elements_size);
+void Print_Ele_Array(const gui_element* const gui_elements, size_t gui_elements_size);
 //remove button and logic
-int Remove_Element_Handler(gui_element* gui_elements, size_t gui_elements_size);
-//logic to add element given a data
-int Add_Element(int data, gui_element* gui_elements, size_t gui_elements_size);
+int Remove_Element_Handler(gui_element* gui_elements, size_t* gui_elements_size);
 //add button handler and logic
-int Add_Element_Handler(gui_element* gui_elements, size_t gui_elements_size);
-void Debug_Mode();
+int Add_Element_Handler(gui_element* gui_elements, size_t* gui_elements_size);
+void Debug_Mode(gui_element *gui_elements, size_t gui_elements_size);

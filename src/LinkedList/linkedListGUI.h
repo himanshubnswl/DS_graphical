@@ -29,3 +29,4 @@
 // #define LINES_THICKNESS 10
 // #define LINES_COLOR RED
 
+void Calculate_Shape();

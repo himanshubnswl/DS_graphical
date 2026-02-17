@@ -19,6 +19,8 @@ constexpr Color SELECTED_VERT_COLOR = GREEN;
 constexpr int SELECTED_VERT_RADIUS = 45;
 constexpr int NOTIF_FONT_SIZE = 25;
 constexpr Color EDGE_SELECTED_COLOR = BLUE;
+constexpr int MAX_ELEMENTS_NUM = 100;
+constexpr int NON_VALID_NODE_VAL = -10;
 
 
 Vertex * vertexList[MAX_ELEMENTS_NUM] = {nullptr};
