@@ -244,7 +244,6 @@ int main() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(GRAY);
-
         Draw_Array(gui_elements, gui_elements_size);
         Debug_Mode(gui_elements, gui_elements_size);
         ERROR = Add_Element_Handler(gui_elements, &gui_elements_size);
